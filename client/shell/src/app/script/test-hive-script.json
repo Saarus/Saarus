@@ -1,0 +1,25 @@
+{ 
+  "id" : "TestHive", 
+  "owner" : "hive", 
+  "description" : "execute some hive methods...", 
+  "taskHandler" : "HiveService", 
+  "taskSubmitWait" : "5000",
+  "taskUnits" : [ { 
+    "name" : "listTable", 
+    "description" : "List all the available tables in hive server", 
+    "task" : ["(not used)"] 
+  }, { 
+    "name" : "descTable", 
+    "description" : "Describe the table user", 
+    "task" : ["(not used)"],
+    "parameters" : { "tableName" : "user" } 
+  }, { 
+    "name" : "executeQuery", 
+    "description" : "Describe the table with plain sql query", 
+    "task" : ["DESCRIBE user"]
+  }, { 
+    "name" : "executeQuery", 
+    "description" : "Rune the sql select query", 
+    "task" : ["SELECT count(*) FROM user"]
+  }] 
+}

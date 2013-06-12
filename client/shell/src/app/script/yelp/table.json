@@ -1,0 +1,85 @@
+{ 
+  "owner" : "hive", 
+  "description" : "Set yelp db location variable", 
+  "taskHandler" : "HiveService", 
+  "taskUnits" : [ { 
+    "name" : "execute", 
+    "task" : ["set yelp.db.location=/user/hive/yelpdb/warehouse"]
+  }] 
+}
+{ 
+  "owner" : "hive", 
+  "description" : "Create the table user", 
+  "taskHandler" : "HiveService", 
+  "taskSubmitWait" : "5000",
+  "taskUnits" : [ { 
+    "name" : "execute", 
+    "task" : ["DROP TABLE if exists user"]
+  }, { 
+    "name" : "execute", 
+    "task" : [
+        "CREATE TABLE user(",     
+        "     user_id        STRING,",
+        "     name           STRING,",
+        "     average_stars  FLOAT,",
+        "     review_count   INT,",
+        "     vote_funny     INT,",
+        "     vote_useful    INT,",
+        "     vote_cool      INT)",
+        "  ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' ESCAPED BY '\\\\' STORED AS TEXTFILE",
+        "  LOCATION '${hiveconf:yelp.db.location}/user'"
+      ]
+  }, { 
+    "name" : "execute", 
+    "task" : [
+      "INSERT OVERWRITE TABLE user", 
+      "  SELECT u.user_id, u.name, u.average_stars, u.review_count, v.funny, v.useful, v.cool",
+      "    FROM user_json", 
+      "    LATERAL VIEW json_tuple(",
+      "                   user_json.json, 'user_id', 'name', 'average_stars',", 
+      "                   'review_count', 'vote')", 
+      "      u AS user_id, name, average_stars, review_count, vote",  
+      "      LATERAL VIEW json_tuple(u.vote, 'funny', 'useful', 'cool') v AS funny, useful, cool"
+    ]
+  }] 
+}
+{ 
+  "owner" : "hive", 
+  "description" : "Create the table business", 
+  "taskHandler" : "HiveService", 
+  "taskSubmitWait" : "5000",
+  "taskUnits" : [ { 
+    "name" : "execute", 
+    "task" : ["DROP TABLE if exists business"]
+  }, { 
+    "name" : "execute", 
+    "task" : [
+      "CREATE TABLE business(",
+      "    business_id        STRING,",
+      "    name               STRING,",
+      "    full_address       STRING,",
+      "    city               STRING,",
+      "    state              STRING,",
+      "    longitude          DOUBLE,",
+      "    latitude           DOUBLE,",
+      "    categories         STRING,",
+      "    review_count       INT,",
+      "    stars              FLOAT,",
+      "    neighborhoods      STRING)",
+      "  ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' ESCAPED BY '\\\\' STORED AS TEXTFILE",
+      "  LOCATION '${hiveconf:yelp.db.location}/business'"
+      ]
+  }, { 
+    "name" : "execute", 
+    "task" : [
+      "INSERT OVERWRITE TABLE business",   
+      "  SELECT b.business_id, b.name, REGEXP_REPLACE(b.full_address,'\n', '\\n'), b.city, b.state,",
+      "         b.longitude, b.latitude, b.categories, b.review_count, b.stars, b.neighborhoods",
+      "  FROM business_json", 
+      "  LATERAL VIEW json_tuple(business_json.json, 'business_id', 'name', 'full_address', 'city', 'state',",
+      "                         'longitude', 'latitude', 'categories', 'review_count', 'stars', 'neighborhoods')",
+      "    b AS business_id, name, full_address, city, state, longitude, latitude, categories,", 
+      "         review_count, stars, neighborhoods"
+    ]
+  }] 
+}

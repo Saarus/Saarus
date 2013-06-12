@@ -1,0 +1,33 @@
+{ 
+  "id" : "Dummy1", 
+  "owner" : "tester", 
+  "description" : "execute some dummy method....", 
+  "taskHandler" : "Dummy", 
+  "taskUnits" : [ { 
+    "name" : "hello", 
+    "description" : "Test hello method, expect return 'hello from Dummy...' string", 
+    "task" : ["hello task(not used)"]
+  }, { 
+    "name" : "ping", 
+    "description" : "Test ping method, expect return 'true/false'", 
+    "task" : ["ping(not used)"] 
+  }, { 
+    "name" : "wait", 
+    "description" : "Test wait method, expect return '${time}' handle on the server", 
+    "task" : ["wait(not used)"], 
+    "parameters" : { "wait" : "1000" } 
+  }] 
+} 
+{ 
+  "id" : "Dummy2", 
+  "owner" : "tester", 
+  "description" : "Simulate a long execute method", 
+  "taskHandler" : "Dummy", 
+  "taskSubmitWait" : "2000",
+  "taskUnits" : [ { 
+    "name" : "wait", 
+    "description" : "Test wait method, expect return '${time}' handle on the server", 
+    "task" : ["wait(not used)"], 
+    "parameters" : { "wait" : "5000" } 
+  }] 
+}

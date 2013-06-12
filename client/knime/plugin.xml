@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <!-- This is an example for providing an own category 
+      <extension
+         point="org.knime.workbench.repository.categories">
+      <category
+            description="Category containing my nodes"
+            icon="icons/default.png"
+            level-id="myNodes"
+            name="My nodes"
+            path="/"/>
+   </extension>
+   -->
+   
+   <extension point="org.knime.workbench.repository.nodes">
+     <!--
+      <category description="Knime Saarus Node plugin"
+                icon="icons/default.png"
+                level-id="Saarus" name="Saarus" path="/saarus"/>
+      -->
+      <node category-path="/"
+            factory-class="org.saarus.knime.data.in.json.JSONImportNodeFactory"
+            id="org.saarus.knime.data.in.json.JSONImportNodeFactory"/>
+
+      <node category-path="/"
+            factory-class="org.saarus.knime.data.hive.QueryNodeFactory"
+            id="org.saarus.knime.data.query.QueryNodeFactory"/>
+
+      <node category-path="/"
+            factory-class="org.saarus.knime.data.stat.StatisticNodeFactory"
+            id="org.saarus.knime.data.stat.StatisticNodeFactory"/>
+
+      <node category-path="/"
+            factory-class="org.saarus.knime.mahout.lr.learner.LRLearnerNodeFactory"
+            id="org.saarus.knime.mahout.lr.learner.LRLearnerNodeFactory"/>
+
+      <node category-path="/"
+            factory-class="org.saarus.knime.mahout.lr.predictor.LRPredictorNodeFactory"
+            id="org.saarus.knime.mahout.lr.predictor.LRPredictorNodeFactory"/>
+
+      <node category-path="/"
+            factory-class="org.saarus.knime.data.filereader.FileReaderNodeFactory"
+            id="org.saarus.knime.data.filereader.FileReaderNodeFactory"/>
+   </extension>
+   
+</plugin>

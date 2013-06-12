@@ -1,0 +1,23 @@
+{ 
+  "owner" : "hive", 
+  "description" : "register functions and run statistic", 
+  "taskHandler" : "HiveService", 
+
+  "taskUnits" : [ { 
+    "name" : "execute", 
+    "task" : ["ADD jar /home/hadoop/yelp/lib/saarus.service.hive-1.0.jar"]
+  }, {
+    "name" : "execute", 
+    "task" : ["CREATE TEMPORARY FUNCTION field_stat AS 'org.saarus.service.hive.func.UDAFFieldStat'"]
+  }, {
+    "name" : "execute", 
+    "task" : ["CREATE TEMPORARY FUNCTION string_field_stat AS 'org.saarus.service.hive.func.UDAFStringFieldStat'"]
+  }, {
+    "name" : "execute", 
+    "task" : ["CREATE TEMPORARY FUNCTION number_field_stat AS 'org.saarus.service.hive.func.UDAFNumberFieldStat'"]
+  }, {
+    "id":    "table:features",
+    "name" : "executeQuery", 
+    "task" : ["SELECT field_stat(review_id) AS review_id, string_field_stat(user_name) AS user_name FROM features"]
+  }] 
+}

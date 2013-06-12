@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.saarus</groupId>
+    <artifactId>config</artifactId>
+    <version>1.0</version>
+  </parent> 
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>saarus.service.hive</artifactId>
+  <name>Saarus :: Service Mahout</name>
+
+  <properties>
+    <hadoop.version>2.0.0-cdh4.2.1</hadoop.version>
+    <hive.version>0.10.0-cdh4.2.1</hive.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.saarus</groupId>
+      <artifactId>saarus.service.core</artifactId>
+      <version>${org.saarus.version}</version>
+    </dependency> 
+
+    <dependency>
+      <groupId>org.saarus</groupId>
+      <artifactId>saarus.service.hadoop</artifactId>
+      <version>${org.saarus.version}</version>
+    </dependency> 
+
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-jdbc</artifactId>
+      <version>${hive.version}</version>
+    </dependency>
+  </dependencies>
+</project>

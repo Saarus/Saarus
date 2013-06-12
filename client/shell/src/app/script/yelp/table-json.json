@@ -1,0 +1,77 @@
+{ 
+  "owner" : "hive", 
+  "description" : "Set yelp db location variable", 
+  "taskHandler" : "HiveService", 
+  "taskUnits" : [ { 
+    "name" : "execute", 
+    "task" : ["set yelp.db.location=/user/hive/yelpdb/json/training"]
+  }] 
+}
+{ 
+  "owner" : "hive", 
+  "description" : "Create the table user_json", 
+  "taskHandler" : "HiveService", 
+  "taskUnits" : [ { 
+    "name" : "execute", 
+    "task" : ["DROP TABLE if exists user_json"]
+  }, { 
+    "name" : "execute", 
+    "task" : [
+        "CREATE EXTERNAL TABLE user_json(",
+        "  json STRING COMMENT 'the data is stored in the json format'",
+        ")",
+        "LOCATION '${hiveconf:yelp.db.location}/user'"
+      ]
+  }] 
+}
+{ 
+  "owner" : "hive", 
+  "description" : "Create the table business_json", 
+  "taskHandler" : "HiveService", 
+  "taskUnits" : [ { 
+    "name" : "execute", 
+    "task" : ["DROP TABLE if exists business_json"]
+  }, { 
+    "name" : "execute", 
+    "task" : [
+        "CREATE EXTERNAL TABLE business_json(",
+        "  json STRING COMMENT 'the data is stored in the json format'",
+        ")",
+        "LOCATION '${hiveconf:yelp.db.location}/user'"
+      ]
+  }] 
+}
+{ 
+  "owner" : "hive", 
+  "description" : "Create the table checkin_json", 
+  "taskHandler" : "HiveService", 
+  "taskUnits" : [ { 
+    "name" : "execute", 
+    "task" : ["DROP TABLE if exists checkin_json"]
+  }, { 
+    "name" : "execute", 
+    "task" : [
+        "CREATE EXTERNAL TABLE checkin_json(",
+        "  json STRING COMMENT 'the data is stored in the json format'",
+        ")",
+        "LOCATION '${hiveconf:yelp.db.location}/user'"
+      ]
+  }] 
+}
+{ 
+  "owner" : "hive", 
+  "description" : "Create the table review_json", 
+  "taskHandler" : "HiveService", 
+  "taskUnits" : [ { 
+    "name" : "execute", 
+    "task" : ["DROP TABLE if exists review_json"]
+  }, { 
+    "name" : "execute", 
+    "task" : [
+        "CREATE EXTERNAL TABLE review_json(",
+        "  json STRING COMMENT 'the data is stored in the json format'",
+        ")",
+        "LOCATION '${hiveconf:yelp.db.location}/user'"
+      ]
+  }] 
+}
