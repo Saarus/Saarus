@@ -13,15 +13,24 @@
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>org.saarus:saarus.server</include>
-        <include>org.saarus:saarus.service.core</include>
-        <include>org.saarus:saarus.service.hive</include>
-        <include>org.saarus:saarus.client.shell</include>
-
+        <include>commons-lang:commons-lang</include>
+        <include>commons-configuration:commons-configuration</include>
         <include>commons-cli:commons-cli</include>
+        <include>commons-logging:commons-logging</include>
+        <include>commons-httpclient:commons-httpclient</include>
 
         <include>org.codehaus.jackson:jackson-core-asl</include>
         <include>org.codehaus.jackson:jackson-mapper-asl</include>
+
+        <include>com.google.guava:guava</include>
+        <include>com.google.protobuf:protobuf-java</include>
+
+        <include>org.uncommons.maths:uncommons-maths</include>
+        <!--
+        <include>org.apache.thrift:libfb303</include>
+        -->
+        <include>org.apache.thrift:libthrift</include>
+
 
         <include>org.springframework:spring-core</include>
         <!--
@@ -35,12 +44,45 @@
         <include>org.springframework:org.springframework.context.support</include>
         -->
 
+        <include>log4j:log4j</include>
+
         <include>org.slf4j:slf4j-api</include>
         <include>org.slf4j:slf4j-simple</include>
         <include>org.slf4j:jcl-over-slf4j</include>
         <!--
         <include>org.slf4j:log4j-over-slf4j</include>
+        <include>org.apache.httpcomponents:httpcore</include>
+        <include>org.apache.httpcomponents:httpclient</include>
          -->
+
+        <include>org.apache.avro:avro</include>
+        <include>org.apache.avro:avro-ipc</include>
+        <include>org.apache.avro:avro-mapred</include>
+
+        <include>org.apache.hadoop:hadoop-minicluster</include>
+        <include>org.apache.hadoop:hadoop-common</include>
+        <include>org.apache.hadoop:hadoop-hdfs</include>
+        <include>org.apache.hadoop:hadoop-mapreduce-client-core</include>
+        <include>org.apache.hadoop:hadoop-mapreduce-client-common</include>
+        <include>org.apache.hadoop:hadoop-mapreduce-client-jobclient</include>
+        <include>org.apache.hadoop:hadoop-yarn-api</include>
+        <include>org.apache.hadoop:hadoop-yarn-common</include>
+        <include>org.apache.hadoop:hadoop-yarn-client</include>
+        <include>org.apache.hadoop:hadoop-auth</include>
+
+
+        <include>org.apache.hive:hive-common</include>
+        <include>org.apache.hive:hive-exec</include>
+        <include>org.apache.hive:hive-contrib</include>
+        <include>org.apache.hive:hive-jdbc</include>
+        <include>org.apache.hive:hive-metastore</include>
+        <include>org.apache.hive:hive-serde</include>
+        <include>org.apache.hive:hive-service</include>
+        <include>org.apache.hive:hive-shims</include>
+
+        <include>org.apache.mahout:mahout-core</include>
+        <include>org.apache.mahout:mahout-math</include>
+        <include>org.apache.mahout.commons:commons-cli</include>
         <!-- HTTP SERVER -->
         <include>org.springframework:spring-web</include>
         <include>org.springframework:spring-webmvc</include>
@@ -65,6 +107,13 @@
         <include>org.glassfish.web:jsp-impl</include>
         <include>org.glassfish.web:el-impl</include>
         -->
+
+        <include>org.saarus:saarus.server</include>
+        <include>org.saarus:saarus.service.core</include>
+        <include>org.saarus:saarus.service.hive</include>
+        <include>org.saarus:saarus.service.hadoop</include>
+        <include>org.saarus:saarus.service.mahout</include>
+        <include>org.saarus:saarus.client.shell</include>
       </includes>
     </dependencySet>
 
