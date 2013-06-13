@@ -148,4 +148,6 @@ public class HiveTaskHandler implements TaskUnitHandler {
     task.setTaskLine(sql) ;
     return executeQuery(task).call() ;
   }
+  
+  public String toString() { return getName() ; }
 }
