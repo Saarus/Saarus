@@ -1,0 +1,31 @@
+{ 
+  "owner" : "mahout", 
+  "description" : "Train and predict donut data", 
+  "taskHandler" : "LogisticRegression", 
+  "taskSubmitWait" : "3000",
+
+  "taskUnits" : [ { 
+    "name" : "train", 
+    "task" : [],
+    "parameters" : {
+      "input": "hive://donut_train",
+      "output": "dfs:/tmp/donut.model",
+      "target": "color",
+      "categories": "2",
+      "predictors": "n:x | n:y | n:a | n:b | n:c",
+      "features": "20",
+      "passes": "100",
+      "rate": "50"
+    } 
+  }, {
+    "name" : "predict", 
+    "task" : [],
+    "parameters" : {
+      "input": "data/donutmr",
+      "output": "working/output",
+      "model": "dfs:/tmp/donut.model",
+      "col-header": "x,y,shape,color,xx,xy,yy,c,a,b",
+      "cluster-mode": "false"
+    }
+  }] 
+}
