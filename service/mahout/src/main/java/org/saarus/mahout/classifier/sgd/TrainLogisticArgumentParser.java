@@ -11,9 +11,8 @@ import org.apache.commons.cli2.builder.DefaultOptionBuilder;
 import org.apache.commons.cli2.builder.GroupBuilder;
 import org.apache.commons.cli2.commandline.Parser;
 import org.apache.commons.cli2.util.HelpFormatter;
+import org.saarus.service.hadoop.util.FSResource;
 import org.saarus.service.hive.HiveService;
-
-import com.google.common.collect.Lists;
 
 public final class TrainLogisticArgumentParser {
   String targetVariable ;
@@ -21,7 +20,7 @@ public final class TrainLogisticArgumentParser {
   int numFeatures ;
   boolean useBias ;
   String inputUrl;
-  String modelFile;
+  String modelUri;
   double lambda ;
   double learningRate ;
   List<PredictorType> predictorTypes ;
@@ -133,7 +132,7 @@ public final class TrainLogisticArgumentParser {
     }
 
     this.inputUrl = getStringArgument(cmdLine, inputFile);
-    this.modelFile = getStringArgument(cmdLine, outputFile);
+    this.modelUri = getStringArgument(cmdLine, outputFile);
     this.targetVariable = getStringArgument(cmdLine, target) ;
     this.maxTargetCategories = getIntegerArgument(cmdLine, targetCategories) ;
     this.numFeatures = getIntegerArgument(cmdLine, features) ;
@@ -142,8 +141,9 @@ public final class TrainLogisticArgumentParser {
     this.learningRate = getDoubleArgument(cmdLine, rate) ;
     
     this.predictorTypes = new ArrayList<PredictorType>() ;
-    for (Object x : cmdLine.getValues(predictors)) {
-      predictorTypes.add(new PredictorType(x.toString()));
+    String predictorNames = getStringArgument(cmdLine, predictors) ;
+    for (String name : predictorNames.split("\\|")) {
+      predictorTypes.add(new PredictorType(name.trim()));
     }
 
     this.scores = getBooleanArgument(cmdLine, scores);
@@ -181,6 +181,8 @@ public final class TrainLogisticArgumentParser {
       return dataReader ;
     }
   }
+  
+  public FSResource getModelFSResource() { return FSResource.get(modelUri) ; }
   
   private static String getStringArgument(CommandLine cmdLine, Option inputFile) {
     return (String) cmdLine.getValue(inputFile);

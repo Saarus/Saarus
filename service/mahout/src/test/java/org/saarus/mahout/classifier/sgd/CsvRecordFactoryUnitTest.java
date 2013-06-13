@@ -39,7 +39,7 @@ public class CsvRecordFactoryUnitTest {
     csv = csv.maxTargetValue(maxTargetCategories) ;
     csv = csv.includeBiasTerm(useBias);
     
-    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/donut.csv"))) ;
+    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("src/test/resources/donut/donut.csv"))) ;
     csv.firstLine(in.readLine()) ;
     for(int i = 0; i < 10; i++) {
       Vector input = new RandomAccessSparseVector(numFeatures);

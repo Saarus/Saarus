@@ -27,8 +27,8 @@ import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
 
 public class TrainLogisticTest extends MahoutTestCase {
-  static String DONUT_CSV = "src/test/resources/donut.csv" ;
-  static String DONUT_TEST_CSV = "src/test/resources/donut-test.csv" ;
+  static String DONUT_CSV = "src/test/resources/donut/donut.csv" ;
+  static String DONUT_TEST_CSV = "src/test/resources/donut/donut-test.csv" ;
   @Test
   public void example13_1() throws Exception {
     String outputFile = getTestTempFile("model").getAbsolutePath();
@@ -41,7 +41,7 @@ public class TrainLogisticTest extends MahoutTestCase {
         "--output", outputFile,
         "--target", "color", 
         "--categories", "2",
-        "--predictors", "numeric:x", "numeric:y",
+        "--predictors", "numeric:x|numeric:y",
         "--features", "20",
         "--passes", "100",
         "--rate", "50"
@@ -101,7 +101,7 @@ public class TrainLogisticTest extends MahoutTestCase {
         "--output", outputFile,
         "--target", "color",
         "--categories", "2",
-        "--predictors", "n:x", "n:y", "n:a", "n:b", "n:c",
+        "--predictors", "n:x|n:y|n:a|n:b|n:c",
         "--features", "20",
         "--passes", "100",
         "--rate", "50"

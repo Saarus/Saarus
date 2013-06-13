@@ -1,6 +1,5 @@
 package org.saarus.mahout.classifier.sgd;
 
-import java.io.File;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
@@ -10,6 +9,7 @@ import org.apache.mahout.classifier.sgd.OnlineLogisticRegression;
 import org.apache.mahout.math.Matrix;
 import org.apache.mahout.math.SequentialAccessSparseVector;
 import org.apache.mahout.math.Vector;
+import org.saarus.service.hadoop.util.FSResource;
 
 public final class RunLogistic {
   public void predict(String[] args, PrintWriter output) throws Exception {
@@ -24,7 +24,8 @@ public final class RunLogistic {
     }
 
     Auc collector = new Auc();
-    LogisticModelParameters lmp = LogisticModelParameters.loadFrom(new File(argParser.getModelFile()));
+    FSResource modelFSResource = argParser.getModelFSResource() ;
+    LogisticModelParameters lmp = LogisticModelParameters.loadFrom(modelFSResource.getInputStream());
 
     RecordFactoryImpl csv = lmp.getCsvRecordFactory();
     OnlineLogisticRegression lr = lmp.createRegression();

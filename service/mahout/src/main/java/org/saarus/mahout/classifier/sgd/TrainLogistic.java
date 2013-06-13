@@ -1,6 +1,7 @@
 package org.saarus.mahout.classifier.sgd;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,6 +17,7 @@ import org.apache.mahout.classifier.sgd.OnlineLogisticRegression;
 import org.apache.mahout.classifier.sgd.RecordFactory;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
+import org.saarus.service.hadoop.util.FSResource;
 import org.saarus.service.hive.HiveService;
 
 import com.google.common.base.Charsets;
@@ -85,13 +87,15 @@ public final class TrainLogistic {
       }
     }
 
-    OutputStream modelOutput = new FileOutputStream(argParser.modelFile);
+    ByteArrayOutputStream modelOutput = new ByteArrayOutputStream();
     try {
       lmp.saveTo(modelOutput);
     } finally {
       Closeables.closeQuietly(modelOutput);
     }
-
+    FSResource modelFSResource = argParser.getModelFSResource() ; 
+    modelFSResource.write(modelOutput.toByteArray()) ;
+    
     output.printf(Locale.ENGLISH, "%d\n", lmp.getNumFeatures());
     output.printf(Locale.ENGLISH, "%s ~ ", lmp.getTargetVariable());
     String sep = "";

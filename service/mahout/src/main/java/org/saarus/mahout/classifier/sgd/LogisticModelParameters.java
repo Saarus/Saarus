@@ -105,7 +105,6 @@ public class LogisticModelParameters implements Writable {
     }
   }
 
-
   @Override
   public void write(DataOutput out) throws IOException {
     out.writeUTF(targetVariable);

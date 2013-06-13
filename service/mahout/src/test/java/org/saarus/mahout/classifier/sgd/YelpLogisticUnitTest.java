@@ -15,9 +15,7 @@ public class YelpLogisticUnitTest {
         "--output", "target/review.model",
         "--target", "vote_useful", /*"vote_funny",*//*"n:vote_useful",*//*"vote_cool",*/
         "--categories", "2",
-        "--predictors", "n:stars", /*"n:text",*/ /*"w:business_id",*/ 
-                        /*"w:business_city", "w:business_state",*/ /*"w:business_open",*/ "n:business_review_count",
-                        /*"n:user_review_count",*/ /*"n:user_average_stars"*/ 
+        "--predictors", "n:stars|n:business_review_count",
     };
     TrainLogistic tl = new TrainLogistic() ;
     tl.train(trainArgs, new PrintWriter(System.out, true)) ;

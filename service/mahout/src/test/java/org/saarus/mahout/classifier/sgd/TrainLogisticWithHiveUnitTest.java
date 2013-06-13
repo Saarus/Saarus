@@ -8,11 +8,12 @@ import org.junit.Test;
 import org.saarus.service.hive.HiveService;
 
 public class TrainLogisticWithHiveUnitTest extends MahoutTestCase {
-  static String DONUT_TEST_CSV = "src/test/resources/donut-test.csv" ;
+  static String DONUT_TEST_CSV = "src/test/resources/donut/donut-test.csv" ;
 
   @Test
   public void test() throws Exception {
-    String outputFile = "target/donut.model";
+    String outputFile = "dfs:/tmp/donut.model";
+    
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw, true);
     HiveService hservice  = new HiveService("jdbc:hive2://198.154.60.252:10000", "hive", "");
@@ -22,7 +23,7 @@ public class TrainLogisticWithHiveUnitTest extends MahoutTestCase {
         "--output", outputFile,
         "--target", "color",
         "--categories", "2",
-        "--predictors", "n:x", "n:y", "n:a", "n:b", "n:c",
+        "--predictors", "n:x | n:y | n:a | n:b | n:c",
         "--features", "20",
         "--passes", "100",
         "--rate", "50"
@@ -35,14 +36,13 @@ public class TrainLogisticWithHiveUnitTest extends MahoutTestCase {
     assertTrue(trainOut.contains("b -1."));
     assertTrue(trainOut.contains("c -25."));
 
-    sw = new StringWriter();
-    pw = new PrintWriter(sw, true);
-    
-    new RunLogistic().predict(new String[]{
+    String[] predictArgs = new String[]{
         "--input", DONUT_TEST_CSV,
         "--model", outputFile,
         "--auc", "--confusion", 
-    }, pw);
+    };
+    sw = new StringWriter();
+    new RunLogistic().predict(predictArgs, new PrintWriter(sw, true));
     String predictOut = sw.toString();
     System.out.println(predictOut);
     assertTrue(predictOut.contains("AUC = 0.9"));

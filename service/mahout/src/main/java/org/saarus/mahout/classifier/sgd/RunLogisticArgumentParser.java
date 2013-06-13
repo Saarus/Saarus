@@ -8,10 +8,11 @@ import org.apache.commons.cli2.builder.DefaultOptionBuilder;
 import org.apache.commons.cli2.builder.GroupBuilder;
 import org.apache.commons.cli2.commandline.Parser;
 import org.apache.commons.cli2.util.HelpFormatter;
+import org.saarus.service.hadoop.util.FSResource;
 
 public final class RunLogisticArgumentParser {
   private String inputFile;
-  private String modelFile;
+  private String modelUri;
   private boolean showAuc;
   private boolean showScores;
   private boolean showConfusion;
@@ -62,7 +63,7 @@ public final class RunLogisticArgumentParser {
     }
 
     inputFile = getStringArgument(cmdLine, inputFileOption);
-    modelFile = getStringArgument(cmdLine, modelFileOption);
+    modelUri = getStringArgument(cmdLine, modelFileOption);
     showAuc = getBooleanArgument(cmdLine, auc);
     showScores = getBooleanArgument(cmdLine, scores);
     showConfusion = getBooleanArgument(cmdLine, confusion);
@@ -70,7 +71,7 @@ public final class RunLogisticArgumentParser {
 
   public String getInputFile() { return this.inputFile ; }
   
-  public String getModelFile() { return this.modelFile ; }
+  public String getModelFile() { return this.modelUri ; }
   
   public boolean getShowAuc() { return this.showAuc ; }
   
@@ -82,6 +83,8 @@ public final class RunLogisticArgumentParser {
     DataReader dataReader = new CvsFileDataReader(inputFile, true) ;
     return dataReader ;
   }
+  
+  public FSResource getModelFSResource() { return FSResource.get(modelUri) ; }
   
   private static boolean getBooleanArgument(CommandLine cmdLine, Option option) {
     return cmdLine.hasOption(option);
