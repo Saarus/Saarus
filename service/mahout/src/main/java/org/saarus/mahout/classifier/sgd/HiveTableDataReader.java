@@ -50,6 +50,7 @@ public class HiveTableDataReader implements DataReader {
     }
     b.append(" FROM ").append(table) ;
     resultSet = hservice.executeQuerySQL(b.toString()) ;
+    resultSet.setFetchSize(5000) ;
     if(field == null) {
       ResultSetMetaData meta = resultSet.getMetaData() ;
       int columnCount = meta.getColumnCount() ;

@@ -13,9 +13,12 @@ public class CacheDataReader implements DataReader {
     this.headerNames = reader.getHeaderNames() ;
     this.rowDatas = new ArrayList<List<String>>(100) ;
     List<String> rowData = null ;
+    long start = System.currentTimeMillis() ;
+    System.out.println("Start load cache data") ;
     while((rowData = reader.nextRow()) != null) {
       rowDatas.add(rowData) ;
     }
+    System.out.println("Load cache data in " + (System.currentTimeMillis() - start) + "ms") ;
   }
   
   public List<String> getHeaderNames() {return headerNames;}

@@ -21,6 +21,7 @@ import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.mahout.classifier.evaluation.Auc;
@@ -32,7 +33,37 @@ import org.saarus.service.hadoop.util.FSResource;
 import org.saarus.service.hadoop.util.HDFSUtil;
 
 public class MRLogisticRegressionDecoder {
-
+  private String    inputUri ;
+  private String    outputUri ;
+  private String[]  columnHeaders ;
+  private String    modelUri ;
+  private boolean   clusterMode ;
+  
+  public MRLogisticRegressionDecoder setInputUri(String s) {
+    this.inputUri = s ;
+    return this ;
+  }
+  
+  public MRLogisticRegressionDecoder setOutputUri(String s) {
+    this.outputUri = s ;
+    return this ;
+  }
+  
+  public MRLogisticRegressionDecoder setColumnHeaders(String[] column) {
+    this.columnHeaders = column ;
+    return this ;
+  }
+  
+  public MRLogisticRegressionDecoder setModelUri(String s) {
+    this.modelUri = s ;
+    return this ;
+  }
+  
+  public MRLogisticRegressionDecoder setClusterMode(boolean b) {
+    this.clusterMode = b ;
+    return this ;
+  }
+  
   public static class Map extends MapReduceBase implements Mapper<LongWritable, Text, LongWritable, Text> {
     PrintWriter output ;
     LogisticModelParameters lmp ;
@@ -47,7 +78,7 @@ public class MRLogisticRegressionDecoder {
     public void configure(JobConf job) {
       try {
         output = new PrintWriter(System.out, true) ;
-        String headers = job.get("column.headers") ;
+        String[] headers = job.getStrings("column.headers") ;
         String modelFile = job.get("model.file") ;
         String[] args = {
           "--input", "ignored",
@@ -61,7 +92,7 @@ public class MRLogisticRegressionDecoder {
         this.csv = lmp.getCsvRecordFactory();
         this.lr = lmp.createRegression();
         
-        csv.configVariableNames(Arrays.asList(headers.split(","))) ;
+        csv.configVariableNames(Arrays.asList(headers)) ;
         if (showScores) {
           output.printf(Locale.ENGLISH, "\"%s\",\"%s\",\"%s\"\n", "target", "model-output", "log-likelihood");
         }
@@ -107,23 +138,21 @@ public class MRLogisticRegressionDecoder {
     }
   }
 
-  public static void run(String inDir, String outDir, String jar, boolean clusterMode) throws Exception {
+  public RunningJob run() throws Exception {
     Configuration conf = null ;
     if(clusterMode) conf = HDFSUtil.getConfiguration() ;
     else conf = HDFSUtil.getDaultConfiguration() ;
 
     FileSystem fs = FileSystem.get(conf) ;
-    fs.delete(new Path(outDir), true) ;
+    fs.delete(new Path(outputUri), true) ;
 
     System.out.println("Properties = " + conf.size()) ;
     
     JobConf jconf = new JobConf(conf, MRLogisticRegressionDecoder.class);
     jconf.setJobName(MRLogisticRegressionDecoder.class.getSimpleName());
     jconf.setUser("hadoop") ;
-    jconf.set("column.headers", "x,y,shape,color,xx,xy,yy,c,a,b") ;
-    jconf.set("model.file", "dfs:/tmp/donut.model") ;
-    if(jar != null) jconf.setJar(jar) ;
-    
+    jconf.setStrings("column.headers", this.columnHeaders) ;
+    jconf.set("model.file", this.modelUri) ;
     
     jconf.setMapperClass(Map.class);
     jconf.setMapOutputKeyClass(LongWritable.class) ;
@@ -138,20 +167,19 @@ public class MRLogisticRegressionDecoder {
     jconf.setInputFormat(TextInputFormat.class);
     jconf.setOutputFormat(TextOutputFormat.class);
 
-    FileInputFormat.setInputPaths(jconf, new Path(inDir));
-    FileOutputFormat.setOutputPath(jconf, new Path(outDir));
-    JobClient.runJob(jconf);
+    FileInputFormat.setInputPaths(jconf, new Path(inputUri));
+    FileOutputFormat.setOutputPath(jconf, new Path(outputUri));
+    return JobClient.runJob(jconf);
   }
 
   public static void main(String[] args) throws Exception {
-    boolean clusterMode = true ;
-    if(args == null || args.length == 0) {
-      args = new String[] {
-        "src/test/resources/donutmr",
-        "target/output"
-      };
-      clusterMode = false ;
-    }
-    run(args[0], args[1], null, clusterMode);
+    MRLogisticRegressionDecoder decoder = new MRLogisticRegressionDecoder() ;
+    decoder.
+      setInputUri("src/test/resources/donutmr").
+      setOutputUri("target/output").
+      setModelUri("dfs:/tmp/donut.model").
+      setColumnHeaders("x,y,shape,color,xx,xy,yy,c,a,b".split(",")).
+      setClusterMode(false) ;
+    decoder.run() ;
   }
 }

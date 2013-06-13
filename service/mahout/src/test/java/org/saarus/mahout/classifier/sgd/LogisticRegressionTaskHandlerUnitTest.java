@@ -18,14 +18,14 @@ public class LogisticRegressionTaskHandlerUnitTest {
     TaskUnit tunit = new TaskUnit() ;
     tunit.setName("train") ;
     Parameters params = tunit.getParameters() ;
-    params.setString("--input", TRAIN_FILE) ;
-    params.setString("--output", MODEL_FILE) ;
-    params.setString("--target", "color") ;
-    params.setString("--categories", "2") ;
-    params.setString("--predictors", "n:x | n:y | n:a | n:b | n:c") ;
-    params.setString("--features", "20") ;
-    params.setString("--passes", "100") ;
-    params.setString("--rate", "50") ;
+    params.setString("input", TRAIN_FILE) ;
+    params.setString("output", MODEL_FILE) ;
+    params.setString("target", "color") ;
+    params.setString("categories", "2") ;
+    params.setString("predictors", "n:x | n:y | n:a | n:b | n:c") ;
+    params.setString("features", "20") ;
+    params.setString("passes", "100") ;
+    params.setString("rate", "50") ;
     TaskUnitResult<String> tresult = 
         (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
     System.out.println(tresult.getResult());
@@ -35,8 +35,11 @@ public class LogisticRegressionTaskHandlerUnitTest {
     tunit = new TaskUnit() ;
     tunit.setName("predict") ;
     params = tunit.getParameters() ;
-    params.setString("--input", "src/test/resources/donut/donut-test.csv") ;
-    params.setString("--model", MODEL_FILE) ;
+    params.setString("input", "src/test/resources/donutmr") ;
+    params.setString("output", "target/output") ;
+    params.setString("model", MODEL_FILE) ;
+    params.setString("col-header", "x,y,shape,color,xx,xy,yy,c,a,b") ;
+    params.setString("cluster-mode", "false") ;
     tresult = (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
     System.out.println(tresult.getResult());
   }

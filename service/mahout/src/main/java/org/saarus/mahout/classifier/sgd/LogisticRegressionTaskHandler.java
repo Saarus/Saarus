@@ -3,6 +3,7 @@ package org.saarus.mahout.classifier.sgd;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.apache.hadoop.mapred.RunningJob;
 import org.saarus.service.hive.HiveService;
 import org.saarus.service.task.CallableTaskUnit;
 import org.saarus.service.task.Parameters;
@@ -11,6 +12,8 @@ import org.saarus.service.task.TaskUnitHandler;
 import org.saarus.service.task.TaskUnitResult;
 
 public class LogisticRegressionTaskHandler implements TaskUnitHandler {
+  static public String NAME = "LogisticRegression" ;
+  
   private HiveService hservice ;
   
   public LogisticRegressionTaskHandler() {
@@ -20,7 +23,11 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
     this.hservice = hservice ;
   }
   
-  public String getName() { return "LogisticRegression" ; }
+  public String getName() { return NAME ; }
+  
+  public HiveService getHiveService() { return this.hservice ; }
+  public void setHiveService(HiveService hservice) { this.hservice = hservice ; }
+
   
   public CallableTaskUnit<?> getCallableTaskUnit(TaskUnit taskUnit) {
     String name = taskUnit.getName();
@@ -34,14 +41,14 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
       public String doCall() throws Exception {
         Parameters params = taskUnit.getParameters() ;
         String[] args = new String[]{
-            "--input", params.getString("--input"),
-            "--output", params.getString("--output"),
-            "--target", params.getString("--target"), 
-            "--categories", params.getString("--categories"),
-            "--predictors", params.getString("--predictors"),
-            "--features", params.getString("--features", "20"),
-            "--passes", params.getString("--passes", "100"),
-            "--rate", params.getString("--rate", "50")
+            "--input", params.getString("input"),
+            "--output", params.getString("output"),
+            "--target", params.getString("target"), 
+            "--categories", params.getString("categories"),
+            "--predictors", params.getString("predictors"),
+            "--features", params.getString("features", "20"),
+            "--passes", params.getString("passes", "100"),
+            "--rate", params.getString("rate", "50")
         };
         TrainLogistic tl = new TrainLogistic().setHiveService(hservice) ;
         StringWriter sw = new StringWriter();
@@ -53,22 +60,23 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
     return callableUnit ;
   }
   
-  private CallableTaskUnit<String> predict(TaskUnit tunit) {
-    CallableTaskUnit<String> callableUnit = new CallableTaskUnit<String>(tunit, new TaskUnitResult<String>()) {
-      public String doCall() throws Exception {
+  private CallableTaskUnit<Boolean> predict(TaskUnit tunit) {
+    CallableTaskUnit<Boolean> callableUnit = new CallableTaskUnit<Boolean>(tunit, new TaskUnitResult<Boolean>()) {
+      public Boolean doCall() throws Exception {
         Parameters params = taskUnit.getParameters() ;
-        String[] args = new String[]{
-          "--input", params.getString("--input"),
-          "--model", params.getString("--model"),
-          "--auc", 
-          "--confusion", 
-        };
-        
-        StringWriter sw = new StringWriter();
-        new RunLogistic().predict(args, new PrintWriter(sw, true));
-        return  sw.toString() ;
+        MRLogisticRegressionDecoder decoder = new MRLogisticRegressionDecoder() ;
+        decoder.
+          setInputUri(params.getString("input")).
+          setOutputUri(params.getString("output")).
+          setModelUri(params.getString("model")).
+          setColumnHeaders(params.getString("col-header").split(",")).
+          setClusterMode("true".equals(params.get("cluster-mode"))) ;
+        RunningJob runningJob = decoder.run() ;
+        return runningJob.isSuccessful() ;
       }
     };
     return callableUnit ;
   }
+  
+  public String toString() { return getName() ; }
 }
