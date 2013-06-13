@@ -1,6 +1,14 @@
 package org.saarus.knime.mahout.lr.predictor;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.InvalidSettingsException;
@@ -8,6 +16,9 @@ import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
+import org.saarus.knime.mahout.lr.predictor.LRPredictorConfigs.MahoutConfig;
+import org.saarus.knime.uicomp.JInfoDialog;
+import org.saarus.service.util.JSONSerializer;
 
 /**
  * @author Tuan Nguyen
@@ -16,17 +27,91 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
   final static public int WIDTH  = 750 ;
   final static public int HEIGHT = 500 ;
   
+  private LRPredictorPanel predictorPanel ;
+  
   protected LRPredictorNodeDialog() {
     getPanel().setPreferredSize(new Dimension(WIDTH, HEIGHT)) ;
-
-    addTab("Mahout Logistic Regression Predictor", new LRPredictorJPanel());
+    predictorPanel = new LRPredictorPanel() ;
+    
+    JPanel panel = new JPanel(new BorderLayout()) ;
+    panel.add(predictorPanel, BorderLayout.CENTER) ;
+    panel.add(createToolBox(), BorderLayout.SOUTH) ;
+    
+    addTab("Logistic Regression Predictor", panel);
   }
 
+  private JPanel createToolBox() {
+    JPanel panel = new JPanel(new FlowLayout()) ;
+    panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Tools"));
+    
+    JButton saarusWorkFlow = new JButton("Saarus Work Flow");
+    saarusWorkFlow.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        MahoutConfig config = new MahoutConfig() ;
+        config.name = "Donut Predict";
+        config.description = "Donut Test Data";
+        config.input = "data/donutmr" ; 
+        config.output = "working/output" ;
+        config.model = "dfs:/tmp/donut.model" ;
+        config.colHeaders = "x,y,shape,color,xx,xy,yy,c,a,b" ;
+        config.auc = true ;
+        config.confusion = true ;
+        LRPredictorConfigs configs = new LRPredictorConfigs() ;
+        configs.mahoutConfig = config ;
+        predictorPanel.init(configs) ;
+      }
+    });
+    panel.add(saarusWorkFlow) ;
+    
+    JButton donut = new JButton("Donut");
+    donut.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        MahoutConfig config = new MahoutConfig() ;
+        config.name = "Donut Predict";
+        config.description = "Donut Test Data";
+        config.input = "data/donutmr" ; 
+        config.output = "working/output" ;
+        config.model = "dfs:/tmp/donut.model" ;
+        config.colHeaders = "x,y,shape,color,xx,xy,yy,c,a,b" ;
+        config.auc = true ;
+        config.confusion = true ;
+        LRPredictorConfigs configs = new LRPredictorConfigs() ;
+        configs.mahoutConfig = config ;
+        predictorPanel.init(configs) ;
+      }
+    });
+    panel.add(donut) ;
+    
+    JButton viewScript = new JButton("View Script");
+    viewScript.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        JInfoDialog dialog = new JInfoDialog() ;
+        try {
+          String json = JSONSerializer.JSON_SERIALIZER.toString(getLRPredictorConfigs().getGeneratedTask()) ;
+          dialog.setInfo(json) ;
+        } catch(Exception ex) {
+          ex.printStackTrace() ;
+        }
+        dialog.setVisible(true) ;
+      }
+    });
+    panel.add(viewScript) ;
+    
+    return panel ;
+  }
+
+  
+  public LRPredictorConfigs getLRPredictorConfigs() {
+    LRPredictorConfigs configs = new LRPredictorConfigs() ;
+    configs.mahoutConfig = predictorPanel.getMahoutConfig() ;
+    return configs ;
+  }
+  
   protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {
+    System.out.println("dialog load settings from " );
     try {
-      LRPredictorSettings statSettings = new LRPredictorSettings(settings) ;
-      System.out.println("dialog load settings from " );
-      System.out.println(statSettings);
+      LRPredictorConfigs configs = new LRPredictorConfigs(settings) ;
+      predictorPanel.init(configs) ;
     } catch (InvalidSettingsException e) {
       e.printStackTrace();
     }
@@ -35,10 +120,8 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
   @Override
   protected void saveSettingsTo(NodeSettingsWO settings) throws InvalidSettingsException {
     System.out.println("dialog saveSettingsTo..................");
-    LRPredictorSettings statSettings = new LRPredictorSettings() ;
-    String name = "table " + Math.random() ;
-    statSettings.add(name, "desc", "path") ;
-    statSettings.saveSettings(settings) ;
+    LRPredictorConfigs configs = getLRPredictorConfigs() ;
+    configs.saveSettings(settings) ;
     System.out.println("dialog saveSettingsTo.................. done");
   }
   

@@ -103,6 +103,12 @@ public class LRLearnerNodeDialog extends NodeDialogPane {
     
     return panel ;
   }
+
+  public LRLearnerConfigs getLRLearnerConfigs() {
+    LRLearnerConfigs configs = new LRLearnerConfigs() ;
+    configs.mahoutConfig = learnerPanel.getMahoutConfig() ;
+    return configs ;
+  }
   
   protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {
     System.out.println("dialog load settings from " );
@@ -114,11 +120,6 @@ public class LRLearnerNodeDialog extends NodeDialogPane {
     }
   }
 
-  public LRLearnerConfigs getLRLearnerConfigs() {
-    LRLearnerConfigs configs = new LRLearnerConfigs() ;
-    configs.mahoutConfig = learnerPanel.getMahoutConfig() ;
-    return configs ;
-  }
   @Override
   protected void saveSettingsTo(NodeSettingsWO settings) throws InvalidSettingsException {
     System.out.println("dialog saveSettingsTo..................");
