@@ -7,11 +7,9 @@ import java.util.Iterator;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
-import org.knime.core.data.DataRow;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.RowKey;
 import org.knime.core.data.def.DefaultRow;
-import org.knime.core.data.def.DoubleCell;
 import org.knime.core.data.def.StringCell;
 import org.knime.core.node.BufferedDataContainer;
 import org.knime.core.node.BufferedDataTable;
@@ -24,20 +22,14 @@ import org.knime.core.node.NodeModel;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.saarus.client.ClientContext;
-import org.saarus.client.HiveClient;
 import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
-import org.saarus.knime.data.hive.QueryConfigs;
-import org.saarus.knime.data.hive.QueryConfigs.QueryConfig;
 import org.saarus.knime.data.stat.StatisticConfigs.StatisticConfig;
 import org.saarus.service.hive.QueryResult;
-import org.saarus.service.hive.TableMetadata;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
 import org.saarus.service.task.TaskUnitResult;
-import org.saarus.service.util.JSONSerializer;
 /**
- * This is the model implementation of HadoopNode. Hadoop plugin for Knime
  * @author Tuan Nguyen
  */
 public class StatisticNodeModel extends NodeModel {
@@ -46,7 +38,7 @@ public class StatisticNodeModel extends NodeModel {
   private StatisticConfigs currentConfigs = new StatisticConfigs();
   
   protected StatisticNodeModel() {
-    super(0, 1);
+    super(1, 1);
   }
 
   @Override
@@ -83,7 +75,7 @@ public class StatisticNodeModel extends NodeModel {
       while(i.hasNext()) {
         StatisticConfig config = i.next() ;
         TaskUnitResult<QueryResult> unitResult = 
-            (TaskUnitResult<QueryResult>)taskResult.getTaskUnitResult(config.getTaskUnitId()) ;
+          (TaskUnitResult<QueryResult>)taskResult.getTaskUnitResult(config.getTaskUnitId()) ;
         QueryResult qresult = unitResult.getResult() ;
         String[] column = qresult.getColumn() ;
         Object[][] data = qresult.getData() ;

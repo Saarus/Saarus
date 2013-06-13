@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -20,9 +21,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
+import org.saarus.knime.mahout.lr.learner.LRLearnerConfigs.MahoutConfig;
 import org.saarus.knime.uicomp.SpringUtilities;
 
-public class LRLearnerJPanel extends JPanel {
+public class LRLearnerPanel extends JPanel {
   final static int MAX_WIDTH = LRLearnerNodeDialog.WIDTH ;
 
   private JTextField nameInput = new JTextField();
@@ -35,24 +37,34 @@ public class LRLearnerJPanel extends JPanel {
   private JTextField categories = new JTextField("2"); //  --categories 2
   //--predictors  x, y, xx, xy, yy, a, b, c
   private JTextField predictors = new JTextField("x, y, xx, xy, yy, a, b, c") ; 
-  private JTextField types = new JTextField("n, n") ; //--types n, n
-  private JComboBox<String> inputType = new JComboBox<String>(); //input type csv , sql table..
   private JTextField input = new JTextField("/path/to/donut.csv"); //--input donut.csv 
   private JComboBox<String> target = new JComboBox<String>() ; //--target color
   private JTextField output = new JTextField() ;// --output donut.model
  
-
-  public LRLearnerJPanel() {
+  public LRLearnerPanel() {
     setLayout(new BorderLayout()) ;
-    add(createInputBox(),       BorderLayout.NORTH);
+    target.setEditable(true) ;
+    add(createInputBox(), BorderLayout.CENTER);
   }
 
-  private JPanel createInputBox() {
-    inputType = new JComboBox<String>();
-    inputType.setEditable(true);
-    inputType.setToolTipText("Select a type");
-    inputType.addItemListener(new SelectTableListener());
+  public void init(LRLearnerConfigs configs) {
+    MahoutConfig config = configs.mahoutConfig ;
+    nameInput.setText(config.name);
+    descInput.setText(config.description);
     
+    passes.setText(config.passes) ; 
+    rate.setText(config.rate) ;  
+    lambda.setText(config.lambda) ; 
+    features.setText(config.features) ;
+    categories.setText(config.categories); 
+    predictors.setText(config.predictors); 
+    input.setText(config.input) ; 
+    target.setModel(new DefaultComboBoxModel<String>(new String[] {config.target})) ;
+    target.setSelectedItem(config.target) ; 
+    output.setText(config.output)  ;// --output donut.model
+  }
+  
+  private JPanel createInputBox() {
     predictors.addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
         if(e.getClickCount() > 1) {
@@ -73,21 +85,34 @@ public class LRLearnerJPanel extends JPanel {
     addInput(panel, "Features", features) ;
     addInput(panel, "Categories", categories) ;
     addInput(panel, "Predictors", predictors) ;
-    addInput(panel, "Types", types) ;
-    addInput(panel, "Input Type", inputType) ;
     addInput(panel, "Input Location", input) ;
     addInput(panel, "Target", target) ;
     addInput(panel, "Output", output) ;
-    
-    
-    SpringUtilities.makeCompactGrid(panel, /*rows, cols*/13, 2,/*initX, initY*/ 6, 6, 
-                                    /*xPad, yPad*/6, 6);       
+    SpringUtilities.makeCompactGrid(panel, /*rows, cols*/11, 2,/*initX, initY*/ 6, 6, 
+                                    /*xPad, yPad*/ 6, 6);       
     return panel ;
   }
 
   private void addInput(JPanel panel, String label, JComponent comp) {
     panel.add(new JLabel(label)) ;
     panel.add(comp) ;
+  }
+  
+  public MahoutConfig getMahoutConfig() {
+    MahoutConfig config = new MahoutConfig() ;
+    config.name = nameInput.getText() ;
+    config.description = descInput.getText() ;
+
+    config.passes = passes.getText() ; 
+    config.rate = rate.getText() ;  
+    config.lambda = lambda.getText() ; 
+    config.features = features.getText() ;
+    config.categories = categories.getText(); 
+    config.predictors = predictors.getText(); 
+    config.input = input.getText() ; 
+    config.target = (String) target.getSelectedItem() ; 
+    config.output = output.getText()  ;// 
+    return config ;
   }
   
   static public class SelectTableListener implements ItemListener {
