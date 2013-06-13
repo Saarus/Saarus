@@ -39,6 +39,7 @@ public class CallableTask implements Callable<TaskResult> {
               CallableTaskUnit.createCallableTaskUnit(unit, String.format(errMesg, task.getTaskHandler(), unit.getName()));
         }
       }
+      System.out.println("Execute task unit " + unit.getName() + " with handler " + handler + " and callable unit " + callableTaskUnit);
       TaskUnitResult<?> unitResult = callableTaskUnit.call() ;
       tresult.add(unitResult) ;
     }

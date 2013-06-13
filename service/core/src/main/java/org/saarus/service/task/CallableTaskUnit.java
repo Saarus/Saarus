@@ -21,12 +21,13 @@ abstract public class CallableTaskUnit<T> implements Callable<TaskUnitResult<T>>
     try {
       T result = doCall() ;
       taskUnitResult.setResult(result) ;
-    } catch (Exception e) {
+    } catch(Throwable e) {
       System.out.println("Task: " + taskUnit.getTaskLine());
       e.printStackTrace();
       taskUnitResult.add(TaskLog.LogLevel.ERROR, e.getMessage()) ;
+    } finally {
+      taskUnitResult.setFinishTime(System.currentTimeMillis()) ;
     }
-    taskUnitResult.setFinishTime(System.currentTimeMillis()) ;
     return taskUnitResult ;
   }
   
