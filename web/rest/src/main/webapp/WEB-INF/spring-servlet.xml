@@ -47,12 +47,17 @@
     <property name="hiveService" ref="HiveService" />
   </bean>
 
+  <bean id="LogisticRegressionTaskHandler" class="org.saarus.mahout.classifier.sgd.LogisticRegressionTaskHandler">
+    <property name="hiveService" ref="HiveService" />
+  </bean>
+
   <bean id="DummyTaskUnitHandler" class="org.saarus.service.task.DummyTaskUnitHandler"/>
 
   <bean id="TaskManager" class="org.saarus.service.task.TaskManager">
     <property name="handlers">
       <list>
         <ref bean="HiveTaskHandler"/>
+        <ref bean="LogisticRegressionTaskHandler"/>
         <ref bean="DummyTaskUnitHandler"/>
       </list>
     </property>

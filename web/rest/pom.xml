@@ -52,14 +52,7 @@
 
     <dependency>
       <groupId>org.saarus</groupId>
-      <artifactId>saarus.service.core</artifactId>
-      <version>${org.saarus.version}</version>
-			<scope>compile</scope>
-    </dependency> 
-
-    <dependency>
-      <groupId>org.saarus</groupId>
-      <artifactId>saarus.service.hive</artifactId>
+      <artifactId>saarus.service.mahout</artifactId>
       <version>${org.saarus.version}</version>
 			<scope>compile</scope>
     </dependency> 
@@ -75,6 +68,13 @@
 
 	<build>
 		<plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+        </configuration>
+      </plugin>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
@@ -93,15 +93,6 @@
               <maxIdleTime>60000</maxIdleTime>
             </connector>
           </connectors>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
         </configuration>
       </plugin>
     </plugins>
