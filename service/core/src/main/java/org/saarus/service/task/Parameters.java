@@ -3,6 +3,12 @@ package org.saarus.service.task;
 import java.util.HashMap;
 
 public class Parameters extends HashMap<String, String> {
+  public String getString(String name) {
+    String val = get(name) ;
+    if(val != null) return val ;
+    return null ;
+  }
+  
   public String getString(String name, String dvalue) {
     String val = get(name) ;
     if(val != null) return val ;

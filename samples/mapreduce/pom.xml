@@ -4,13 +4,13 @@
 
   <groupId>org.apache.hadoop</groupId>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>sample</artifactId>
+  <artifactId>hadoop.sample-mapreduce</artifactId>
   <version>1.0</version>
   <name>Hadoop: Sample</name>
   <description>Hadoop Sample</description>
 
   <properties>
-    <hadoop.version>2.0.0-cdh4.0.1</hadoop.version>
+    <hadoop.version>2.0.0-cdh4.3.0</hadoop.version>
   </properties>
 
   <dependencies>
@@ -27,6 +27,7 @@
       <version>${hadoop.version}</version>
     </dependency>
     -->
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>

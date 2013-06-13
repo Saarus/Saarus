@@ -37,6 +37,8 @@ abstract public class FSResource {
   abstract public InputStream getInputStream() throws Exception ;
 
   abstract public void write(InputStream is) throws Exception ;
+  
+  abstract public void write(byte[] buf) throws Exception ;
 
   abstract public boolean exists() throws Exception ;
   
@@ -80,7 +82,13 @@ abstract public class FSResource {
       write(out, is) ;
       out.close() ;
     }
-
+    
+    public void write(byte[] buf) throws Exception {
+      OutputStream out = new FileOutputStream(getPath()) ;
+      out.write(buf) ;
+      out.close() ;
+    }
+    
     public boolean exists() throws Exception {
       File file = new File(getPath()) ;
       return file.exists() ;
@@ -120,6 +128,14 @@ abstract public class FSResource {
       out.close() ;
     }
 
+    public void write(byte[] buf) throws Exception {
+      Path src = new Path(getPath()) ;
+      FileSystem fs = HDFSUtil.getFileSystem() ;
+      FSDataOutputStream out = fs.create(src, true) ;
+      out.write(buf) ;
+      out.close() ;
+    }
+    
     public boolean exists() throws Exception {
       FileSystem fs = HDFSUtil.getFileSystem() ;
       return fs.exists(new Path(getPath())) ;
