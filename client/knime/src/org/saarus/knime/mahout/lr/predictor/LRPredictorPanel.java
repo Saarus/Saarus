@@ -7,6 +7,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
@@ -19,7 +21,7 @@ public class LRPredictorPanel extends JPanel {
   private JTextField input = new JTextField("/path/to/donut.csv");  
   private JTextField output = new JTextField() ;
   private JTextField model = new JTextField("/path/to/file.model");
-  private JTextField colHeaders = new JTextField("colum1,column2,column3...");
+  private JTextArea colHeaders = new JTextArea("colum1,column2,column3...");
   private JCheckBox  auc = new JCheckBox() ;
   private JCheckBox  confusion = new JCheckBox() ;
 
@@ -44,12 +46,16 @@ public class LRPredictorPanel extends JPanel {
   private JPanel createInputBox() {
     JPanel panel = new JPanel(new SpringLayout()) ;
     panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Parameters"));
+    colHeaders.setRows(3) ;
+    colHeaders.setLineWrap(true);
+    colHeaders.setWrapStyleWord(true);
+    JScrollPane scrollText = new JScrollPane(colHeaders);
     addInput(panel, "Name", nameInput) ;
     addInput(panel, "Description", descInput) ;
     addInput(panel, "Input", input) ;
     addInput(panel, "Output", output) ;
     addInput(panel, "Model", model) ;
-    addInput(panel, "Column Headers", colHeaders) ;
+    addInput(panel, "Column Headers", scrollText) ;
     addInput(panel, "Auc", auc) ;
     addInput(panel, "Confusion", confusion) ;
     

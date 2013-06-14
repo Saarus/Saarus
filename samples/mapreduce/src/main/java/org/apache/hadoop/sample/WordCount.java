@@ -49,8 +49,18 @@ public class WordCount {
   }
 
   public static void run(String inDir, String outDir, String jar, boolean clusterMode) throws Exception {
-    Configuration conf = new Configuration(true) ;
+    Configuration conf = new Configuration(false) ;
+    System.out.println(conf.getResource("core-default.xml"));
+    conf.addResource("core-default.xml") ;
+    System.out.println(conf.getResource("hdfs-default.xml"));
+    conf.addResource("hdfs-default.xml") ;
+    System.out.println(conf.getResource("mapred-default.xml"));
+    conf.addResource("mapred-default.xml") ;
+    System.out.println(conf.getResource("yarn-default.xml"));
+    conf.addResource("yarn-default.xml") ;
+    
     if(clusterMode) {
+      System.out.println("load override");
       conf.addResource("cluster/core-site.xml") ;
       conf.addResource("cluster/hdfs-site.xml") ;
       conf.addResource("cluster/mapred-site.xml") ;
@@ -60,7 +70,10 @@ public class WordCount {
     fs.delete(new Path(outDir), true) ;
 
     System.out.println("Properties = " + conf.size()) ;
-    System.out.println(conf.get("yarn.application.classpath"));
+    System.out.println("yarn.application.classpath =" + conf.get("yarn.application.classpath"));
+    System.out.println("mapred.job.tracker =  " + conf.get("mapred.job.tracker")) ;
+    System.out.println("mapreduce.jobtracker.address =  " + conf.get("mapreduce.jobtracker.address")) ;
+    
     
     JobConf jconf = new JobConf(conf, WordCount.class);
     jconf.setJobName("wordcount");
@@ -84,10 +97,10 @@ public class WordCount {
   public static void main(String[] args) throws Exception {
     if(args == null || args.length == 0) {
       args = new String[] {
-        "src/main/resources/cluster",
-        "target/output"
+        "/tmp/wordcount/conf",
+        "/tmp/wordcount/output"
       };
     }
-    run(args[0], args[1], null, false);
+    run(args[0], args[1], null, true);
   }
 }

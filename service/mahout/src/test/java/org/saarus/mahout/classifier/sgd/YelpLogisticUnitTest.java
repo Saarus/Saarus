@@ -8,22 +8,24 @@ import org.saarus.service.hive.HiveService;
 public class YelpLogisticUnitTest {
   @Test
   public void test() throws Exception {
+    String modelFile = "dfs:/tmp/review-features.model" ;
     String[] trainArgs = {
         "--passes", "50", 
         "--rate", "50", "--lambda",  "0.001",
-        "--input",  "hive://features",//"src/test/resources/review-training.csv",
+        "--input",  "src/test/resources/review-training.csv",//"src/test/resources/review-training.csv", hive://features
         "--features", "20", 
-        "--output", "target/review.model",
+        "--output", modelFile,
         "--target", "vote_useful", /*"vote_funny",*//*"n:vote_useful",*//*"vote_cool",*/
         "--categories", "2",
-        "--predictors", "n:stars|n:business_review_count",
+        "--noBias",
+        "--predictors", "n:stars | n:business_review_count",
     };
     HiveService hservice  = new HiveService("jdbc:hive2://198.154.60.252:10000", "hive", "");
     TrainLogistic tl = new TrainLogistic().setHiveService(hservice) ;
     tl.train(trainArgs, new PrintWriter(System.out, true)) ;
 
     String[] predictArgs = {
-        "--model", "target/review.model", "--scores", "--auc", "--confusion",
+        "--model", modelFile, "--scores", "--auc", "--confusion",
         "--input", "src/test/resources/review-test.csv"
     } ;
     new RunLogistic().predict(predictArgs, new PrintWriter(System.out, true)) ;

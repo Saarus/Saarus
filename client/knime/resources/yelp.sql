@@ -31,6 +31,7 @@ CREATE TABLE business(
     full_address       STRING,
     city               STRING,
     state              STRING,
+    open               INT,
     longitude          DOUBLE,
     latitude           DOUBLE,
     categories         STRING,
@@ -41,12 +42,13 @@ CREATE TABLE business(
   LOCATION '/user/hive/yelpdb/warehouse/business';
 
 INSERT OVERWRITE TABLE business   
-  SELECT b.business_id, b.name, REGEXP_REPLACE(b.full_address,"\n", "\\n"), b.city, b.state,
-         b.longitude, b.latitude, b.categories, b.review_count, b.stars, b.neighborhoods
+  SELECT b.business_id, b.name, REGEXP_REPLACE(b.full_address,"\n", "\\n"), b.city, b.state, 
+         IF(b.open = 'true', 1, 0), b.longitude, b.latitude, b.categories, 
+         b.review_count, b.stars, b.neighborhoods
   FROM business_json 
-  LATERAL VIEW json_tuple(business_json.json, 'business_id', 'name', 'full_address', 'city', 'state',
+  LATERAL VIEW json_tuple(business_json.json, 'business_id', 'name', 'full_address', 'city', 'state', 'open',
                          'longitude', 'latitude', 'categories', 'review_count', 'stars', 'neighborhoods')
-    b AS business_id, name, full_address, city, state, longitude, latitude, categories, 
+    b AS business_id, name, full_address, city, state, open, longitude, latitude, categories, 
          review_count, stars, neighborhoods ;
 
 -- checkin

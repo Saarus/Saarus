@@ -12,12 +12,25 @@ public class HDFSUtil {
   private static FileSystem fileSystem ;
 	
   static public Configuration getDaultConfiguration() {
-    Configuration conf = new Configuration(true) ;
+    Configuration conf = new Configuration(false) ;
+    conf.addResource("core-default.xml") ;
+    conf.addResource("hdfs-default.xml") ;
+    conf.addResource("mapred-default.xml") ;
+    conf.addResource("yarn-default.xml") ;
     return conf ;
   }
   
   static public Configuration getConfiguration() {
-    Configuration conf = new Configuration(true) ;
+    Configuration conf = new Configuration(false) ;
+    //System.out.println(conf.getResource("core-default.xml"));
+    conf.addResource("core-default.xml") ;
+    //System.out.println(conf.getResource("hdfs-default.xml"));
+    conf.addResource("hdfs-default.xml") ;
+    //System.out.println(conf.getResource("mapred-default.xml"));
+    conf.addResource("mapred-default.xml") ;
+    //System.out.println(conf.getResource("yarn-default.xml"));
+    conf.addResource("yarn-default.xml") ;
+    
     conf.addResource("hadoopconf/dev/core-site.xml") ;
     conf.addResource("hadoopconf/dev/hdfs-site.xml") ;
     conf.addResource("hadoopconf/dev/mapred-site.xml") ;

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -142,15 +143,13 @@ public class MRLogisticRegressionDecoder {
     Configuration conf = null ;
     if(clusterMode) conf = HDFSUtil.getConfiguration() ;
     else conf = HDFSUtil.getDaultConfiguration() ;
-
+    
     FileSystem fs = FileSystem.get(conf) ;
     fs.delete(new Path(outputUri), true) ;
-
-    System.out.println("Properties = " + conf.size()) ;
-    
+   
     JobConf jconf = new JobConf(conf, MRLogisticRegressionDecoder.class);
     jconf.setJobName(MRLogisticRegressionDecoder.class.getSimpleName());
-    jconf.setUser("hadoop") ;
+   // jconf.setUser("hadoop") ;
     jconf.setStrings("column.headers", this.columnHeaders) ;
     jconf.set("model.file", this.modelUri) ;
     
@@ -169,17 +168,6 @@ public class MRLogisticRegressionDecoder {
 
     FileInputFormat.setInputPaths(jconf, new Path(inputUri));
     FileOutputFormat.setOutputPath(jconf, new Path(outputUri));
-    return JobClient.runJob(jconf);
-  }
-
-  public static void main(String[] args) throws Exception {
-    MRLogisticRegressionDecoder decoder = new MRLogisticRegressionDecoder() ;
-    decoder.
-      setInputUri("src/test/resources/donutmr").
-      setOutputUri("target/output").
-      setModelUri("dfs:/tmp/donut.model").
-      setColumnHeaders("x,y,shape,color,xx,xy,yy,c,a,b".split(",")).
-      setClusterMode(false) ;
-    decoder.run() ;
+    return JobClient.runJob(jconf) ;
   }
 }

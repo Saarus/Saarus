@@ -35,7 +35,7 @@ public class LRLearnerNodeModel extends NodeModel {
   private LRLearnerConfigs currentConfigs = new LRLearnerConfigs();
   
   protected LRLearnerNodeModel() {
-    super(0, 1);
+    super(1, 1);
   }
 
   @Override

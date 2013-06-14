@@ -7,7 +7,6 @@ import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.RowKey;
-import org.knime.core.data.def.BooleanCell;
 import org.knime.core.data.def.DefaultRow;
 import org.knime.core.data.def.StringCell;
 import org.knime.core.node.BufferedDataContainer;
@@ -36,7 +35,7 @@ public class LRPredictorNodeModel extends NodeModel {
   private LRPredictorConfigs currentConfigs = new LRPredictorConfigs();
   
   protected LRPredictorNodeModel() {
-    super(0, 1);
+    super(1, 1);
   }
 
   @Override

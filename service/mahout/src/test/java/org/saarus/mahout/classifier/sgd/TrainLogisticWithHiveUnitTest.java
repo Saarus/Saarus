@@ -35,7 +35,7 @@ public class TrainLogisticWithHiveUnitTest extends MahoutTestCase {
     assertTrue(trainOut.contains("a 0."));
     assertTrue(trainOut.contains("b -1."));
     assertTrue(trainOut.contains("c -25."));
-
+    System.out.println("-----------------------------------------------");
     String[] predictArgs = new String[]{
         "--input", DONUT_TEST_CSV,
         "--model", outputFile,

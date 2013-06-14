@@ -65,11 +65,13 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
       public Boolean doCall() throws Exception {
         Parameters params = taskUnit.getParameters() ;
         MRLogisticRegressionDecoder decoder = new MRLogisticRegressionDecoder() ;
+        String[] headers = params.getString("col-header").split(",") ;
+        for(int i = 0; i < headers.length; i++) headers[i] = headers[i].trim() ;
         decoder.
           setInputUri(params.getString("input")).
           setOutputUri(params.getString("output")).
           setModelUri(params.getString("model")).
-          setColumnHeaders(params.getString("col-header").split(",")).
+          setColumnHeaders(headers).
           setClusterMode("true".equals(params.get("cluster-mode"))) ;
         RunningJob runningJob = decoder.run() ;
         return runningJob.isSuccessful() ;

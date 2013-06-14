@@ -48,12 +48,14 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
     saarusWorkFlow.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         MahoutConfig config = new MahoutConfig() ;
-        config.name = "Donut Predict";
-        config.description = "Donut Test Data";
-        config.input = "data/donutmr" ; 
-        config.output = "working/output" ;
-        config.model = "dfs:/tmp/donut.model" ;
-        config.colHeaders = "x,y,shape,color,xx,xy,yy,c,a,b" ;
+        config.name = "Yelp Features Predict";
+        config.description = "Yelp Features Predict";
+        config.input = "data/yelptest" ; 
+        config.output = "working/yelp/output" ;
+        config.model = "dfs:/tmp/yelp-features.model" ;
+        config.colHeaders =  "stars, text, vote_funny, vote_useful, vote_cool, "+
+                             "business_id, business_city, business_state, business_open, business_review_count, " +
+                             "business_stars, user_review_count, user_average_stars" ;
         config.auc = true ;
         config.confusion = true ;
         LRPredictorConfigs configs = new LRPredictorConfigs() ;
@@ -70,7 +72,7 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
         config.name = "Donut Predict";
         config.description = "Donut Test Data";
         config.input = "data/donutmr" ; 
-        config.output = "working/output" ;
+        config.output = "working/donut/output" ;
         config.model = "dfs:/tmp/donut.model" ;
         config.colHeaders = "x,y,shape,color,xx,xy,yy,c,a,b" ;
         config.auc = true ;
