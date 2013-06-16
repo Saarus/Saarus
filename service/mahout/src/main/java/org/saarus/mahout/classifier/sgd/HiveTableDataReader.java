@@ -39,7 +39,7 @@ public class HiveTableDataReader implements DataReader {
 
   public void reset() throws Exception {
     StringBuilder b = new StringBuilder() ;
-    b.append("SELECT ") ;
+    b.append("SELECT * ") ;
     if(field == null) {
       b.append(" * ") ;
     } else {

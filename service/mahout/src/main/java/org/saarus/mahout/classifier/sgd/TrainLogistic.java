@@ -51,12 +51,12 @@ public final class TrainLogistic {
     RecordFactoryImpl csv = lmp.getCsvRecordFactory();
     OnlineLogisticRegression lr = lmp.createRegression();
     DataReader dataReader = argParser.getDataReader() ;
+    csv.configVariableNames(dataReader.getHeaderNames());
     
     for (int pass = 0; pass < argParser.passes; pass++) {
       dataReader.reset() ;
       try {
         // read variable names
-        csv.configVariableNames(dataReader.getHeaderNames());
         List<String> rowData = null ;
         while ((rowData = dataReader.nextRow()) != null) {
           // for each new line, get target and predictors

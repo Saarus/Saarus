@@ -248,7 +248,7 @@ public class RecordFactoryImpl implements RecordFactory {
       }
       predictorEncoders.get(predictor).addToVector(value, featureVector);
     }
-    return targetValue;
+    return targetValue ;
   }
 
   /***

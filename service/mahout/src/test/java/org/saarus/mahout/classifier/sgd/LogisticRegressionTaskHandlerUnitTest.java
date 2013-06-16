@@ -50,7 +50,7 @@ public class LogisticRegressionTaskHandlerUnitTest {
   }
   
   void testYelp() throws Exception {
-    String TRAIN_FILE = "src/test/resources/review-training.csv" ; //"src/test/resources/review-training" , hive://features
+    String TRAIN_FILE = "hive://features" ; //"src/test/resources/review-training" , hive://features
     String MODEL_FILE = "dfs:/tmp/yelp-features.model" ;
     
     HiveService hservice  = new HiveService("jdbc:hive2://198.154.60.252:10000", "hive", "");
@@ -67,9 +67,9 @@ public class LogisticRegressionTaskHandlerUnitTest {
     params.setString("features", "20") ;
     params.setString("passes", "50") ;
     params.setString("rate", "50") ;
-    TaskUnitResult<String> tresult = 
-        (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
-    System.out.println(tresult.getResult());
+//    TaskUnitResult<String> tresult = 
+//        (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
+//    System.out.println(tresult.getResult());
     
     System.out.println("-------------------------------------------------------------------------");
     
@@ -83,7 +83,7 @@ public class LogisticRegressionTaskHandlerUnitTest {
                                    "business_id, business_city, business_state, business_open, business_review_count, " +
                                    "business_stars, user_review_count, user_average_stars") ;
     params.setString("cluster-mode", "false") ;
-    tresult = (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
-    System.out.println(tresult.getResult());
+    TaskUnitResult<String>  predictResult = (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
+    System.out.println(predictResult.getResult());
   }
 }

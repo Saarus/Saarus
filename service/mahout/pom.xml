@@ -78,6 +78,5 @@
       <artifactId>saarus.service.hive</artifactId>
       <version>${org.saarus.version}</version>
     </dependency> 
-
   </dependencies>
 </project>

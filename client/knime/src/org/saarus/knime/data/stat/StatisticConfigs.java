@@ -80,7 +80,7 @@ public class StatisticConfigs {
     
     TaskUnit addJar = new TaskUnit() ;
     addJar.setName("execute") ;
-    addJar.setTaskLine("ADD jar /home/hadoop/yelp/lib/saarus.service.hive-1.0.jar");
+    addJar.setTaskLine("ADD jar /home/saarus/yelp/lib/saarus.service.hive-1.0.jar");
     units.add(addJar) ;
     
     TaskUnit registerFieldStat = new TaskUnit() ;

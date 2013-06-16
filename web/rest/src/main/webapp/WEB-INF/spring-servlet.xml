@@ -38,7 +38,7 @@
   </bean>
 
   <bean id="HiveService" class="org.saarus.service.hive.HiveService" init-method="onInit">
-    <property name="url" value="jdbc:hive2://198.154.60.252:10000" />
+    <property name="url" value="jdbc:hive2://hadoop1.saarus.org:10000" />
     <property name="username" value="hive" />
     <property name="password" value="" />
   </bean>

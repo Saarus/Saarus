@@ -3,6 +3,8 @@ package org.saarus.mahout.classifier.sgd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.saarus.service.util.StringUtil;
+
 public class CacheDataReader implements DataReader {
   private List<String> headerNames ;
   private List<List<String>> rowDatas ; 
@@ -16,6 +18,7 @@ public class CacheDataReader implements DataReader {
     long start = System.currentTimeMillis() ;
     System.out.println("Start load cache data") ;
     int count = 0 ;
+    System.out.println("Headers = " + StringUtil.joinStringCollection(headerNames, ", ")) ; 
     while((rowData = reader.nextRow()) != null) {
       rowDatas.add(rowData) ;
       count++ ;

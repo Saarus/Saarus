@@ -10,12 +10,15 @@ public class HiveTableReaderUnitTest {
   public void test() throws Exception {
     HiveService hservice  = new HiveService("jdbc:hive2://198.154.60.252:10000", "hive", "");
     DataReader reader = 
-        new HiveTableDataReader(hservice, "donut_train", new String[] {"x", "y", "a", "b", "c", "color"}) ;
+        new HiveTableDataReader(hservice, "features", new String[] {"stars", "business_review_count", "vote_useful"}) ;
     reader.reset() ;
     System.out.println(reader.getHeaderNames());
     List<String> data = null ;
-    while((data = reader.nextRow()) != null) {
+    int count = 0 ;
+    System.out.println(reader.getHeaderNames());
+    while(count < 100 && (data = reader.nextRow()) != null) {
       System.out.println(data) ;
+      count++ ;
     }
   }
 }

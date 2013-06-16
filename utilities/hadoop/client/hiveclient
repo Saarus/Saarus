@@ -1,0 +1,3 @@
+#!/bin/bash
+
+beeline -u jdbc:hive2://hadoop1.saarus.org:10000

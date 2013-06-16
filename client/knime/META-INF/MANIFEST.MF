@@ -1,19 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Saarus extension for KNIME Workbench
+Bundle-Name: Knime
 Bundle-SymbolicName: saarus.client.knime;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: saarus.client.knime.jar,
  lib/commons-cli-1.2.jar,
  lib/jackson-core-asl-1.9.7.jar,
  lib/jackson-mapper-asl-1.9.7.jar,
  lib/jcl-over-slf4j-1.6.4.jar,
- lib/saarus.client.shell-1.0.jar,
- lib/saarus.service.core-1.0.jar,
- lib/saarus.service.hadoop-1.0.jar,
- lib/saarus.service.hive-1.0.jar,
- lib/saarus.service.mahout-1.0.jar,
- lib/saarus.service.mongodb-1.0.jar,
  lib/slf4j-api-1.6.4.jar,
  lib/slf4j-simple-1.6.4.jar,
  lib/spring-beans-3.2.3.RELEASE.jar,
@@ -21,9 +15,22 @@ Bundle-ClassPath: saarus.client.knime.jar,
  lib/spring-core-3.2.3.RELEASE.jar,
  lib/spring-expression-3.2.3.RELEASE.jar,
  lib/spring-web-3.2.3.RELEASE.jar,
- lib/spring-webmvc-3.2.3.RELEASE.jar
+ lib/spring-webmvc-3.2.3.RELEASE.jar,
+ lib/saarus.client.shell-1.0.jar,
+ lib/saarus.service.core-1.0.jar,
+ lib/saarus.service.hadoop-1.0.jar,
+ lib/saarus.service.hive-1.0.jar,
+ lib/saarus.service.mahout-1.0.jar,
+ lib/saarus.service.mongodb-1.0.jar
 Bundle-Activator: org.saarus.knime.SaarusKnimePlugin
-Bundle-Vendor: Tuan Nguyen
+Export-Package: org.saarus.knime,
+ org.saarus.knime.data.filereader,
+ org.saarus.knime.data.hive,
+ org.saarus.knime.data.in.json,
+ org.saarus.knime.data.stat,
+ org.saarus.knime.mahout.lr.learner,
+ org.saarus.knime.mahout.lr.predictor,
+ org.saarus.knime.uicomp
 Require-Bundle: org.knime.workbench.core,
  org.knime.base
-Export-Package: org.saarus.knime;uses:="org.saarus.client,org.eclipse.core.runtime,org.osgi.framework"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+HADOOP_CLIENT_HOME=/home/hadoop/hadoop
+HADOOP_CONF_DIR=$HADOOP_CLIENT_HOME/conf
+HADOOP_CLASSPATH=/usr/lib/hadoop/client/*
+
+hadoop $@

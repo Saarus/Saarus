@@ -28,8 +28,8 @@
         <include>org.uncommons.maths:uncommons-maths</include>
         <!--
         <include>org.apache.thrift:libfb303</include>
-        -->
         <include>org.apache.thrift:libthrift</include>
+        -->
 
 
         <include>org.springframework:spring-core</include>
