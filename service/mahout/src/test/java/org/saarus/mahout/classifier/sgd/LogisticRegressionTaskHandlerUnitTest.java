@@ -7,6 +7,7 @@ import org.saarus.service.task.TaskUnit;
 import org.saarus.service.task.TaskUnitResult;
 
 public class LogisticRegressionTaskHandlerUnitTest {
+  static String HIVE2_SERVER_URL = "jdbc:hive2://hadoop1.saarus.org:10000" ;
   @Test
   public void test() throws Exception {
     //testDonut() ;
@@ -17,7 +18,7 @@ public class LogisticRegressionTaskHandlerUnitTest {
     String TRAIN_FILE = "hive://donut_train" ; //"src/test/resources/donut.csv" 
     String MODEL_FILE = "dfs:/tmp/donut.model" ;
     
-    HiveService hservice  = new HiveService("jdbc:hive2://198.154.60.252:10000", "hive", "");
+    HiveService hservice  = new HiveService(HIVE2_SERVER_URL, "hive", "");
     LogisticRegressionTaskHandler handler  = new LogisticRegressionTaskHandler(hservice);
     
     TaskUnit tunit = new TaskUnit() ;
@@ -53,7 +54,7 @@ public class LogisticRegressionTaskHandlerUnitTest {
     String TRAIN_FILE = "hive://features" ; //"src/test/resources/review-training" , hive://features
     String MODEL_FILE = "dfs:/tmp/yelp-features.model" ;
     
-    HiveService hservice  = new HiveService("jdbc:hive2://198.154.60.252:10000", "hive", "");
+    HiveService hservice  = new HiveService(HIVE2_SERVER_URL, "hive", "");
     LogisticRegressionTaskHandler handler  = new LogisticRegressionTaskHandler(hservice);
     
     TaskUnit tunit = new TaskUnit() ;

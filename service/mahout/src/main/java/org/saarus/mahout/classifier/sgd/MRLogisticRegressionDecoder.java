@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map.Entry;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -143,6 +142,9 @@ public class MRLogisticRegressionDecoder {
     Configuration conf = null ;
     if(clusterMode) conf = HDFSUtil.getConfiguration() ;
     else conf = HDFSUtil.getDaultConfiguration() ;
+    String yarnClasspath = conf.get("yarn.application.classpath") ;
+    yarnClasspath = yarnClasspath + ",/opt/saarus/lib/*" ;
+    conf.set("yarn.application.classpath", yarnClasspath);
     
     FileSystem fs = FileSystem.get(conf) ;
     fs.delete(new Path(outputUri), true) ;
@@ -152,7 +154,6 @@ public class MRLogisticRegressionDecoder {
    // jconf.setUser("hadoop") ;
     jconf.setStrings("column.headers", this.columnHeaders) ;
     jconf.set("model.file", this.modelUri) ;
-    
     jconf.setMapperClass(Map.class);
     jconf.setMapOutputKeyClass(LongWritable.class) ;
     jconf.setMapOutputValueClass(Text.class) ;

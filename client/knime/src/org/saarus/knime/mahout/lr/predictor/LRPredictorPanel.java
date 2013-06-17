@@ -21,9 +21,10 @@ public class LRPredictorPanel extends JPanel {
   private JTextField input = new JTextField("/path/to/donut.csv");  
   private JTextField output = new JTextField() ;
   private JTextField model = new JTextField("/path/to/file.model");
-  private JTextArea colHeaders = new JTextArea("colum1,column2,column3...");
+  private JTextArea  colHeaders = new JTextArea("colum1,column2,column3...");
   private JCheckBox  auc = new JCheckBox() ;
   private JCheckBox  confusion = new JCheckBox() ;
+  private JCheckBox  clusterMode = new JCheckBox() ;
 
   public LRPredictorPanel() {
     setLayout(new BorderLayout()) ;
@@ -41,6 +42,7 @@ public class LRPredictorPanel extends JPanel {
     colHeaders.setText(config.colHeaders)  ;
     auc.setSelected(config.auc) ;
     confusion.setSelected(config.confusion) ;
+    clusterMode.setSelected(config.clusterMode) ;
   }
 
   private JPanel createInputBox() {
@@ -58,9 +60,9 @@ public class LRPredictorPanel extends JPanel {
     addInput(panel, "Column Headers", scrollText) ;
     addInput(panel, "Auc", auc) ;
     addInput(panel, "Confusion", confusion) ;
+    addInput(panel, "Cluster Mode", clusterMode) ;
     
-    
-    SpringUtilities.makeCompactGrid(panel, /*rows, cols*/8, 2,/*initX, initY*/ 6, 6, 
+    SpringUtilities.makeCompactGrid(panel, /*rows, cols*/9, 2,/*initX, initY*/ 6, 6, 
                                     /*xPad, yPad*/6, 6);       
     return panel ;
   }
@@ -76,6 +78,7 @@ public class LRPredictorPanel extends JPanel {
     config.colHeaders = colHeaders.getText() ;
     config.auc = auc.isSelected() ;
     config.confusion = confusion.isSelected() ;
+    config.clusterMode = clusterMode.isSelected() ;
     
     return config ;
   }

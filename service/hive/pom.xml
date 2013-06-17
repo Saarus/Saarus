@@ -8,7 +8,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>saarus.service.hive</artifactId>
-  <name>Saarus :: Service Mahout</name>
+  <name>Saarus :: Service Hive</name>
 
   <properties>
     <hive.version>0.10.0-cdh4.3.0</hive.version>

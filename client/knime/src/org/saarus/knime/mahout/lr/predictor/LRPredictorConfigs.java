@@ -34,6 +34,7 @@ public class LRPredictorConfigs {
     mahoutConfig.colHeaders = config.getString("colHeaders");  
     mahoutConfig.auc = config.getBoolean("auc");
     mahoutConfig.confusion = config.getBoolean("confusion");
+    mahoutConfig.clusterMode = config.getBoolean("clusterMode");
   }
   
   public void saveSettings(NodeSettingsWO settings) {
@@ -47,6 +48,7 @@ public class LRPredictorConfigs {
     config.addString("colHeaders", mahoutConfig.colHeaders)  ;
     config.addBoolean("auc", mahoutConfig.auc)  ;
     config.addBoolean("confusion", mahoutConfig.confusion)  ;
+    config.addBoolean("clusterMode", mahoutConfig.clusterMode)  ;
   }
   
   public void merge(LRPredictorConfigs other) {
@@ -80,6 +82,7 @@ public class LRPredictorConfigs {
     String colHeaders ;
     boolean auc ; 
     boolean confusion ; 
+    boolean clusterMode ;
     
     public TaskUnit[] getGeneratedTaskUnits() {
       TaskUnit taskUnit = new TaskUnit() ;
@@ -92,6 +95,7 @@ public class LRPredictorConfigs {
       params.setString("col-header", colHeaders) ;
       params.setString("auc", Boolean.toString(auc)) ;
       params.setString("confusion", Boolean.toString(confusion)) ;
+      params.setString("clusterMode", Boolean.toString(clusterMode)) ;
       return new TaskUnit[] { taskUnit } ;
     }
 

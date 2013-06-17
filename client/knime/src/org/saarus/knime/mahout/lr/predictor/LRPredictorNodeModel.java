@@ -35,7 +35,7 @@ public class LRPredictorNodeModel extends NodeModel {
   private LRPredictorConfigs currentConfigs = new LRPredictorConfigs();
   
   protected LRPredictorNodeModel() {
-    super(1, 1);
+    super(0, 1);
   }
 
   @Override

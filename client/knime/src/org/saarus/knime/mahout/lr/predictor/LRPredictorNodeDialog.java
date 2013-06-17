@@ -44,8 +44,31 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
     JPanel panel = new JPanel(new FlowLayout()) ;
     panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Tools"));
     
-    JButton saarusWorkFlow = new JButton("Saarus Work Flow");
-    saarusWorkFlow.addActionListener(new ActionListener() {
+    JButton saarusWorkFlowCluster = new JButton("Saarus Work Flow");
+    saarusWorkFlowCluster.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        MahoutConfig config = new MahoutConfig() ;
+        config.name = "Yelp Features Predict";
+        config.description = "Yelp Features Predict";
+        config.input = "/user/hive/yelpdb/test" ; 
+        config.output = "/tmp/yelp/working/output" ;
+        config.model = "dfs:/tmp/yelp-features.model" ;
+        config.colHeaders =  "stars, text, vote_funny, vote_useful, vote_cool, "+
+                             "business_id, business_city, business_state, business_open, business_review_count, " +
+                             "business_stars, user_review_count, user_average_stars" ;
+        config.auc = true ;
+        config.confusion = true ;
+        config.clusterMode =  true ;
+        LRPredictorConfigs configs = new LRPredictorConfigs() ;
+        configs.mahoutConfig = config ;
+        predictorPanel.init(configs) ;
+      }
+    });
+    panel.add(saarusWorkFlowCluster) ;
+    
+    
+    JButton saarusWorkFlowLocal = new JButton("Saarus Work Flow Local");
+    saarusWorkFlowLocal.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         MahoutConfig config = new MahoutConfig() ;
         config.name = "Yelp Features Predict";
@@ -58,12 +81,13 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
                              "business_stars, user_review_count, user_average_stars" ;
         config.auc = true ;
         config.confusion = true ;
+        config.clusterMode = false ;
         LRPredictorConfigs configs = new LRPredictorConfigs() ;
         configs.mahoutConfig = config ;
         predictorPanel.init(configs) ;
       }
     });
-    panel.add(saarusWorkFlow) ;
+    panel.add(saarusWorkFlowLocal) ;
     
     JButton donut = new JButton("Donut");
     donut.addActionListener(new ActionListener() {

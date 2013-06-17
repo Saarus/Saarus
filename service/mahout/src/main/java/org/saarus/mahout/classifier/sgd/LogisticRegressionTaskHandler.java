@@ -72,7 +72,7 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
           setOutputUri(params.getString("output")).
           setModelUri(params.getString("model")).
           setColumnHeaders(headers).
-          setClusterMode("true".equals(params.get("cluster-mode"))) ;
+          setClusterMode("true".equals(params.get("clusterMode"))) ;
         RunningJob runningJob = decoder.run() ;
         return runningJob.isSuccessful() ;
       }
