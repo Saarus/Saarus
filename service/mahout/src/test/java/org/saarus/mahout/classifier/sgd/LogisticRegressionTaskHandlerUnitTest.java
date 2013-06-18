@@ -51,7 +51,7 @@ public class LogisticRegressionTaskHandlerUnitTest {
   }
   
   void testYelp() throws Exception {
-    String TRAIN_FILE = "hive://features" ; //"src/test/resources/review-training" , hive://features
+    String TRAIN_FILE = "src/test/resources/review-training" ; //"src/test/resources/review-training" , hive://features
     String MODEL_FILE = "dfs:/tmp/yelp-features.model" ;
     
     HiveService hservice  = new HiveService(HIVE2_SERVER_URL, "hive", "");
