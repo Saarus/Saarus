@@ -53,7 +53,7 @@ public class LRLearnerNodeDialog extends NodeDialogPane {
         config.lambda = "0.001" ; 
         config.features = "20" ;
         config.categories = "2"; 
-        config.predictors = "n:stars | n:business_review_count" ; 
+        config.predictors = "n:user_review_count|n:user_average_stars|n:user_vote_useful|n:stars|n:business_stars|n:business_review_count" ; 
         config.input = "hive://features" ; 
         config.target = "vote_useful"; 
         config.output = "dfs:/tmp/yelp-features.model" ;
