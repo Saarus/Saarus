@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Encapsulates everything we need to know about a model and how it reads and vectorizes its input.
  * This encapsulation allows us to coherently save and restore a model from a file.  This also
- * allows us to keep command line arguments that affect learning in a coherent way.
+ * allows us to keep command lineNum arguments that affect learning in a coherent way.
  */
 public class LogisticModelParameters implements Writable {
   private String targetVariable;

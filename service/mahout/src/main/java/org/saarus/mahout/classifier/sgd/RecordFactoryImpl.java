@@ -37,11 +37,11 @@ import com.google.common.collect.Maps;
  * <li> Optionally, you tell the parser object about the possible values of the target
  * variable.  If you don't do this then you probably should set the number of distinct
  * values so that the target variable values will be taken from a restricted range.
- * <li> Later, when you get a list of the fields, typically from the first line of a CSV
+ * <li> Later, when you get a list of the fields, typically from the first lineNum of a CSV
  * file, you tell the factory about these fields and it builds internal data structures
  * that allow it to decode inputs.  The most important internal state is the field numbers
  * for various fields.  After this point, you can use the factory for decoding data.
- * <li> To encode data as a vector, you present a line of input to the factory and it
+ * <li> To encode data as a vector, you present a lineNum of input to the factory and it
  * mutates a vector that you provide.  The factory also retains trace information so
  * that it can approximately reverse engineer vectors later.
  * <li> After converting data, you can ask for an explanation of the data in terms of
@@ -75,7 +75,7 @@ public class RecordFactoryImpl implements RecordFactory {
   private int target;
   private final Dictionary targetDictionary;
   
-  //Which column is  used for identify a CSV file line 
+  //Which column is  used for identify a CSV file lineNum 
   private String idName;
   private int id = -1;
 
@@ -141,10 +141,10 @@ public class RecordFactoryImpl implements RecordFactory {
   public boolean usesFirstLineAsSchema() { return true; }
 
   /**
-   * Processes the first line of a file (which should contain the variable names). The target and
-   * predictor column numbers are set from the names on this line.
+   * Processes the first lineNum of a file (which should contain the variable names). The target and
+   * predictor column numbers are set from the names on this lineNum.
    *
-   * @param line       Header line for the file.
+   * @param lineNum       Header lineNum for the file.
    */
   @Override
   public void firstLine(String line) {
@@ -218,11 +218,11 @@ public class RecordFactoryImpl implements RecordFactory {
 
 
   /**
-   * Decodes a single line of csv data and records the target and predictor variables in a record.
+   * Decodes a single lineNum of csv data and records the target and predictor variables in a record.
    * As a side effect, features are added into the featureVector.  Returns the value of the target
    * variable.
    *
-   * @param line          The raw data.
+   * @param lineNum          The raw data.
    * @param featureVector Where to fill in the features.  Should be zeroed before calling
    *                      processLine.
    * @return The value of the target variable.
@@ -252,11 +252,11 @@ public class RecordFactoryImpl implements RecordFactory {
   }
 
   /***
-   * Decodes a single line of csv data and records the target(if retrunTarget is true)
+   * Decodes a single lineNum of csv data and records the target(if retrunTarget is true)
    * and predictor variables in a record. As a side effect, features are added into the featureVector.
    * Returns the value of the target variable. When used during classify against production data without
    * target value, the method will be called with returnTarget = false. 
-   * @param line The raw data.
+   * @param lineNum The raw data.
    * @param featureVector Where to fill in the features.  Should be zeroed before calling
    *                      processLine.
    * @param returnTarget whether process and return target value, -1 will be returned if false.
@@ -280,9 +280,9 @@ public class RecordFactoryImpl implements RecordFactory {
   }
   
   /***
-   * Extract the raw target string from a line read from a CSV file.
-   * @param line the line of content read from CSV file
-   * @return the raw target value in the corresponding column of CSV line 
+   * Extract the raw target string from a lineNum read from a CSV file.
+   * @param lineNum the lineNum of content read from CSV file
+   * @return the raw target value in the corresponding column of CSV lineNum 
    */
   public String getTargetString(CharSequence line) {
     List<String> values = Lists.newArrayList(COMMA.split(line));
@@ -306,7 +306,7 @@ public class RecordFactoryImpl implements RecordFactory {
   
   /***
    * Extract the id column value from the CSV record
-   * @param line the line of content read from CSV file
+   * @param lineNum the lineNum of content read from CSV file
    * @return the id value of the CSV record
    */
   public String getIdString(CharSequence line) {

@@ -4,11 +4,9 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
@@ -27,8 +25,10 @@ import com.google.common.io.Resources;
  * Train a logistic regression for the examples from Chapter 13 of Mahout in Action
  */
 public final class TrainLogistic {
+
   private HiveService hservice ;
   private LogisticModelParameters lmp ;
+  private int maxRead = 1000000000 ;
   
   public TrainLogistic setHiveService(HiveService hservice) {
     this.hservice = hservice ;
@@ -38,6 +38,10 @@ public final class TrainLogistic {
   public LogisticModelParameters getParameters() { return this.lmp ; }
   
   public  OnlineLogisticRegression getModel() { return this.lmp.createRegression() ; }
+  
+  public void setMaxRead(int num) {
+    this.maxRead = num ;
+  }
   
   void train(String[] args, PrintWriter output) throws Exception {
     TrainLogisticArgumentParser argParser = 
@@ -58,8 +62,10 @@ public final class TrainLogistic {
       try {
         // read variable names
         List<String> rowData = null ;
-        while ((rowData = dataReader.nextRow()) != null) {
-          // for each new line, get target and predictors
+        int count = 0 ;
+        while (count < maxRead && (rowData = dataReader.nextRow()) != null) {
+          count++ ;
+          // for each new lineNum, get target and predictors
           Vector input = new RandomAccessSparseVector(lmp.getNumFeatures());
           int targetValue = csv.processData(rowData, input);
 

@@ -45,13 +45,13 @@ import java.util.Random;
 /**
  * Shows how different encoding choices can make big speed differences.
  * <p/>
- * Run with command line options --generate 1000000 test.csv to generate a million data lines in
+ * Run with command lineNum options --generate 1000000 test.csv to generate a million data lines in
  * test.csv.
  * <p/>
- * Run with command line options --parser test.csv to time how long it takes to parse and encode
+ * Run with command lineNum options --parser test.csv to time how long it takes to parse and encode
  * those million data points
  * <p/>
- * Run with command line options --fast test.csv to time how long it takes to parse and encode those
+ * Run with command lineNum options --fast test.csv to time how long it takes to parse and encode those
  * million data points using byte-level parsing and direct value encoding.
  * <p/>
  * This doesn't demonstrate text encoding which is subject to somewhat different tricks.  The basic
@@ -159,9 +159,9 @@ public final class SimpleCsvExamples {
     }
 
     /**
-     * Generate a random line with 20 fields each with integer values.
+     * Generate a random lineNum with 20 fields each with integer values.
      *
-     * @return A new line with data.
+     * @return A new lineNum with data.
      */
     public static Line generate() {
       Line r = new Line();

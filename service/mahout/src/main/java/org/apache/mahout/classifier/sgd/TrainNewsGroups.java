@@ -35,7 +35,7 @@ import com.google.common.collect.Ordering;
 
 /**
  * Reads and trains an adaptive logistic regression model on the 20 newsgroups data.
- * The first command line argument gives the path of the directory holding the training
+ * The first command lineNum argument gives the path of the directory holding the training
  * data.  The optional second argument, leakType, defines which classes of features to use.
  * Importantly, leakType controls whether a synthetic date is injected into the data as
  * a target leak and if so, how.

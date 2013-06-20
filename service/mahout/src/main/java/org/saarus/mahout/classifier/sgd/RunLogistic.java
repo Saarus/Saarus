@@ -33,16 +33,16 @@ public final class RunLogistic {
     dataReader.reset() ;
     csv.configVariableNames(dataReader.getHeaderNames()) ;
     if (showScores) {
-      output.printf(Locale.ENGLISH, "\"%s\",\"%s\",\"%s\"\n", "target", "model-output", "log-likelihood");
+      output.printf(Locale.ENGLISH, "\"%s\", \"%s\", \"%s\", \"%s\"\n", "target", "target label",  "model-output", "log-likelihood");
     }
     List<String> rowData = null ;
     while((rowData = dataReader.nextRow()) != null) {
       Vector v = new SequentialAccessSparseVector(lmp.getNumFeatures());
       int target = csv.processData(rowData, v);
-
+      String targetLabel = csv.getTargetLabel(target) ;
       double score = lr.classifyScalar(v);
       if (showScores) {
-        output.printf(Locale.ENGLISH, "%d,%.3f,%.6f\n", target, score, lr.logLikelihood(target, v));
+        output.printf(Locale.ENGLISH, "%d, %s, %.3f, %.6f\n", target, targetLabel, score, lr.logLikelihood(target, v));
       }
       collector.add(target, score);
     }

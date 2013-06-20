@@ -73,7 +73,7 @@ public final class TrainLogistic {
         csv.firstLine(in.readLine()) ;
         String line = null ;
         while ((line = in.readLine()) != null) {
-          // for each new line, get target and predictors
+          // for each new lineNum, get target and predictors
           Vector input = new RandomAccessSparseVector(lmp.getNumFeatures());
           int targetValue = csv.processLine(line, input);
           // check performance while this is still news

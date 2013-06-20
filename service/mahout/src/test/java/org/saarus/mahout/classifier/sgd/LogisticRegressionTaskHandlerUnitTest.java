@@ -15,7 +15,7 @@ public class LogisticRegressionTaskHandlerUnitTest {
   }
   
   void testDonut() throws Exception {
-    String TRAIN_FILE = "hive://donut_train" ; //"src/test/resources/donut.csv" 
+    String TRAIN_FILE = "src/test/resources/donut/donut.csv" ; //"src/test/resources/donut.csv" 
     String MODEL_FILE = "dfs:/tmp/donut.model" ;
     
     HiveService hservice  = new HiveService(HIVE2_SERVER_URL, "hive", "");
@@ -46,13 +46,15 @@ public class LogisticRegressionTaskHandlerUnitTest {
     params.setString("model", MODEL_FILE) ;
     params.setString("col-header", "x,y,shape,color,xx,xy,yy,c,a,b") ;
     params.setString("cluster-mode", "false") ;
-    tresult = (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
-    System.out.println(tresult.getResult());
+    TaskUnitResult<Boolean> predictResult = 
+        (TaskUnitResult<Boolean>) handler.getCallableTaskUnit(tunit).call() ;
+    System.out.println(predictResult.getResult());
   }
   
   void testYelp() throws Exception {
-    String TRAIN_FILE = "src/test/resources/review-training" ; //"src/test/resources/review-training" , hive://features
-    String MODEL_FILE = "dfs:/tmp/yelp-features.model" ;
+    //"src/test/resources/review-training.csv" , hive://features
+    String TRAIN_FILE = "yelp_select_features.csv" ; 
+    String MODEL_FILE = "target/yelp-features.model" ;
     
     HiveService hservice  = new HiveService(HIVE2_SERVER_URL, "hive", "");
     LogisticRegressionTaskHandler handler  = new LogisticRegressionTaskHandler(hservice);
@@ -62,29 +64,32 @@ public class LogisticRegressionTaskHandlerUnitTest {
     Parameters params = tunit.getParameters() ;
     params.setString("input", TRAIN_FILE) ;
     params.setString("output", MODEL_FILE) ;
-    params.setString("target", "vote_useful") ;
+    params.setString("target", "useful") ;
     params.setString("categories", "2") ;
-    params.setString("predictors", "n:stars | n:business_review_count") ;
-    params.setString("features", "20") ;
-    params.setString("passes", "50") ;
+    params.setString("predictors", "n:stars|n:business_review_count") ;
+    //params.setString("predictors", "n:user_review_count|n:user_average_stars|n:user_vote_useful|n:stars|n:business_stars|n:business_review_count") ;
+    params.setString("features", "1000") ;
+    params.setString("passes", "100") ;
     params.setString("rate", "50") ;
-//    TaskUnitResult<String> tresult = 
-//        (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
-//    System.out.println(tresult.getResult());
+    //TaskUnitResult<String> tresult = (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
+    //System.out.println(tresult.getResult());
     
     System.out.println("-------------------------------------------------------------------------");
     
     tunit = new TaskUnit() ;
     tunit.setName("predict") ;
     params = tunit.getParameters() ;
-    params.setString("input", "src/test/resources/reviewmr") ;
+    params.setString("input", "src/test/resources/review-test.csv") ;
     params.setString("output", "target/review-out") ;
     params.setString("model", MODEL_FILE) ;
-    params.setString("col-header", "stars, text, vote_funny, vote_useful, vote_cool,"+
-                                   "business_id, business_city, business_state, business_open, business_review_count, " +
-                                   "business_stars, user_review_count, user_average_stars") ;
+//    params.setString("col-header", "stars, text, vote_funny, vote_useful, vote_cool,"+
+//                                   "business_id, business_city, business_state, business_open, business_review_count, " +
+//                                   "business_stars, user_review_count, user_average_stars,user_vote_funny,user_vote_useful,user_vote_cool") ;
+
+    params.setString("col-header", "review_id,stars, text,vote_funny,vote_useful,vote_cool,useful,business_id,business_city,business_state,business_open,business_review_count,business_stars,user_id,user_review_count,user_average_stars,user_vote_funny,user_vote_useful,user_vote_cool");
+
     params.setString("cluster-mode", "false") ;
-    TaskUnitResult<String>  predictResult = (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
+    TaskUnitResult<Boolean>  predictResult = (TaskUnitResult<Boolean>) handler.getCallableTaskUnit(tunit).call() ;
     System.out.println(predictResult.getResult());
   }
 }

@@ -73,6 +73,7 @@ public class MRLogisticRegressionDecoder {
     boolean showConfusion  = true;
     boolean showScores  = true;
     Auc collector ;
+    int lineNum = 0;
     
     @Override
     public void configure(JobConf job) {
@@ -94,7 +95,7 @@ public class MRLogisticRegressionDecoder {
         
         csv.configVariableNames(Arrays.asList(headers)) ;
         if (showScores) {
-          output.printf(Locale.ENGLISH, "\"%s\",\"%s\",\"%s\"\n", "target", "model-output", "log-likelihood");
+          output.printf(Locale.ENGLISH, "%s, %s\n", "score", "label");
         }
       } catch(Exception ex) {
         ex.printStackTrace() ;
@@ -102,14 +103,18 @@ public class MRLogisticRegressionDecoder {
     }
     
     public void map(LongWritable key, Text value, OutputCollector<LongWritable, Text> mapCollector, Reporter reporter) throws IOException {
+      lineNum++ ;
       String line = value.toString() ;
       List<String> vals = Arrays.asList(line.split(",")) ;
       Vector v = new SequentialAccessSparseVector(lmp.getNumFeatures());
       int target = csv.processData(vals, v);
 
       double score = lr.classifyScalar(v);
+      int targetScore = (int)Math.round(score) ;
+      String targetLabel = csv.getTargetLabel(targetScore) ;
       if (showScores) {
-        output.printf(Locale.ENGLISH, "%d,%.3f,%.6f\n", target, score, lr.logLikelihood(target, v));
+        output.printf(Locale.ENGLISH, "%d %s %s %.3f, %s\n", lineNum, vals.get(1),vals.get(11), score, targetLabel);
+       // output.printf(Locale.ENGLISH, "%d,%.3f,%.6f\n", target, score, lr.logLikelihood(target, v));
       }
       collector.add(target, score);
       String outValue = target + "," + score ;

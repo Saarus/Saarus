@@ -83,7 +83,7 @@ public final class TrainAdaptiveLogistic {
         String line = in.readLine();
         int lineCount = 2;
         while (line != null) {
-          // for each new line, get target and predictors
+          // for each new lineNum, get target and predictors
           Vector input = new RandomAccessSparseVector(lmp.getNumFeatures());
           int targetValue = csv.processLine(line, input);
 

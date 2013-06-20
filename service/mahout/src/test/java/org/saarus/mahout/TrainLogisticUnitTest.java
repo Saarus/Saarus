@@ -10,7 +10,7 @@ public class TrainLogisticUnitTest {
     String[] trainArgs = {
         "--passes", "100", 
         "--rate", "50", "--lambda",  "0.001",
-        "--input", "src/test/resources/donut.csv",
+        "--input", "src/test/resources/donut/donut.csv",
         "--features", "21", 
         "--output", "target/donut.model",
         "--target", "color",
@@ -21,7 +21,7 @@ public class TrainLogisticUnitTest {
     TrainLogistic.main(trainArgs) ;
     String[] predictArgs = {
         "--model", "target/donut.model", "--auc",  "--scores", "--confusion",
-        "--input", "src/test/resources/donut-test.csv"
+        "--input", "src/test/resources/donut/donut-test.csv"
     } ;
     RunLogistic.main(predictArgs) ;
   }
