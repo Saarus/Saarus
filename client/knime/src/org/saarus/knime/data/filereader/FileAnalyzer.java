@@ -120,7 +120,7 @@ public final class FileAnalyzer {
      * required), and will read in the first lines from the file. It will first
      * detect comment characters (if the first lines start with '#' or '%'), and
      * then guess the delimiter (',', ';', or space) depending on which cuts a
-     * line into (more than one) tokens.
+     * lineNum into (more than one) tokens.
      *
      * @param userSettings containing the URL of the file to examine and
      *            settings that should be used and considered fixed.
@@ -338,7 +338,7 @@ public final class FileAnalyzer {
      * Determines the type and table of each column. It tries to figure out if
      * there are column headers in the file or otherwise generates names for the
      * columns. <br>
-     * We read from the first line one token per column (plus one for the row
+     * We read from the first lineNum one token per column (plus one for the row
      * header if we have row headers in the file). Then we do three checks:
      * first, if we have row headers and are missing one token we assume the
      * column header for the "row-header-column" is missing, thus we must have
@@ -379,7 +379,7 @@ public final class FileAnalyzer {
 
         // number of columns must be set accordingly (including skipped cols)
         assert result.getNumberOfColumns() == columnTypes.length;
-        // store the first line here to analyze the tokens - depending on the
+        // store the first lineNum here to analyze the tokens - depending on the
         // row header flag expect one more token to come.
         String rowHeader = null;
         String scndLineRowHeader = null;
@@ -403,7 +403,7 @@ public final class FileAnalyzer {
                 break;
             }
             if (result.isRowDelimiter(token, tokenizer.lastTokenWasQuoted())) {
-                // end of line - a bit early, huh??
+                // end of lineNum - a bit early, huh??
                 scndLineRowHeader = tokenizer.nextToken();
                 break;
             }
@@ -444,9 +444,9 @@ public final class FileAnalyzer {
             }
 
             // another indication for a column_headers_must_have is when the
-            // first line contains tokens that are not type compliant with all
+            // first lineNum contains tokens that are not type compliant with all
             // other lines (e.g. all items in the column are integers except in
-            // the first line).
+            // the first lineNum).
             DataCellFactory cellFactory = new DataCellFactory();
             cellFactory.setDecimalSeparator(result.getDecimalSeparator());
             cellFactory.setThousandsSeparator(result.getThousandsSeparator());
@@ -455,7 +455,7 @@ public final class FileAnalyzer {
                 checkInterrupt(exec);
 
                 if (columnHeaders[c] == null) {
-                    // the first line ended early - could be anything...
+                    // the first lineNum ended early - could be anything...
                     continue;
                 }
                 cellFactory.setMissingValuePattern(missValues[c]);
@@ -486,7 +486,7 @@ public final class FileAnalyzer {
                             HeaderHelper
                                     .extractPrefixAndIndexFromHeader(rowHeader);
                     if (hh == null || !hh.testNextHeader(scndLineRowHeader)) {
-                        // this first line row header isn't a good row header
+                        // this first lineNum row header isn't a good row header
                         // all the other lines have nice ones - create col hdrs
                         // also create colHdrs if they don't fit to each other
                         // header is not data: must be column header
@@ -505,7 +505,7 @@ public final class FileAnalyzer {
                 return createColProps(columnHeaders, userColProps, columnTypes,
                         missValues, exec);
             }
-            // otherwise we assume the first line doesn't contain headers.
+            // otherwise we assume the first lineNum doesn't contain headers.
             // pass an array with null strings and it will create headers for us
             result.setFileHasColumnHeaders(false);
             String[] nulls = new String[columnHeaders.length]; // null array
@@ -542,7 +542,7 @@ public final class FileAnalyzer {
     }
 
     /**
-     * Looks at the first token of each line (except the first line) and returns
+     * Looks at the first token of each lineNum (except the first lineNum) and returns
      * true if they are all prefixed by the same (possibly empty) string
      * followed by a constantly incremented number.
      *
@@ -585,7 +585,7 @@ public final class FileAnalyzer {
                 if (firstTokenInRow) {
                     firstTokenInRow = false;
                     if (linesRead > 0) {
-                        // we ignore the first line (could be col header line)
+                        // we ignore the first lineNum (could be col header lineNum)
                         if (helper == null) {
                             // the first row ID we see
                             helper =
@@ -603,7 +603,7 @@ public final class FileAnalyzer {
                         }
                     }
                 } else {
-                    // swallow all tokens except new line delimiters
+                    // swallow all tokens except new lineNum delimiters
                     if (settings.isRowDelimiter(token, tokenizer.lastTokenWasQuoted())) {
                         firstTokenInRow = true; // the next token is the first
                         linesRead++;
@@ -872,12 +872,12 @@ public final class FileAnalyzer {
                 if ((linesRead < 1)
                         && (!userSettings.isFileHasColumnHeadersUserSet()
                                 || userSettings.getFileHasColumnHeaders())) {
-                    // skip the first line - could be column headers -
+                    // skip the first lineNum - could be column headers -
                     // unless we know it's not
                     continue;
                 }
                 if (colIdx >= result.getNumberOfColumns()) {
-                    // the line contains more tokens than columns.
+                    // the lineNum contains more tokens than columns.
                     // Ignore the extra columns.
                     continue;
                 }
@@ -1005,7 +1005,7 @@ public final class FileAnalyzer {
 
     /**
      * Looks at the first character of the first lines of the file and
-     * determines what kind of single line comment we should support. Comments
+     * determines what kind of single lineNum comment we should support. Comments
      * are usually at the beginning of the file - so this method looks only at
      * the first couple of lines (even if we are not supposed to cut the
      * analysis short).
@@ -1076,7 +1076,7 @@ public final class FileAnalyzer {
 
     /**
      * Adds quotes to the settings object. It counts the occurrence of double
-     * and single quotes in each line. If it's an odd number it will not
+     * and single quotes in each lineNum. If it's an odd number it will not
      * consider this being a quote (unless it has an odd number of escaped
      * character of this type).
      *
@@ -1099,7 +1099,7 @@ public final class FileAnalyzer {
         double fileSize = reader.getFileSize();
         exec.setProgress("Guessing quotes");
 
-        // add '\n' as the only delimiter, so we get one line per token
+        // add '\n' as the only delimiter, so we get one lineNum per token
         settings.addDelimiterPattern("\n", true, false, false);
         tokenizer.setSettings(settings);
         settings.removeAllDelimiters(); // reconstruct original settings.
@@ -1303,7 +1303,7 @@ public final class FileAnalyzer {
                 }
             }
             //
-            // Try space, ignoring additional tabs at the end of each line
+            // Try space, ignoring additional tabs at the end of each lineNum
             // - but only if its not the decimal or thousand separator
             //
             if ((userSettings.getThousandsSeparator() != ' ')
@@ -1347,7 +1347,7 @@ public final class FileAnalyzer {
             // well - none of the above settings made sense - return without
             // delimiter
             result.removeAllDelimiters();
-            // but always have one row per line
+            // but always have one row per lineNum
             result.addRowDelimiter("\n", true);
             result.setNumberOfColumns(1);
             return;
@@ -1419,7 +1419,7 @@ public final class FileAnalyzer {
         long fileSize = reader.getFileSize();
 
         int linesRead = 0;
-        int columns = 0; // column counter per line
+        int columns = 0; // column counter per lineNum
         int numOfCols = -1; // num of cols with these settings
         int maxNumOfCols = -1; // num of cols incl. some empty tokens at EOR
         boolean useSettings = false; // set it true to use these settings.
@@ -1461,7 +1461,7 @@ public final class FileAnalyzer {
 
                     if (linesRead > 1) {
                         if (numOfCols < 1) {
-                            // this is the first line we are counting columns
+                            // this is the first lineNum we are counting columns
                             // for
                             if (settings.ignoreEmptyTokensAtEndOfRow()) {
                                 // these are the "hard" columns we need
@@ -1494,7 +1494,7 @@ public final class FileAnalyzer {
                                     break;
                                 }
                                 if (columns < numOfCols) {
-                                    // even with empty tokens this line has not
+                                    // even with empty tokens this lineNum has not
                                     // enough columns
                                     useSettings = false;
                                     break;
@@ -1558,7 +1558,7 @@ public final class FileAnalyzer {
         double fileSize = reader.getFileSize();
 
         int linesRead = 0;
-        int colCount = 0; // the counter per line
+        int colCount = 0; // the counter per lineNum
         int numOfCols = 0; // the maximum
         int consEmptyTokens = 0; // consecutive empty tokens
 

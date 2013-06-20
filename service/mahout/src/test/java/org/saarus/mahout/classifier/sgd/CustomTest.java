@@ -21,7 +21,7 @@ public class CustomTest {
   
     String outputFile = "target/yelp.model";
     TrainLogistic tl = new TrainLogistic() ;
-    tl.setMaxRead(1000) ;
+    tl.setMaxRead(5000) ;
     tl.train(new String[]{
         "--input", "target/train.csv",
         "--output", outputFile,
@@ -55,13 +55,14 @@ public class CustomTest {
       for(int i = 0; i < header.length; i++) {
         if(i > 0) out.append(",") ;
         String cellValue = record.get(header[i]) ;
+        
         if("useful".equals(header[i])) {
           //Do some tranform for cell value here base on the other value in record
           int stars = Integer.parseInt(record.get("stars")) ;
           int review_count = Integer.parseInt(record.get("business_review_count")) ;
           cellValue = "0" ;
           if(stars >3 && review_count >= 30) {
-            
+            cellValue = "1" ;
           }
         }
         out.append(cellValue) ;

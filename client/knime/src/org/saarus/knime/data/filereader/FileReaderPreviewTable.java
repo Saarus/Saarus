@@ -214,8 +214,8 @@ public class FileReaderPreviewTable implements DataTable {
     }
 
     /**
-     * @return the line number where the error occurred - if an error occurred
-     *         and an error line number was set. Otherwise -1 is returned.
+     * @return the lineNum number where the error occurred - if an error occurred
+     *         and an error lineNum number was set. Otherwise -1 is returned.
      */
     int getErrorLine() {
         return m_errorLine;

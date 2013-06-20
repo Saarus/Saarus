@@ -402,9 +402,9 @@ public class XMLPropsReader extends XMLProperties {
     }
 
     /**
-     * Returns line comment string.
+     * Returns lineNum comment string.
      * 
-     * @return the line comment string or <code>null</code> if not available
+     * @return the lineNum comment string or <code>null</code> if not available
      */
     public String getLineComment() {
         // get assigned

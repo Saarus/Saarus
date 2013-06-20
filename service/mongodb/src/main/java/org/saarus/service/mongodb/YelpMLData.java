@@ -115,7 +115,7 @@ public class YelpMLData {
     w.close() ;
   }
   
-  static Object getObjectProperty(DBObject o, String s) {
+  static Object getObjectProperty(DBObject o, String s, Object dval) {
     String[] a = s.split("\\.");
     int idx = 0 ;
     while(idx < a.length) {
@@ -123,18 +123,19 @@ public class YelpMLData {
       Object r = o.get(n) ;
       idx++ ;
       if(idx == a.length) return r ;
-      if(r == null) return null ;
+      if(r == null) return dval ;
       o = (DBObject) r ;
     }
-    return null;
+    return dval;
   }
   
+  
   static public void main(String[] args) throws Exception {
-    String baseDataDir     = "d:/projects/saarus/yelp/yelp_test_set" ;
-    String userSetFile     = baseDataDir + "/yelp_test_set_user.json" ;
-    String reviewSetFile   = baseDataDir + "/yelp_test_set_review.json" ;
-    String checkinSetFile  = baseDataDir + "/yelp_test_set_checkin.json" ;
-    String busineseSetFile = baseDataDir + "/yelp_test_set_business.json" ;
+    String baseDataDir     = "d:/projects/saarus/yelp/yelpdb/json/test/" ;
+    String userSetFile     = baseDataDir + "/user/data.json" ;
+    String reviewSetFile   = baseDataDir + "/review/data.json" ;
+    String checkinSetFile  = baseDataDir + "/checkin/data.json" ;
+    String busineseSetFile = baseDataDir + "/business/data.json" ;
     
     YelpMLData mlData = new YelpMLData() ;
     JSONReader reviewReader = new JSONReader(reviewSetFile) {
@@ -150,9 +151,10 @@ public class YelpMLData {
         } else {
           result.append("text", 0) ;
         }
-        result.append("vote_funny", getObjectProperty(obj, "votes.funny")) ;
-        result.append("vote_useful", getObjectProperty(obj, "votes.useful")) ;
-        result.append("vote_cool", getObjectProperty(obj, "votes.cool")) ;
+        result.append("vote_funny", getObjectProperty(obj, "votes.funny", "0")) ;
+        result.append("vote_useful", getObjectProperty(obj, "votes.useful", "0")) ;
+        result.append("vote_cool", getObjectProperty(obj, "votes.cool", "0")) ;
+        result.append("useful", "0") ;
         return result ;
       }
     };
@@ -164,10 +166,11 @@ public class YelpMLData {
         BasicDBObject result = new BasicDBObject() ;
         result.append("user_id", obj.get("user_id")) ;
         result.append("user_review_count", obj.get("review_count")) ;
-        result.append("user_average_stars", obj.get("average_stars")) ;
-        result.append("user_vote_funny", getObjectProperty(obj, "votes.funny")) ;
-        result.append("user_vote_useful", getObjectProperty(obj, "votes.useful")) ;
-        result.append("user_vote_cool", getObjectProperty(obj, "votes.cool")) ;
+        
+        result.append("user_average_stars", (int)Double.parseDouble(obj.get("average_stars").toString())) ;
+        result.append("user_vote_funny", getObjectProperty(obj, "votes.funny", "0")) ;
+        result.append("user_vote_useful", getObjectProperty(obj, "votes.useful", "0")) ;
+        result.append("user_vote_cool", getObjectProperty(obj, "votes.cool", "0")) ;
         return result ;
       }
     } ;
@@ -197,9 +200,9 @@ public class YelpMLData {
     mlData.merge(reviewColl, mlData.index(businessColl, "business_id"), "business_id", businessMergeField) ;
     
     String[] saveField = {
-      /*"review_id", */"stars", "text", "vote_funny", "vote_useful", "vote_cool",
+      "review_id", "stars", "text", "vote_funny", "vote_useful", "vote_cool", "useful",
       "business_id", "business_city", "business_state", "business_open", "business_review_count", "business_stars",
-      /*"user_id",*/ "user_review_count", "user_average_stars"/*, "user_vote_funny", "user_vote_useful", "user_vote_cool"*/
+      "user_id", "user_review_count", "user_average_stars", "user_vote_funny", "user_vote_useful", "user_vote_cool"
     } ;
     mlData.saveCSV("target/review-test.csv", reviewColl, saveField) ;
     mlData.dump(reviewColl, 3) ;

@@ -429,7 +429,7 @@ public class FileReaderNodeSettings extends FileReaderSettings {
     /**
      * Sets default settings in this object. See the submethods for details, but
      * basically its: zero number of columns, no column names and types, file
-     * has row headers and columns headers; One line per row, create empty rows
+     * has row headers and columns headers; One lineNum per row, create empty rows
      * for empty lines, space or comma seperates columns, c-Style comments,
      * double and single quotes (with escape char). Call this only on an empty
      * settings object.

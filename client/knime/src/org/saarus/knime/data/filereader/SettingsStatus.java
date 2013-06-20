@@ -163,7 +163,7 @@ public class SettingsStatus {
 
     /**
      * Prints all error messages into the logger as error. It will print
-     * "Error: ", the error message and a new line character.
+     * "Error: ", the error message and a new lineNum character.
      */
     public void printErrors() {
         for (int e = 0; e < getNumOfErrors(); e++) {
@@ -173,7 +173,7 @@ public class SettingsStatus {
 
     /**
      * Prints all warning messages into the logger as warning. It will print
-     * "Warning: ", the message and a new line character.
+     * "Warning: ", the message and a new lineNum character.
      */
     public void printWarnings() {
         for (int w = 0; w < getNumOfWarnings(); w++) {
@@ -183,7 +183,7 @@ public class SettingsStatus {
 
     /**
      * Prints all info messages into the logger as info. It will print "Info: ",
-     * the message and a new line character.
+     * the message and a new lineNum character.
      */
     public void printInfos() {
         for (int i = 0; i < getNumOfInfos(); i++) {
@@ -194,7 +194,7 @@ public class SettingsStatus {
 
     /**
      * Creates a string containing concatenated error messages, separated by a
-     * new line ('\n') character. The maximum number of error messages included
+     * new lineNum ('\n') character. The maximum number of error messages included
      * is determined by the parameter maxMsg. If more error than maxMsg messages
      * are stored in the status object, the subset of messages included in the
      * string is determined by the order the messages were added to the status

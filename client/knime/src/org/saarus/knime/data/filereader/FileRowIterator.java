@@ -205,7 +205,7 @@ class FileRowIterator extends RowIterator {
         m_rowIDhash = new HashMap<String, Number>();
 
         // if the column headers are stored in the data file, we must read
-        // them (the first line) and discard them (if they are actually used
+        // them (the first lineNum) and discard them (if they are actually used
         // from the file they should have been stored in the table spec).
         if (frSettings.getFileHasColumnHeaders()) {
             if (hasNext()) { // call this first to eat up empty lines
@@ -314,7 +314,7 @@ class FileRowIterator extends RowIterator {
         // lines (if we are supposed to).
         if (!hasNext()) {
             throw new NoSuchElementException(
-                    "The row iterator proceeded beyond the last line of '"
+                    "The row iterator proceeded beyond the last lineNum of '"
                             + m_frSettings.getDataFileLocation().toString()
                             + "'.");
         }
@@ -328,7 +328,7 @@ class FileRowIterator extends RowIterator {
         try {
             rowHeader = createRowHeader(m_rowNumber - 1);
         } catch (TokenizerException fte) {
-            throw prepareForException(fte.getMessage() + " (line: "
+            throw prepareForException(fte.getMessage() + " (lineNum: "
                     + m_tokenizer.getLineNumber() + " source: '"
                     + m_frSettings.getDataFileLocation() + "')", m_tokenizer
                     .getLineNumber(), "ERR", row);
@@ -341,14 +341,14 @@ class FileRowIterator extends RowIterator {
             try {
                 token = m_tokenizer.nextToken();
             } catch (TokenizerException fte) {
-                throw prepareForException(fte.getMessage() + " (line: "
+                throw prepareForException(fte.getMessage() + " (lineNum: "
                         + m_tokenizer.getLineNumber() + " (" + rowHeader
                         + ") source: '" + m_frSettings.getDataFileLocation()
                         + "')", m_tokenizer.getLineNumber(), rowHeader, row);
             }
             // row delims are returned as token
             if ((token == null) || m_frSettings.isRowDelimiter(token, m_tokenizer.lastTokenWasQuoted())) {
-                // line ended early.
+                // lineNum ended early.
                 m_tokenizer.pushBack();
                 // we need the row delim in the file, for after the loop
                 break;
@@ -391,13 +391,13 @@ class FileRowIterator extends RowIterator {
             if (createdCols < rowLength) {
                 FileReaderException ex =
                         prepareForException("Too few data elements "
-                                + "(line: " + lineNr + " (" + rowHeader
+                                + "(lineNum: " + lineNr + " (" + rowHeader
                                 + "), source: '"
                                 + m_frSettings.getDataFileLocation() + "')",
                                 lineNr, rowHeader, row);
                 if (m_frSettings.getColumnNumDeterminingLineNumber() >= 0) {
                     ex.setDetailsMessage("The number of columns was "
-                            + "determined by the entries above line no."
+                            + "determined by the entries above lineNum no."
                             + m_frSettings.getColumnNumDeterminingLineNumber());
                 }
                 throw ex;
@@ -413,7 +413,7 @@ class FileRowIterator extends RowIterator {
             try {
                 token = m_tokenizer.nextToken();
             } catch (TokenizerException fte) {
-                throw prepareForException(fte.getMessage() + "(line: " + lineNr
+                throw prepareForException(fte.getMessage() + "(lineNum: " + lineNr
                         + " (" + rowHeader + "), source: '"
                         + m_frSettings.getDataFileLocation() + "')", lineNr,
                         rowHeader, row);
@@ -423,13 +423,13 @@ class FileRowIterator extends RowIterator {
         // data items in the file than we needed for one row: barf and die.
         if (!m_frSettings.isRowDelimiter(token, m_tokenizer.lastTokenWasQuoted())) {
             FileReaderException ex =
-                    prepareForException("Too many data elements " + "(line: "
+                    prepareForException("Too many data elements " + "(lineNum: "
                             + lineNr + " (" + rowHeader + "), source: '"
                             + m_frSettings.getDataFileLocation() + "')",
                             lineNr, rowHeader, row);
             if (m_frSettings.getColumnNumDeterminingLineNumber() >= 0) {
                 ex.setDetailsMessage("The number of columns was "
-                        + "determined by line no."
+                        + "determined by lineNum no."
                         + m_frSettings.getColumnNumDeterminingLineNumber());
             }
             throw ex;
@@ -495,7 +495,7 @@ class FileRowIterator extends RowIterator {
         // create an error message
         String errorMsg = m_cellFactory.getErrorMessage();
         errorMsg +=
-                " In line " + m_tokenizer.getLineNumber() + " (" + rowHeader
+                " In lineNum " + m_tokenizer.getLineNumber() + " (" + rowHeader
                         + ") at column #" + errCol + " ('"
                         + m_tableSpec.getColumnSpec(errCol).getName() + "').";
 
@@ -534,7 +534,7 @@ class FileRowIterator extends RowIterator {
             }
 
             if (m_frSettings.isRowDelimiter(fileHeader, m_tokenizer.lastTokenWasQuoted())) {
-                // Oops, we've read an empty line. Push the delimiter back,
+                // Oops, we've read an empty lineNum. Push the delimiter back,
                 // others need to see it too.
                 m_tokenizer.pushBack();
                 fileHeader = "";

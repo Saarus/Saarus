@@ -715,10 +715,10 @@ public class FileReaderSettings extends TokenizerSettings {
     }
 
     /**
-     * Tells whether the first line in the file should be considered column
+     * Tells whether the first lineNum in the file should be considered column
      * headers, or not.
      *
-     * @param flag if <code>true</code> the first line in the file will not be
+     * @param flag if <code>true</code> the first lineNum in the file will not be
      *            considered data, but either ignored or used as column headers,
      *            depending on the column headers set (or not) in this object.
      */
@@ -727,7 +727,7 @@ public class FileReaderSettings extends TokenizerSettings {
     }
 
     /**
-     * @return a flag telling if the first line in the file will not be
+     * @return a flag telling if the first lineNum in the file will not be
      *         considered data, but either ignored or used as column headers,
      *         depending on the column headers set (or not) in this object.
      */
@@ -736,10 +736,10 @@ public class FileReaderSettings extends TokenizerSettings {
     }
 
     /**
-     * Tells whether the first token in each line in the file should be
+     * Tells whether the first token in each lineNum in the file should be
      * considered row header, or not.
      *
-     * @param flag if <code>true</code> the first item in each line in the
+     * @param flag if <code>true</code> the first item in each lineNum in the
      *            file will not be considered data, but either ignored or used
      *            as row header, depending on the row header prefix set (or not)
      *            in this object.
@@ -749,7 +749,7 @@ public class FileReaderSettings extends TokenizerSettings {
     }
 
     /**
-     * @return a flag telling if the first item in each line in the file will
+     * @return a flag telling if the first item in each lineNum in the file will
      *         not be considered data, but either ignored or used as row header,
      *         depending on the row header prefix set (or not) in this object.
      */
@@ -1072,7 +1072,7 @@ public class FileReaderSettings extends TokenizerSettings {
     /**
      * @return true, if lines with too few data items are accepted (they will be
      *         filled with missing values, if read), or false, it the reader
-     *         fails when it comes across a short line (the default).
+     *         fails when it comes across a short lineNum (the default).
      */
     public boolean getSupportShortLines() {
         return m_supportShortLines;
@@ -1103,7 +1103,7 @@ public class FileReaderSettings extends TokenizerSettings {
     }
 
     /**
-     * @return the line number in the file that determined the number of
+     * @return the lineNum number in the file that determined the number of
      *         columns. Or -1 if not set yet (or no file analysis took place).
      */
     public int getColumnNumDeterminingLineNumber() {
@@ -1111,9 +1111,9 @@ public class FileReaderSettings extends TokenizerSettings {
     }
 
     /**
-     * Sets the line number in the file that determined the number of columns.
+     * Sets the lineNum number in the file that determined the number of columns.
      *
-     * @param lineNumber the line number in the file that determined the number
+     * @param lineNumber the lineNum number in the file that determined the number
      *            of columns.
      */
     public void setColumnNumDeterminingLineNumber(final int lineNumber) {

@@ -502,7 +502,7 @@ public class VariableFileReaderNodeDialog extends NodeDialogPane implements
                 + " in the first column");
         m_hasColHeaders = new JCheckBox("read column headers");
         m_hasColHeaders.setToolTipText("Check if the file contains column"
-                + " headers in the first line");
+                + " headers in the first lineNum");
         JLabel deliLabel = new JLabel("Column delimiter:");
         m_delimField = new JComboBox();
         m_delimField.setMaximumSize(new Dimension(70, buttonHeight));
@@ -520,7 +520,7 @@ public class VariableFileReaderNodeDialog extends NodeDialogPane implements
         m_singleLineComment.setMaximumSize(new Dimension(55, buttonHeight));
         m_singleLineComment.setMinimumSize(new Dimension(55, buttonHeight));
         m_singleLineComment.setPreferredSize(new Dimension(55, buttonHeight));
-        JLabel commentLabel = new JLabel("Single line comment:");
+        JLabel commentLabel = new JLabel("Single lineNum comment:");
         m_ignoreWS = new JCheckBox("ignore spaces and tabs");
         m_ignoreWS.setToolTipText("If checked, whitespaces (spaces and tabs)"
                 + " will be discarded (if not quoted)");
@@ -1015,7 +1015,7 @@ public class VariableFileReaderNodeDialog extends NodeDialogPane implements
 
         for (Comment comment : m_frSettings.getAllComments()) {
             if (comment.getEnd().equals("\n")) {
-                // its a single line comment
+                // its a single lineNum comment
                 if (comment.getBegin().equals("//")) {
                     jSingleLineFound = true;
                 } else {
@@ -1246,7 +1246,7 @@ public class VariableFileReaderNodeDialog extends NodeDialogPane implements
         }
         if (m_previewTable.getErrorOccurred()) {
             throw new InvalidSettingsException("With the current settings"
-                    + " an error occurs when reading the file (line "
+                    + " an error occurs when reading the file (lineNum "
                     + m_previewTable.getErrorLine() + "): "
                     + m_previewTable.getErrorMsg());
         }

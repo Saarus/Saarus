@@ -249,11 +249,11 @@ public class QuotePanel extends JPanel {
         if (m_allowLFPanel == null) {
             m_allowLFPanel = new JPanel();
             m_allowLFPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                                                                      "Allow multi line quoted strings:"));
+                                                                      "Allow multi lineNum quoted strings:"));
             m_allowLFPanel.setLayout(new BoxLayout(m_allowLFPanel, BoxLayout.Y_AXIS));
             Box hBox = Box.createHorizontalBox();
             m_allowLFCheckbox = new JCheckBox("Quoted strings can extend over multiple lines");
-            m_allowLFCheckbox.setToolTipText("If not checked, quotes must be closed within the same line");
+            m_allowLFCheckbox.setToolTipText("If not checked, quotes must be closed within the same lineNum");
             hBox.add(m_allowLFCheckbox);
             hBox.add(Box.createHorizontalGlue());
             m_allowLFPanel.add(hBox);

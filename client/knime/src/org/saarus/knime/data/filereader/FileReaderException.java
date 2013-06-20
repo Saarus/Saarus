@@ -105,7 +105,7 @@ public class FileReaderException extends RuntimeException {
     }
 
     /**
-     * @return the line number where the error occurred in the file. Could be -1
+     * @return the lineNum number where the error occurred in the file. Could be -1
      *         if not set.
      */
     int getErrorLineNumber() {
