@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.saarus.service.hive.HiveService;
+import org.saarus.service.sql.SQLService;
 
 public class HiveTableDataReader implements DataReader {
-  private HiveService hservice;
+  private SQLService hservice;
   private String   table ;
   private String[] field ;
   private ResultSet resultSet ;
   
-  public HiveTableDataReader(HiveService hservice, String table, String[] field) throws Exception {
+  public HiveTableDataReader(SQLService hservice, String table, String[] field) throws Exception {
     this.hservice = hservice ;
     this.table = table ;
     this.field = field ;

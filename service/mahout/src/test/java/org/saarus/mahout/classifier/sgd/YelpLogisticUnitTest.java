@@ -3,7 +3,7 @@ package org.saarus.mahout.classifier.sgd;
 import java.io.PrintWriter;
 
 import org.junit.Test;
-import org.saarus.service.hive.HiveService;
+import org.saarus.service.sql.SQLService;
 
 public class YelpLogisticUnitTest {
   @Test
@@ -20,7 +20,7 @@ public class YelpLogisticUnitTest {
         "--noBias",
         "--predictors", "n:stars | n:business_review_count",
     };
-    HiveService hservice  = new HiveService("jdbc:hive2://198.154.60.252:10000", "hive", "");
+    SQLService hservice  = new SQLService("jdbc:hive2://198.154.60.252:10000", "hive", "");
     TrainLogistic tl = new TrainLogistic().setHiveService(hservice) ;
     tl.train(trainArgs, new PrintWriter(System.out, true)) ;
 

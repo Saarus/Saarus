@@ -16,7 +16,7 @@ import org.apache.mahout.classifier.sgd.RecordFactory;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.saarus.service.hadoop.util.FSResource;
-import org.saarus.service.hive.HiveService;
+import org.saarus.service.sql.SQLService;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Closeables;
@@ -26,11 +26,11 @@ import com.google.common.io.Resources;
  */
 public final class TrainLogistic {
 
-  private HiveService hservice ;
+  private SQLService hservice ;
   private LogisticModelParameters lmp ;
   private int maxRead = 1000000000 ;
   
-  public TrainLogistic setHiveService(HiveService hservice) {
+  public TrainLogistic setHiveService(SQLService hservice) {
     this.hservice = hservice ;
     return this ;
   }

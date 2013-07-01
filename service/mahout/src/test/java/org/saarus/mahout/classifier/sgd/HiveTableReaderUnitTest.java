@@ -3,12 +3,12 @@ package org.saarus.mahout.classifier.sgd;
 import java.util.List;
 
 import org.junit.Test;
-import org.saarus.service.hive.HiveService;
+import org.saarus.service.sql.SQLService;
 
 public class HiveTableReaderUnitTest {
   @Test
   public void test() throws Exception {
-    HiveService hservice  = new HiveService("jdbc:hive2://hadoop1.saarus.org:10000", "hive", "");
+    SQLService hservice  = new SQLService("jdbc:hive2://hadoop1.saarus.org:10000", "hive", "");
     DataReader reader = 
         new HiveTableDataReader(hservice, "features", new String[] {"stars", "business_review_count", "vote_useful"}) ;
     reader.reset() ;

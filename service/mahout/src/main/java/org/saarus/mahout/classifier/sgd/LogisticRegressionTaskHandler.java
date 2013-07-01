@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.apache.hadoop.mapred.RunningJob;
-import org.saarus.service.hive.HiveService;
+import org.saarus.service.sql.SQLService;
 import org.saarus.service.task.CallableTaskUnit;
 import org.saarus.service.task.Parameters;
 import org.saarus.service.task.TaskUnit;
@@ -14,19 +14,19 @@ import org.saarus.service.task.TaskUnitResult;
 public class LogisticRegressionTaskHandler implements TaskUnitHandler {
   static public String NAME = "LogisticRegression" ;
   
-  private HiveService hservice ;
+  private SQLService hservice ;
   
   public LogisticRegressionTaskHandler() {
   }
 
-  public LogisticRegressionTaskHandler(HiveService hservice) throws Exception {
+  public LogisticRegressionTaskHandler(SQLService hservice) throws Exception {
     this.hservice = hservice ;
   }
   
   public String getName() { return NAME ; }
   
-  public HiveService getHiveService() { return this.hservice ; }
-  public void setHiveService(HiveService hservice) { this.hservice = hservice ; }
+  public SQLService getHiveService() { return this.hservice ; }
+  public void setHiveService(SQLService hservice) { this.hservice = hservice ; }
 
   
   public CallableTaskUnit<?> getCallableTaskUnit(TaskUnit taskUnit) {
@@ -53,6 +53,7 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
         TrainLogistic tl = new TrainLogistic().setHiveService(hservice) ;
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw, true);
+        tl.setMaxRead(30000) ;
         tl.train(args, pw) ;
         return  sw.toString() ;
       }

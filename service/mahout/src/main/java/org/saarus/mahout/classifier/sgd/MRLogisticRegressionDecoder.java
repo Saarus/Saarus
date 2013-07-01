@@ -95,7 +95,7 @@ public class MRLogisticRegressionDecoder {
         
         csv.configVariableNames(Arrays.asList(headers)) ;
         if (showScores) {
-          output.printf(Locale.ENGLISH, "%s, %s\n", "score", "label");
+          output.printf(Locale.ENGLISH, "%s, %s, %s\n", "#Record", "score", "label");
         }
       } catch(Exception ex) {
         ex.printStackTrace() ;
@@ -113,12 +113,11 @@ public class MRLogisticRegressionDecoder {
       int targetScore = (int)Math.round(score) ;
       String targetLabel = csv.getTargetLabel(targetScore) ;
       if (showScores) {
-        output.printf(Locale.ENGLISH, "%d %s %s %.3f, %s\n", lineNum, vals.get(1),vals.get(11), score, targetLabel);
+        output.printf(Locale.ENGLISH, "%d %.3f, %s\n", lineNum, score, targetLabel);
        // output.printf(Locale.ENGLISH, "%d,%.3f,%.6f\n", target, score, lr.logLikelihood(target, v));
       }
       collector.add(target, score);
-      String outValue = target + "," + score ;
-      mapCollector.collect(key, new Text(outValue)) ;
+      mapCollector.collect(key, new Text(String.format("%.3f, %s", score, targetLabel))) ;
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.apache.commons.cli2.builder.GroupBuilder;
 import org.apache.commons.cli2.commandline.Parser;
 import org.apache.commons.cli2.util.HelpFormatter;
 import org.saarus.service.hadoop.util.FSResource;
-import org.saarus.service.hive.HiveService;
+import org.saarus.service.sql.SQLService;
 
 public final class TrainLogisticArgumentParser {
   String targetVariable ;
@@ -28,9 +28,9 @@ public final class TrainLogisticArgumentParser {
   int passes;
   boolean scores;
   
-  private HiveService hservice ;
+  private SQLService hservice ;
   
-  public TrainLogisticArgumentParser setHiveService(HiveService hservice) {
+  public TrainLogisticArgumentParser setHiveService(SQLService hservice) {
     this.hservice = hservice ;
     return this ;
   }
