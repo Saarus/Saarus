@@ -13,6 +13,14 @@ public class Task {
   private long           taskSubmitWait = 0l ;
   private List<TaskUnit> taskUnits ;
   
+  public Task() {} ;
+  
+  public Task(String handler, TaskUnit ... unit) {
+    this.taskHandler = handler; 
+    taskUnits = new ArrayList<TaskUnit>() ;
+    for(TaskUnit sel : unit) taskUnits.add(sel) ;
+  } ;
+  
   public String getOwner() { return this.owner; }
   public void   setOwner(String owner) { this.owner = owner ; }
   

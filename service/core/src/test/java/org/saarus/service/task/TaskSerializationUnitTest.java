@@ -19,7 +19,7 @@ public class TaskSerializationUnitTest {
     
     taskUnit = JSONSerializer.JSON_SERIALIZER.fromString(taskUnitJson, TaskUnit.class) ;
     Assert.assertEquals("execute", taskUnit.getName()) ;
-    Assert.assertEquals(2, taskUnit.getParameters().size()) ;
+    Assert.assertEquals(3, taskUnit.getParameters().size()) ;
   
     Task task = new Task() ;
     task.setId("taskUnit") ;
@@ -51,6 +51,7 @@ public class TaskSerializationUnitTest {
     tunit.setName(name) ;
     tunit.getParameters().setInteger("intParam", 100) ;
     tunit.getParameters().setString("stringParam", "a string") ;
+    tunit.getParameters().setObject("stringArray", new Object[] {"test1", 2 }) ;
     return tunit ;
   }
 }

@@ -1,17 +1,19 @@
 package org.saarus.service.task;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
-public class Parameters extends HashMap<String, String> {
+public class Parameters extends LinkedHashMap<String, Object> {
+  private static final long serialVersionUID = 1L;
+
   public String getString(String name) {
-    String val = get(name) ;
-    if(val != null) return val ;
+    Object val = get(name) ;
+    if(val != null) return (String)val ;
     return null ;
   }
   
   public String getString(String name, String dvalue) {
-    String val = get(name) ;
-    if(val != null) return val ;
+    Object val = get(name) ;
+    if(val != null) return (String) val ;
     return dvalue ;
   }
   
@@ -20,22 +22,37 @@ public class Parameters extends HashMap<String, String> {
   }
   
   public int getInteger(String name, int dvalue) {
-    String val = get(name) ;
-    if(val != null) return Integer.parseInt(val) ;
+    Integer val = (Integer) get(name) ;
+    if(val != null) return (Integer)val ;
     return dvalue ;
   }
   
   public void setInteger(String name, int value) {
-    put(name, Integer.toString(value)) ;
+    put(name, value) ;
   }
   
   public long getLong(String name, long dvalue) {
-    String val = get(name) ;
-    if(val != null) return Long.parseLong(val) ;
+    Object val =  get(name) ;
+    if(val instanceof Integer) return new Long(((Integer)val)) ;
+    if(val != null) return (Long) val ;
     return dvalue ;
   }
   
   public void setLong(String name, long value) {
-    put(name, Long.toString(value)) ;
+    put(name, value) ;
+  }
+  
+  public Object getObject(String name) {
+    return get(name) ;
+  }
+  
+  public Object getObject(String name, Object dval) {
+    Object val = get(name) ;
+    if(val == null) return dval ;
+    return val ;
+  }
+  
+  public void setObject(String name, Object obj) {
+    put(name, obj) ;
   }
 }

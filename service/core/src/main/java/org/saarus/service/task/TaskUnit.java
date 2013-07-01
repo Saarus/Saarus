@@ -16,6 +16,13 @@ public class TaskUnit {
     this.task = new String[] {task} ;
   }
   
+  public TaskUnit(String name, String task) {
+    this.name = name ;
+    if(task != null) {
+      this.task = new String[] {task} ;
+    }
+  }
+  
   public String getId() { return id ; }
   public void   setId(String id) { this.id = id ; }
   

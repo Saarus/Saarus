@@ -18,17 +18,17 @@ public class TaskManagerUnitTest {
   "  \"taskUnits\" : [ {" +
   "    \"name\" : \"hello\"," +
   "    \"description\" : \"Test hello method, expect return 'hello from Dummy...' string\"," +
-  "    \"taskUnit\" : [\"hello taskUnit(not used)\"]" +
+  "    \"task\" : [\"hello taskUnit(not used)\"]" +
   "  }, {" +
   "    \"name\" : \"ping\"," +
   "    \"description\" : \"Test ping method, expect return 'true/false'\"," +
-  "    \"taskUnit\" : [\"ping(not used)\"]" +
+  "    \"task\" : [\"ping(not used)\"]" +
   "  }, {" +
   "    \"name\" : \"wait\"," +
   "    \"description\" : \"Test wait method, expect return '${time}' handle on the server\"," +
-  "    \"taskUnit\" : [\"wait(not used)\"]," +
+  "    \"task\" : [\"wait(not used)\"]," +
   "    \"parameters\" : {" +
-  "      \"wait\" : \"1000\"" +
+  "      \"wait\" : 1000" +
   "     }" +
   "  }]" +
   "}" ;
@@ -39,13 +39,13 @@ public class TaskManagerUnitTest {
       "  \"owner\" : \"tester\"," +
       "  \"description\" : \"execute some hive sql queries....\"," +
       "  \"taskHandler\" : \"Dummy\"," +
-      "  \"taskSubmitWait\" : \"2000\"," +
+      "  \"taskSubmitWait\" : 2000," +
       "  \"taskUnits\" : [ {" +
       "    \"name\" : \"wait\"," +
       "    \"description\" : \"Test wait method, expect return '${time}' handle on the server\"," +
-      "    \"taskUnit\" : [\"wait(not used)\"]," +
+      "    \"task\" : [\"wait(not used)\"]," +
       "    \"parameters\" : {" +
-      "      \"wait\" : \"5000\"" +
+      "      \"wait\" : 5000" +
       "     }" +
       "  }]" +
       "}" ;
