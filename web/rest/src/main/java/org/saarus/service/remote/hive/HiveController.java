@@ -2,10 +2,10 @@ package org.saarus.service.remote.hive;
 
 import java.util.List;
 
-import org.saarus.service.hive.HiveTaskHandler;
-import org.saarus.service.hive.QueryResult;
-import org.saarus.service.hive.TableMetadata;
 import org.saarus.service.remote.ServiceDescription;
+import org.saarus.service.sql.QueryResult;
+import org.saarus.service.sql.TableMetadata;
+import org.saarus.service.sql.hive.HiveTaskHandler;
 import org.saarus.service.task.TaskUnit;
 import org.saarus.service.task.TaskUnitResult;
 import org.springframework.beans.factory.annotation.Autowired;

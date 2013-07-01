@@ -37,18 +37,20 @@
     </property>
   </bean>
 
-  <bean id="HiveService" class="org.saarus.service.hive.HiveService" init-method="onInit">
+  <bean id="DFSTaskHandler" class="org.saarus.service.hadoop.dfs.DFSTaskHandler" />
+
+  <bean id="SQLService" class="org.saarus.service.sql.SQLService" init-method="onInit">
     <property name="url" value="jdbc:hive2://hadoop1.saarus.org:10000" />
     <property name="username" value="hive" />
     <property name="password" value="" />
   </bean>
 
-  <bean id="HiveTaskHandler" class="org.saarus.service.hive.HiveTaskHandler">
-    <property name="hiveService" ref="HiveService" />
+  <bean id="HiveTaskHandler" class="org.saarus.service.sql.hive.HiveTaskHandler">
+    <property name="sqlService" ref="SQLService" />
   </bean>
 
   <bean id="LogisticRegressionTaskHandler" class="org.saarus.mahout.classifier.sgd.LogisticRegressionTaskHandler">
-    <property name="hiveService" ref="HiveService" />
+    <property name="sqlService" ref="SQLService" />
   </bean>
 
   <bean id="DummyTaskUnitHandler" class="org.saarus.service.task.DummyTaskUnitHandler"/>
@@ -56,6 +58,7 @@
   <bean id="TaskManager" class="org.saarus.service.task.TaskManager">
     <property name="handlers">
       <list>
+        <ref bean="DFSTaskHandler"/>
         <ref bean="HiveTaskHandler"/>
         <ref bean="LogisticRegressionTaskHandler"/>
         <ref bean="DummyTaskUnitHandler"/>
