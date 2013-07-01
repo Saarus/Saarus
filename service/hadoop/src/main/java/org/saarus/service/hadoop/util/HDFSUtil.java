@@ -10,7 +10,8 @@ import org.apache.hadoop.fs.Path;
 
 public class HDFSUtil {
   private static FileSystem fileSystem ;
-	
+  private static FileSystem localFileSystem ;
+  
   static public Configuration getDaultConfiguration() {
     Configuration conf = new Configuration(false) ;
     conf.addResource("core-default.xml") ;
@@ -36,6 +37,13 @@ public class HDFSUtil {
     conf.addResource("hadoopconf/dev/mapred-site.xml") ;
     conf.addResource("hadoopconf/dev/yarn-site.xml") ;
     return conf ;
+  }
+  
+  static public FileSystem getLocalFileSystem() throws IOException {
+    if(localFileSystem == null) {
+      localFileSystem = FileSystem.get(getDaultConfiguration()) ;
+    }
+    return localFileSystem ;
   }
   
   static public FileSystem getFileSystem() throws IOException {

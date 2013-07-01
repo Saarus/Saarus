@@ -1,4 +1,4 @@
-package org.saarus.service.hive.func;
+package org.saarus.service.sql.hive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 /**
  * To Register the function:
  *   add jar saarus.service.hive-1.0.jar ;
- *   CREATE TEMPORARY FUNCTION maxrow AS 'org.saarus.service.hive.GenericUDAFMaxRow';
+ *   CREATE TEMPORARY FUNCTION maxrow AS 'org.saarus.service.sql.GenericUDAFMaxRow';
  *   SELECT name, maxrow(review_count) FROM user GROUP BY name;
  */
 @Description(

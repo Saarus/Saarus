@@ -1,24 +1,25 @@
-package org.saarus.service.hive;
+package org.saarus.service.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HiveService  {
+public class SQLService  {
   private Connection connection ;
 
   private String url ;
   private String username ;
   private String password ;
   
-  public HiveService() {
+  public SQLService() {
 
   }
 
-  public HiveService(String url, String username, String password) throws Exception {
+  public SQLService(String url, String username, String password) throws Exception {
     this.url = url ;
     this.username = username ;
     this.password = password ;
@@ -44,6 +45,26 @@ public class HiveService  {
       if(stmt != null) stmt.close();
     }
   }
+  
+  public int[] insert(String sql, List<Object[]> paramHolder) throws Exception {
+    PreparedStatement ps = connection.prepareStatement(sql);
+    for(int i = 0; i < paramHolder.size(); i++) {
+      Object[] param = paramHolder.get(i) ;
+      for(int j = 0; j < param.length; i++) {
+        if(param[0] instanceof String) ps.setNString(j + 1, (String)param[0]);
+        else if(param[0] instanceof Integer) ps.setInt(j + 1, (Integer)param[0]);
+        else if(param[0] instanceof Long) ps.setLong(j + 1, (Long)param[0]);
+        else if(param[0] instanceof Float) ps.setFloat(j + 1, (Float)param[0]);
+        else if(param[0] instanceof Double) ps.setDouble(j + 1, (Double)param[0]);
+        else throw new Exception("Type " + param[0].getClass() + " is not supported") ;
+      }
+      ps.addBatch() ;
+    }
+    int[] ret = ps.executeBatch();
+    ps.close() ;
+    return ret ;
+  }
+
   
   public ResultSet executeQuerySQL(String sql) throws Exception {
     Statement stmt = null ;

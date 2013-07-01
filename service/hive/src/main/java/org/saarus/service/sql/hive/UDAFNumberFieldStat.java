@@ -1,4 +1,4 @@
-package org.saarus.service.hive.func;
+package org.saarus.service.sql.hive;
 
 import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;

@@ -1,30 +1,33 @@
-package org.saarus.service.hive;
+package org.saarus.service.sql.hive;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.saarus.service.sql.QueryResult;
+import org.saarus.service.sql.SQLService;
+import org.saarus.service.sql.TableMetadata;
 import org.saarus.service.task.CallableTaskUnit;
 import org.saarus.service.task.TaskUnit;
 import org.saarus.service.task.TaskUnitHandler;
 import org.saarus.service.task.TaskUnitResult;
 
 public class HiveTaskHandler implements TaskUnitHandler {
-  private HiveService hservice ;
+  private SQLService hservice ;
   
   public HiveTaskHandler() {
 
   }
 
-  public HiveTaskHandler(HiveService hservice) throws Exception {
+  public HiveTaskHandler(SQLService hservice) throws Exception {
     this.hservice = hservice ;
   }
   
-  public String getName() { return "HiveService" ; }
+  public String getName() { return "SQLService" ; }
 
-  public HiveService getHiveService() { return this.hservice ; }
-  public void setHiveService(HiveService hservice) { this.hservice = hservice ; }
+  public SQLService getHiveService() { return this.hservice ; }
+  public void setHiveService(SQLService hservice) { this.hservice = hservice ; }
 
   public CallableTaskUnit<?> getCallableTaskUnit(TaskUnit taskUnit) {
     String name = taskUnit.getName();
@@ -33,6 +36,7 @@ public class HiveTaskHandler implements TaskUnitHandler {
     else if("dropTable".equals(name)) return dropTable(taskUnit) ;
     else if("listTable".equals(name)) return listTable(taskUnit) ;
     else if("descTable".equals(name)) return descTable(taskUnit);
+    else if("insert".equals(name)) return insert(taskUnit);
     return null ;
   }
 
@@ -74,6 +78,18 @@ public class HiveTaskHandler implements TaskUnitHandler {
     };
     return callableUnit ;
   }
+ 
+  private CallableTaskUnit<int[]> insert(final TaskUnit tunit) {
+    CallableTaskUnit<int[]> callableUnit = new CallableTaskUnit<int[]>(tunit, new TaskUnitResult<int[]>()) {
+      public int[] doCall() throws Exception {
+        String insertSql = tunit.getTaskLine() ;
+        List<Object[]> data = (List<Object[]>) tunit.getParameters().getObject("data") ;
+        return hservice.insert(insertSql, data) ;
+      }
+    };
+    return callableUnit ;
+  }
+ 
   
   private CallableTaskUnit<QueryResult> executeQuery(final TaskUnit tunit) {
     CallableTaskUnit<QueryResult> callableUnit = new CallableTaskUnit<QueryResult>(tunit, new TaskUnitResult<QueryResult>()) {

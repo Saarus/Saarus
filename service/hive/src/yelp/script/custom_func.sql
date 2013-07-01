@@ -1,6 +1,6 @@
 ADD jar /home/ubuntu/yelp/saarus.service.hive-1.0.jar ;
 
-CREATE TEMPORARY FUNCTION field_stat AS 'org.saarus.service.hive.func.UDAFFieldStat';
+CREATE TEMPORARY FUNCTION field_stat AS 'org.saarus.service.sql.hive.UDAFFieldStat';
 
 DESCRIBE FUNCTION EXTENDED field_stat ;
 

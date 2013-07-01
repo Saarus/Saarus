@@ -1,4 +1,4 @@
-package org.saarus.service.hive;
+package org.saarus.service.sql;
 
 public class QueryResult {
   private String     query ;
