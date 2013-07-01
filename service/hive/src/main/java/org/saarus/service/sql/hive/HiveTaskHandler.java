@@ -14,20 +14,20 @@ import org.saarus.service.task.TaskUnitHandler;
 import org.saarus.service.task.TaskUnitResult;
 
 public class HiveTaskHandler implements TaskUnitHandler {
-  private SQLService hservice ;
+  private SQLService sqlService ;
   
   public HiveTaskHandler() {
 
   }
 
-  public HiveTaskHandler(SQLService hservice) throws Exception {
-    this.hservice = hservice ;
+  public HiveTaskHandler(SQLService sqlService) throws Exception {
+    this.sqlService = sqlService ;
   }
   
   public String getName() { return "SQLService" ; }
 
-  public SQLService getHiveService() { return this.hservice ; }
-  public void setHiveService(SQLService hservice) { this.hservice = hservice ; }
+  public SQLService getSqlService() { return this.sqlService ; }
+  public void setSqlService(SQLService service) { this.sqlService = service ; }
 
   public CallableTaskUnit<?> getCallableTaskUnit(TaskUnit taskUnit) {
     String name = taskUnit.getName();
@@ -44,7 +44,7 @@ public class HiveTaskHandler implements TaskUnitHandler {
     tunit.setTaskLine("drop table if exists " + tunit.getParameters().getString("tableName", null)) ;
     CallableTaskUnit<Boolean> callableUnit = new CallableTaskUnit<Boolean>(tunit, new TaskUnitResult<Boolean>()) {
       public Boolean doCall() throws Exception {
-        return hservice.executeSQL(tunit.getTaskLine()) ;
+        return sqlService.executeSQL(tunit.getTaskLine()) ;
       }
     };
     return callableUnit ;
@@ -55,7 +55,7 @@ public class HiveTaskHandler implements TaskUnitHandler {
     tunit.setTaskLine("describe " + tableName) ;
     CallableTaskUnit<TableMetadata> callableUnit = new CallableTaskUnit<TableMetadata>(tunit, new TaskUnitResult<TableMetadata>()) {
       public TableMetadata doCall() throws Exception {
-        ResultSet res = hservice.executeQuerySQL(taskUnit.getTaskLine());
+        ResultSet res = sqlService.executeQuerySQL(taskUnit.getTaskLine());
         TableMetadata tinfo = null ;
         while (res.next()) {
           if(tinfo == null) tinfo = new TableMetadata(tableName) ;
@@ -73,7 +73,7 @@ public class HiveTaskHandler implements TaskUnitHandler {
   private CallableTaskUnit<Boolean> execute(final TaskUnit tunit) {
     CallableTaskUnit<Boolean> callableUnit = new CallableTaskUnit<Boolean>(tunit, new TaskUnitResult<Boolean>()) {
       public Boolean doCall() throws Exception {
-        return hservice.executeSQL(tunit.getTaskLine()) ;
+        return sqlService.executeSQL(tunit.getTaskLine()) ;
       }
     };
     return callableUnit ;
@@ -84,7 +84,7 @@ public class HiveTaskHandler implements TaskUnitHandler {
       public int[] doCall() throws Exception {
         String insertSql = tunit.getTaskLine() ;
         List<Object[]> data = (List<Object[]>) tunit.getParameters().getObject("data") ;
-        return hservice.insert(insertSql, data) ;
+        return sqlService.insert(insertSql, data) ;
       }
     };
     return callableUnit ;
@@ -94,7 +94,7 @@ public class HiveTaskHandler implements TaskUnitHandler {
   private CallableTaskUnit<QueryResult> executeQuery(final TaskUnit tunit) {
     CallableTaskUnit<QueryResult> callableUnit = new CallableTaskUnit<QueryResult>(tunit, new TaskUnitResult<QueryResult>()) {
       public QueryResult doCall() throws Exception {
-        ResultSet res = hservice.executeQuerySQL(taskUnit.getTaskLine());
+        ResultSet res = sqlService.executeQuerySQL(taskUnit.getTaskLine());
         ResultSetMetaData rsmd = res.getMetaData() ;
         int columnCount = rsmd.getColumnCount() ;
         String[] columnNames = new String[columnCount];
@@ -126,7 +126,7 @@ public class HiveTaskHandler implements TaskUnitHandler {
     tunit.setTaskLine("SHOW TABLES") ;
     CallableTaskUnit<List<String>> callableUnit = new CallableTaskUnit<List<String>>(tunit, new TaskUnitResult<List<String>>()) {
       public List<String> doCall() throws Exception {
-        return hservice.listTables() ;
+        return sqlService.listTables() ;
       }
     };
     return callableUnit ;

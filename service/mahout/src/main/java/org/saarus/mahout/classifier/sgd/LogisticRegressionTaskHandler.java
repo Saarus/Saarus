@@ -14,19 +14,19 @@ import org.saarus.service.task.TaskUnitResult;
 public class LogisticRegressionTaskHandler implements TaskUnitHandler {
   static public String NAME = "LogisticRegression" ;
   
-  private SQLService hservice ;
+  private SQLService sqlService ;
   
   public LogisticRegressionTaskHandler() {
   }
 
-  public LogisticRegressionTaskHandler(SQLService hservice) throws Exception {
-    this.hservice = hservice ;
+  public LogisticRegressionTaskHandler(SQLService sqlService) throws Exception {
+    this.sqlService = sqlService ;
   }
   
   public String getName() { return NAME ; }
   
-  public SQLService getHiveService() { return this.hservice ; }
-  public void setHiveService(SQLService hservice) { this.hservice = hservice ; }
+  public SQLService getSqlService() { return this.sqlService ; }
+  public void setSqlService(SQLService service) { this.sqlService = service ; }
 
   
   public CallableTaskUnit<?> getCallableTaskUnit(TaskUnit taskUnit) {
@@ -50,7 +50,7 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
             "--passes", params.getString("passes", "100"),
             "--rate", params.getString("rate", "50")
         };
-        TrainLogistic tl = new TrainLogistic().setHiveService(hservice) ;
+        TrainLogistic tl = new TrainLogistic().setHiveService(sqlService) ;
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw, true);
         tl.setMaxRead(30000) ;
