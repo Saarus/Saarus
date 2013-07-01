@@ -4,4 +4,6 @@ HADOOP_CLIENT_HOME=/home/hadoop/hadoop
 HADOOP_CONF_DIR=$HADOOP_CLIENT_HOME/conf
 HADOOP_CLASSPATH=/usr/lib/hadoop/client/*
 
+echo "To run the hadoop client with other user, set HADOOP_USER_NAME=user"
+
 hadoop $@
