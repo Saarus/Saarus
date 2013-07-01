@@ -1,4 +1,4 @@
-package org.saarus.knime.data.in.json;
+package org.saarus.knime.data.io.json;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +25,8 @@ import org.saarus.client.ClientContext;
 import org.saarus.client.HiveClient;
 import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
-import org.saarus.knime.data.in.json.JSONImportConfigs.JSONImportConfig;
-import org.saarus.service.hive.TableMetadata;
+import org.saarus.knime.data.io.json.JSONImportConfigs.JSONImportConfig;
+import org.saarus.service.sql.TableMetadata;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
 import org.saarus.service.util.JSONSerializer;

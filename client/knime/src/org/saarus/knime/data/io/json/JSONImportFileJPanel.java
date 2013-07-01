@@ -1,4 +1,4 @@
-package org.saarus.knime.data.in.json;
+package org.saarus.knime.data.io.json;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.table.DefaultTableModel;
 
-import org.saarus.knime.data.in.json.JSONImportConfigs.JSONImportConfig;
+import org.saarus.knime.data.io.json.JSONImportConfigs.JSONImportConfig;
 import org.saarus.knime.uicomp.JTreeDFSFileSelector;
 import org.saarus.knime.uicomp.SpringUtilities;
 import org.saarus.service.hadoop.dfs.DFSFile;

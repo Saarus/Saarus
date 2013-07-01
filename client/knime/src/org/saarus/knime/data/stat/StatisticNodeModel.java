@@ -25,7 +25,7 @@ import org.saarus.client.ClientContext;
 import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
 import org.saarus.knime.data.stat.StatisticConfigs.StatisticConfig;
-import org.saarus.service.hive.QueryResult;
+import org.saarus.service.sql.QueryResult;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
 import org.saarus.service.task.TaskUnitResult;

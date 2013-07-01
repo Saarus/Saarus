@@ -1,4 +1,4 @@
-package org.saarus.knime.data.in.json;
+package org.saarus.knime.data.io.json;
 
 import org.knime.core.node.NodeView;
 

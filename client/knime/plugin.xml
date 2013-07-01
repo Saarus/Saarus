@@ -21,7 +21,7 @@
                 level-id="Saarus" name="Saarus" path="/saarus"/>
       -->
       <node category-path="/"
-            factory-class="org.saarus.knime.data.in.json.JSONImportNodeFactory"
+            factory-class="org.saarus.knime.data.io.json.JSONImportNodeFactory"
             id="org.saarus.knime.data.in.json.JSONImportNodeFactory"/>
 
       <node category-path="/"

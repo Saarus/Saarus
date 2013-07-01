@@ -26,7 +26,7 @@ import org.saarus.client.HiveClient;
 import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
 import org.saarus.knime.data.hive.QueryConfigs.QueryConfig;
-import org.saarus.service.hive.TableMetadata;
+import org.saarus.service.sql.TableMetadata;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
 import org.saarus.service.util.JSONSerializer;

@@ -26,7 +26,7 @@ Bundle-Activator: org.saarus.knime.SaarusKnimePlugin
 Export-Package: org.saarus.knime,
  org.saarus.knime.data.filereader,
  org.saarus.knime.data.hive,
- org.saarus.knime.data.in.json,
+ org.saarus.knime.data.io.json,
  org.saarus.knime.data.stat,
  org.saarus.knime.mahout.lr.learner,
  org.saarus.knime.mahout.lr.predictor,

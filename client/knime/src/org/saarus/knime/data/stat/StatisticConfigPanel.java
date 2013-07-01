@@ -29,8 +29,8 @@ import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
 import org.saarus.knime.data.stat.StatisticConfigs.StatisticConfig;
 import org.saarus.knime.uicomp.SpringUtilities;
-import org.saarus.service.hive.TableMetadata;
-import org.saarus.service.hive.TableMetadata.FieldInfo;
+import org.saarus.service.sql.TableMetadata;
+import org.saarus.service.sql.TableMetadata.FieldInfo;
 
 public class StatisticConfigPanel extends JPanel {
   

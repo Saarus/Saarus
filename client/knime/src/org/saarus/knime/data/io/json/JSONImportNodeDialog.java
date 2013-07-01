@@ -1,4 +1,4 @@
-package org.saarus.knime.data.in.json;
+package org.saarus.knime.data.io.json;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,7 +18,7 @@ import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.saarus.knime.ServiceContext;
-import org.saarus.knime.data.in.json.JSONImportConfigs.JSONImportConfig;
+import org.saarus.knime.data.io.json.JSONImportConfigs.JSONImportConfig;
 import org.saarus.knime.uicomp.JInfoDialog;
 import org.saarus.knime.uicomp.JTabbedPaneUI;
 import org.saarus.service.util.JSONSerializer;
