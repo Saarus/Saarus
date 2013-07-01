@@ -10,6 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 public class JTabbedPaneUI  extends JPanel {
+  private static final long serialVersionUID = 1L;
+
   private JTabbedPane tabbedPane ;
   
   public JTabbedPaneUI() {
@@ -24,7 +26,6 @@ public class JTabbedPaneUI  extends JPanel {
     for(int i = 0; i < tabbedPane.getTabCount(); i++) {
       String checkTitle = tabbedPane.getTitleAt(i) ;
       if(title.equals(checkTitle)) {
-        Component comp = tabbedPane.getComponentAt(i) ;
         tabbedPane.remove(i) ;
         break ;
       }

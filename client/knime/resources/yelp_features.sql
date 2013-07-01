@@ -7,6 +7,8 @@ CREATE TABLE features(
      vote_funny             INT,
      vote_useful            INT,
      vote_cool              INT,
+     percentage_useful      FLOAT,
+     cat_useful             INT,
      business_id            STRING,
      business_city          STRING,
      business_state         STRING,
@@ -23,6 +25,8 @@ CREATE TABLE features(
 
 INSERT OVERWRITE TABLE features
   SELECT r.stars, IF(r.text != null, 1, 0), r.vote_funny, r.vote_useful, r.vote_cool, 
+         IF(r.vote_useful > 0, r.vote_useful/(r.vote_useful + r.vote_funny + r.vote_cool), 0),
+         IF(r.vote_useful > 0 AND r.vote_useful/(r.vote_useful + r.vote_funny + r.vote_cool) > 0.4999, 1, 0),
          b.business_id, b.city, b.state, b.open, b.review_count, b.stars,
          u.review_count, u.average_stars, u.vote_funny, u.vote_useful, u.vote_cool
   FROM review r 

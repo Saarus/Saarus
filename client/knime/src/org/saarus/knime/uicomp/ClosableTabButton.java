@@ -22,6 +22,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.plaf.basic.BasicButtonUI;
 
 public class ClosableTabButton extends JPanel {
+  private static final long serialVersionUID = 1L;
+
   private final JTabbedPane pane;
 
   public ClosableTabButton(final JTabbedPane pane) {
@@ -36,9 +38,7 @@ public class ClosableTabButton extends JPanel {
     JLabel label = new JLabel() {
       public String getText() {
         int i = pane.indexOfTabComponent(ClosableTabButton.this);
-        if (i != -1) {
-          return pane.getTitleAt(i);
-        }
+        if (i != -1) return pane.getTitleAt(i);
         return null;
       }
     };

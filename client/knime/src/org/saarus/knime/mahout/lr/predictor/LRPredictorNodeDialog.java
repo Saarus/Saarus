@@ -53,7 +53,7 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
         config.input = "/user/hive/yelpdb/test" ; 
         config.output = "/tmp/yelp/working/output" ;
         config.model = "dfs:/tmp/yelp-features.model" ;
-        config.colHeaders =  "review_id, stars, text,vote_funny,vote_useful,vote_cool,business_id,business_city,business_state,business_open,business_review_count,business_stars,user_id,user_review_count,user_average_stars,user_vote_funny,user_vote_useful,user_vote_cool" ;
+        config.colHeaders =  "stars,text,vote_funny,vote_useful,vote_cool,percentage_useful,cat_useful,business_id,business_city,business_state,business_open,business_review_count,business_stars,user_review_count,user_average_stars,user_vote_funny,user_vote_useful,user_vote_cool" ;
         config.auc = true ;
         config.confusion = true ;
         config.clusterMode =  true ;
@@ -74,11 +74,9 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
         config.input = "data/yelptest" ; 
         config.output = "working/yelp/output" ;
         config.model = "dfs:/tmp/yelp-features.model" ;
-        config.colHeaders =  "stars, text, vote_funny, vote_useful, vote_cool, "+
-                             "business_id, business_city, business_state, business_open, business_review_count, " +
-                             "business_stars, user_review_count, user_average_stars" ;
-        config.auc = true ;
+        config.colHeaders =  "stars,text,vote_funny,vote_useful,vote_cool,percentage_useful,cat_useful,business_id,business_city,business_state,business_open,business_review_count,business_stars,user_review_count,user_average_stars,user_vote_funny,user_vote_useful,user_vote_cool";
         config.confusion = true ;
+        config.auc = true ;
         config.clusterMode = false ;
         LRPredictorConfigs configs = new LRPredictorConfigs() ;
         configs.mahoutConfig = config ;

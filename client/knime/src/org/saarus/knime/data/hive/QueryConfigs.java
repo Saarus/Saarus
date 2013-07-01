@@ -84,7 +84,7 @@ public class QueryConfigs {
         units.add(sel) ;
       }
     }
-    task.setTaskHandler("HiveService") ;
+    task.setTaskHandler("SQLService") ;
     task.setTaskUnits(units) ;
     task.setTaskSubmitWait(3000l) ;
     task.setDescription("create json tables") ;

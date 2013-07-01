@@ -1,6 +1,7 @@
 package org.saarus.knime.data.in.json;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -12,7 +13,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -22,7 +22,9 @@ import javax.swing.SpringLayout;
 import javax.swing.table.DefaultTableModel;
 
 import org.saarus.knime.data.in.json.JSONImportConfigs.JSONImportConfig;
+import org.saarus.knime.uicomp.JTreeDFSFileSelector;
 import org.saarus.knime.uicomp.SpringUtilities;
+import org.saarus.service.hadoop.dfs.DFSFile;
 
 public class JSONImportFileJPanel extends JPanel {
   private static final int HORIZ_SPACE = 10;
@@ -46,12 +48,13 @@ public class JSONImportFileJPanel extends JPanel {
     JButton browse = new JButton("Browse");
     browse.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        JFileChooser chooser = new JFileChooser(urlInput.getEditor().getItem().toString());
-        int returnVal = chooser.showOpenDialog(getParent());
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-          String file =  chooser.getSelectedFile().getAbsolutePath();
-          urlInput.setSelectedItem(file);
-          previewTable.setData(null) ;
+        try {
+          JSONFileSelector selector = new JSONFileSelector();
+          selector.setSize(new Dimension(300, 500)) ;
+          selector.setLocationRelativeTo(JSONImportFileJPanel.this) ;
+          selector.setVisible(true) ;
+        } catch (Exception e1) {
+          e1.printStackTrace();
         }
       }
     });
@@ -94,6 +97,20 @@ public class JSONImportFileJPanel extends JPanel {
     String loc = urlInput.getURLLocation() ;
     JSONImportConfig config = new JSONImportConfig(table, desc, loc) ;
     return config ;
+  }
+  
+  class JSONFileSelector extends JTreeDFSFileSelector {
+    private static final long serialVersionUID = 1L;
+    
+    public JSONFileSelector() throws Exception { super() ; }
+    
+    public void onClickOK(DFSFile selectFile) {
+      if(selectFile != null) {
+        urlInput.setSelectedItem(selectFile.getPath());
+        previewTable.setData(null) ;
+      }
+      dispose() ;
+    }
   }
   
   static class URLInput extends JComboBox<String> {

@@ -85,17 +85,17 @@ public class StatisticConfigs {
     
     TaskUnit registerFieldStat = new TaskUnit() ;
     registerFieldStat.setName("execute") ;
-    registerFieldStat.setTaskLine("CREATE TEMPORARY FUNCTION field_stat AS 'org.saarus.service.hive.func.UDAFFieldStat'");
+    registerFieldStat.setTaskLine("CREATE TEMPORARY FUNCTION field_stat AS 'org.saarus.service.sql.hive.UDAFFieldStat'");
     units.add(registerFieldStat) ;
     
     TaskUnit registerStringFieldStat = new TaskUnit() ;
     registerStringFieldStat.setName("execute") ;
-    registerStringFieldStat.setTaskLine("CREATE TEMPORARY FUNCTION string_field_stat AS 'org.saarus.service.hive.func.UDAFStringFieldStat'");
+    registerStringFieldStat.setTaskLine("CREATE TEMPORARY FUNCTION string_field_stat AS 'org.saarus.service.sql.hive.UDAFStringFieldStat'");
     units.add(registerStringFieldStat) ;
   
     TaskUnit registerNumberFieldStat = new TaskUnit() ;
     registerNumberFieldStat.setName("execute") ;
-    registerNumberFieldStat.setTaskLine("CREATE TEMPORARY FUNCTION number_field_stat AS 'org.saarus.service.hive.func.UDAFNumberFieldStat'");
+    registerNumberFieldStat.setTaskLine("CREATE TEMPORARY FUNCTION number_field_stat AS 'org.saarus.service.sql.hive.UDAFNumberFieldStat'");
     units.add(registerNumberFieldStat) ;
     
     Iterator<StatisticConfig> i = configs.values().iterator() ;
@@ -105,7 +105,7 @@ public class StatisticConfigs {
         units.add(sel) ;
       }
     }
-    task.setTaskHandler("HiveService") ;
+    task.setTaskHandler("SQLService") ;
     task.setTaskUnits(units) ;
     task.setTaskSubmitWait(3000l) ;
     task.setDescription("Run table field statistic") ;
