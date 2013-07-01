@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.saarus.service.hive.TableMetadata;
+import org.saarus.service.sql.TableMetadata;
 import org.saarus.service.task.TaskUnitResult;
 import org.springframework.web.client.RestTemplate;
 

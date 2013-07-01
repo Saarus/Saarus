@@ -8,13 +8,13 @@
     "task" : ["ADD jar /home/hadoop/yelp/lib/saarus.service.hive-1.0.jar"]
   }, {
     "name" : "execute", 
-    "task" : ["CREATE TEMPORARY FUNCTION field_stat AS 'org.saarus.service.hive.func.UDAFFieldStat'"]
+    "task" : ["CREATE TEMPORARY FUNCTION field_stat AS 'org.saarus.service.sql.hive.UDAFFieldStat'"]
   }, {
     "name" : "execute", 
-    "task" : ["CREATE TEMPORARY FUNCTION string_field_stat AS 'org.saarus.service.hive.func.UDAFStringFieldStat'"]
+    "task" : ["CREATE TEMPORARY FUNCTION string_field_stat AS 'org.saarus.service.sql.hive.UDAFStringFieldStat'"]
   }, {
     "name" : "execute", 
-    "task" : ["CREATE TEMPORARY FUNCTION number_field_stat AS 'org.saarus.service.hive.func.UDAFNumberFieldStat'"]
+    "task" : ["CREATE TEMPORARY FUNCTION number_field_stat AS 'org.saarus.service.sql.hive.UDAFNumberFieldStat'"]
   }, {
     "id":    "table:features",
     "name" : "executeQuery", 
