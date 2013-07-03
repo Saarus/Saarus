@@ -2,6 +2,8 @@ package org.saarus.service.task;
 
 import java.util.LinkedHashMap;
 
+import org.saarus.service.util.StringUtil;
+
 public class Parameters extends LinkedHashMap<String, Object> {
   private static final long serialVersionUID = 1L;
 
@@ -19,6 +21,20 @@ public class Parameters extends LinkedHashMap<String, Object> {
   
   public void setString(String name, String value) {
     put(name, value) ;
+  }
+  
+  public String[] getStringArray(String name, String[] dvalue) {
+    Object val = get(name) ;
+    if(val != null) {
+      String string = (String) val ;
+      return StringUtil.toStringArray(string) ;
+    }
+    return dvalue ;
+  }
+  
+  public void setStringArray(String name, String[] array) {
+    if(array == null) return ;
+    put(name, StringUtil.joinStringArray(array)) ;
   }
   
   public int getInteger(String name, int dvalue) {

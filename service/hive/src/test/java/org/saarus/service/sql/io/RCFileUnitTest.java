@@ -27,7 +27,7 @@ import org.saarus.service.sql.io.RCFileWriter;
 public class RCFileUnitTest {
   @Test
   public void testSimpleReadAndWrite() throws Exception {
-    Configuration conf = HDFSUtil.getDaultConfiguration() ;
+    Configuration conf = HDFSUtil.getDefaultConfiguration() ;
     FileSystem fs = FileSystem.get(conf) ;
     String file = "target/mapred/test_rcfile";
     fs.delete(new Path(file), true);

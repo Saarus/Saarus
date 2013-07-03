@@ -698,7 +698,7 @@ public class FileReaderSettings extends TokenizerSettings {
 
     /**
      * @param loc the location to extract the filename from.
-     * @return the filename part of the URL without path. Or <code>null</code>
+     * @return the filename part of the URL without jsonFile. Or <code>null</code>
      *         if the URL is <code>null</code>.
      */
     private String getPureFileNameWithExtension(final URL loc) {

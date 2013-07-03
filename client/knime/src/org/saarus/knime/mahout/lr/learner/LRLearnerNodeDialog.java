@@ -89,7 +89,7 @@ public class LRLearnerNodeDialog extends NodeDialogPane {
     JButton viewScript = new JButton("View Script");
     viewScript.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        JInfoDialog dialog = new JInfoDialog() ;
+        JInfoDialog dialog = JInfoDialog.getInstance() ;
         try {
           String json = JSONSerializer.JSON_SERIALIZER.toString(getLRLearnerConfigs().getGeneratedTask()) ;
           dialog.setInfo(json) ;

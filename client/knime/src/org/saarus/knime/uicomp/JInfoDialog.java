@@ -1,7 +1,6 @@
 package org.saarus.knime.uicomp;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,32 +11,31 @@ import javax.swing.JTextArea;
 
 public class JInfoDialog extends JDialog {
   private static final long serialVersionUID = 1L;
-
-  private JTextArea infoPanel ;
   
-  public JInfoDialog() {
+  static private JInfoDialog instance = new JInfoDialog() ; 
+  
+  private JTextArea infoTextArea ;
+  
+  private JInfoDialog() {
     setTitle("Info") ;
-    setMinimumSize(new Dimension(600, 500)) ;
     setLayout(new BorderLayout()) ;
     setAlwaysOnTop(true) ;
-    JButton close = new JButton("OK") ;
-    close.addActionListener(new ActionListener() {
+    
+    JButton okButton = new JButton("OK") ;
+    okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        onClose() ;
+        setVisible(false) ;
       }
     }) ;
-    infoPanel = new JTextArea() ;
-    infoPanel.setEditable(false) ;
-    JScrollPane scrollText = new JScrollPane(infoPanel);
-    add(scrollText, BorderLayout.CENTER) ;
-    add(close, BorderLayout.SOUTH) ;
+    infoTextArea = new JTextArea() ;
+    add(new JScrollPane(infoTextArea), BorderLayout.CENTER) ;
+    add(okButton, BorderLayout.SOUTH) ;
   }
   
   public void setInfo(String text) {
-    infoPanel.setText(text) ;
+    infoTextArea.setText(text) ;
   }
   
-  public void onClose() {
-    dispose() ;
-  }
+  
+  static public JInfoDialog getInstance() { return instance ; }
 }

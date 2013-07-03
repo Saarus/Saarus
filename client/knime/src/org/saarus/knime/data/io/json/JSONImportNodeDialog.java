@@ -17,7 +17,6 @@ import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
-import org.saarus.knime.ServiceContext;
 import org.saarus.knime.data.io.json.JSONImportConfigs.JSONImportConfig;
 import org.saarus.knime.uicomp.JInfoDialog;
 import org.saarus.knime.uicomp.JTabbedPaneUI;
@@ -55,7 +54,7 @@ public class JSONImportNodeDialog extends NodeDialogPane {
     JButton viewScript = new JButton("View Script");
     viewScript.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        JInfoDialog dialog = new JInfoDialog() ;
+        JInfoDialog dialog = JInfoDialog.getInstance() ;
         try {
           String json = JSONSerializer.JSON_SERIALIZER.toString(getJSONImportConfigs().getGeneratedTask()) ;
           dialog.setInfo(json) ;
@@ -73,11 +72,51 @@ public class JSONImportNodeDialog extends NodeDialogPane {
         for(int i = tabCount - 1; i > 0; i--) {
           tabbedPane.removeTabAt(i) ;
         }
+        
+        JSONImportConfig userTableConfig =
+          new JSONImportConfig("user", "create table user....", "dfs:/user/hive/yelpdb/json/training/user/data.json") ;
+        userTableConfig.addFieldConfig("user_id", "STRING", "user_id") ;
+        userTableConfig.addFieldConfig("name", "STRING", "name") ;
+        userTableConfig.addFieldConfig("review_count", "INT", "review_count") ;
+        userTableConfig.addFieldConfig("average_stars", "FLOAT", "average_stars") ;
+        userTableConfig.addFieldConfig("vote_funny",  "INT", "votes.funny") ;
+        userTableConfig.addFieldConfig("vote_useful", "INT", "votes.useful") ;
+        userTableConfig.addFieldConfig("vote_cool",   "INT", "votes.cool") ;
+        
+        JSONImportConfig businessTableConfig =
+            new JSONImportConfig("business", "create table business", "dfs:/user/hive/yelpdb/json/training/business/data.json") ;
+        businessTableConfig.addFieldConfig("business_id", "STRING", "business_id") ;
+        businessTableConfig.addFieldConfig("name", "STRING", "name") ;
+        businessTableConfig.addFieldConfig("full_address", "STRING", "full_address") ;
+        businessTableConfig.addFieldConfig("city", "STRING", "city") ;
+        businessTableConfig.addFieldConfig("state", "STRING", "state") ;
+        businessTableConfig.addFieldConfig("open", "INT", "open") ;
+        businessTableConfig.addFieldConfig("longitude", "DOUBLE", "longitude") ;
+        businessTableConfig.addFieldConfig("latitude", "DOUBLE", "latitude") ;
+        businessTableConfig.addFieldConfig("categories", "STRING", "categories") ;
+        businessTableConfig.addFieldConfig("review_count", "INT", "review_count") ;
+        businessTableConfig.addFieldConfig("stars", "FLOAT", "stars") ;
+        businessTableConfig.addFieldConfig("neighborhoods", "STRING", "neighborhoods") ;
+        
+        JSONImportConfig checkinTableConfig =
+            new JSONImportConfig("checkin", "create table checkin", "dfs:/user/hive/yelpdb/json/training/checkin/data.json") ;
+        checkinTableConfig.addFieldConfig("business_id", "STRING", "business_id") ;
+        checkinTableConfig.addFieldConfig("checkin_info", "STRING", "checkin_info") ;
+        
+        JSONImportConfig reviewTableConfig =
+            new JSONImportConfig("review", "create table review", "dfs:/user/hive/yelpdb/json/training/review/data.json") ;
+        reviewTableConfig.addFieldConfig("review_id", "STRING", "review_id") ;
+        reviewTableConfig.addFieldConfig("business_id", "STRING", "business_id") ;
+        reviewTableConfig.addFieldConfig("user_id", "STRING", "user_id") ;
+        reviewTableConfig.addFieldConfig("stars", "FLOAT", "stars") ;
+        reviewTableConfig.addFieldConfig("text", "STRING", "text") ;
+        reviewTableConfig.addFieldConfig("`date`", "STRING", "date") ;
+        reviewTableConfig.addFieldConfig("vote_funny", "INT", "votes.funny") ;
+        reviewTableConfig.addFieldConfig("vote_useful", "INT", "votes.useful") ;
+        reviewTableConfig.addFieldConfig("vote_cool", "INT", "votes.cool") ;
+        
         JSONImportConfig[] config ={
-          new JSONImportConfig("user_json", "create table user_json....", "/user/hive/yelpdb/json/training/user"),
-          new JSONImportConfig("business_json", "create table business_json....", "/user/hive/yelpdb/json/training/business"),
-          new JSONImportConfig("checkin_json", "create table checkin_json....", "/user/hive/yelpdb/json/training/checkin"),
-          new JSONImportConfig("review_json", "create table review_json....", "/user/hive/yelpdb/json/training/review"),
+          userTableConfig, businessTableConfig, checkinTableConfig, reviewTableConfig 
         };
         for(JSONImportConfig sel : config) {
           tabbedPane.addTabView(sel.getTable(), new JSONImportFileJPanel(sel));
@@ -115,7 +154,7 @@ public class JSONImportNodeDialog extends NodeDialogPane {
     int tabCount = tabbedPane.getTabCount() ;
     for(int i = 1; i < tabCount; i++) {
       JSONImportFileJPanel panel = (JSONImportFileJPanel) tabbedPane.getTabAt(i) ;
-      configs.add(panel.getJSONImportConfig()) ;
+      configs.addConfig(panel.getJSONImportConfig()) ;
     }
     return configs ;
   }

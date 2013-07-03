@@ -15,6 +15,7 @@ import org.knime.core.node.config.ConfigRO;
 import org.knime.core.node.config.ConfigWO;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskUnit;
+import org.saarus.service.util.StringUtil;
 
 public class JSONImportConfigs {
   final static String PREFIX = "file:" ;
@@ -30,9 +31,10 @@ public class JSONImportConfigs {
     String[] name = names.split(",") ;
     for(String selName : name) {
       ConfigRO config = settings.getConfig(PREFIX + selName) ;
-      JSONImportConfig fsetting = 
-          new JSONImportConfig(config.getString("table"), config.getString("description"), config.getString("path")) ;
-      fileSettings.put(selName, fsetting) ;
+      JSONImportConfig importConfig = 
+          new JSONImportConfig(config.getString("table"), config.getString("description"), config.getString("jsonFile")) ;
+      importConfig.fieldConfigs = config.getString("fieldConfigs") ;
+      fileSettings.put(selName, importConfig) ;
     }
   }
   
@@ -48,7 +50,8 @@ public class JSONImportConfigs {
       ConfigWO config = settings.addConfig(PREFIX  + sel.table) ;
       config.addString("table", sel.table) ;
       config.addString("description", sel.description) ;
-      config.addString("path", sel.path) ;
+      config.addString("jsonFile", sel.jsonFile) ;
+      config.addString("fieldConfigs", sel.fieldConfigs) ;
     }
     settings.addString(IMPORT_NAMES, names.toString()) ;
   }
@@ -64,11 +67,7 @@ public class JSONImportConfigs {
     }
   }
   
-  public void add(String name, String desc, String path) {
-    fileSettings.put(name, new JSONImportConfig(name, desc, path)) ;
-  }
-  
-  public void add(JSONImportConfig config) {
+  public void addConfig(JSONImportConfig config) {
     fileSettings.put(config.table, config) ;
   }
   
@@ -99,7 +98,7 @@ public class JSONImportConfigs {
       JSONImportConfig sel = i.next() ;
       b.append("Name = ").append(sel.table).
         append(", Desc = ").append(sel.description).
-        append(", Path = ").append(sel.path).append("\n") ;
+        append(", Json File = ").append(sel.jsonFile).append("\n") ;
     }
     return b.toString() ;
   }
@@ -107,14 +106,15 @@ public class JSONImportConfigs {
   static public class JSONImportConfig {
     String table = "TableName";
     String description = "Import json file as a hive table using json serializer and deserializer";
-    String path = "";
+    String jsonFile = "";
+    String fieldConfigs ;
     
     public JSONImportConfig() {} 
     
     JSONImportConfig(String name, String desc, String path) {
       this.table = name ;
       this.description = desc ;
-      this.path = path ;
+      this.jsonFile = path ;
     }
 
     public String getTable() { return table; }
@@ -122,21 +122,59 @@ public class JSONImportConfigs {
     
     public String getDescription() { return description ; }
 
-    public String getPath() { return path; }
+    public String getJsonFile() { return jsonFile; }
+    
+    public void addFieldConfig(String fname, String ftype, String jsonProperty) {
+      if(fieldConfigs == null) {
+        fieldConfigs = fname + "," + ftype + "," + jsonProperty ;
+      } else {
+        fieldConfigs += "\n" + fname + "," + ftype + "," + jsonProperty ;
+      }
+    }
+    
+    public String[][] getFieldMappingConfig() {
+      if(fieldConfigs == null || fieldConfigs.length() == 0) return new String[0][0] ;
+      String[] lines = fieldConfigs.split("\n") ;
+      String[][] fieldConfig =new String[lines.length][] ;
+      for(int i = 0; i < lines.length; i++) {
+        fieldConfig[i] = lines[i].split(",") ;
+      }
+      return fieldConfig ;
+    }
     
     public TaskUnit[] getGeneratedTaskUnits() {
+      String[][] fieldMappingConfig = getFieldMappingConfig() ;
+      
       TaskUnit dropTask = new TaskUnit() ;
       dropTask.setName("execute") ;
       dropTask.setDescription("drop json table " + table) ;
       String dropTable = "DROP TABLE if exists %1s" ;
       dropTask.setTaskLine(String.format(dropTable, table)) ;
       
-      String createTable = "CREATE EXTERNAL TABLE %1s (json STRING)  LOCATION '%2s'" ;
+      StringBuilder createTable = new StringBuilder() ;
+      createTable.append("CREATE TABLE ").append(this.table).append("(") ;
+      
+      for(int i = 0; i < fieldMappingConfig.length; i++) {
+        if(i > 0) createTable.append(", ") ;
+        createTable.append(fieldMappingConfig[i][0] + " " + fieldMappingConfig[i][1]);
+      }
+      createTable.append(") STORED AS RCFILE LOCATION '/user/hive/warehouse/" + table +"'") ;
       TaskUnit createTask = new TaskUnit() ;
-      createTask.setDescription("create json table " + table) ;
+      createTask.setDescription("create table " + table) ;
       createTask.setName("execute") ;
-      createTask.setTaskLine(String.format(createTable, table, path)) ;
-      return new TaskUnit[] { dropTask, createTask } ;
+      createTask.setTaskLine(createTable.toString()) ;
+      
+      TaskUnit importJsonUnit = new TaskUnit() ;
+      String[] properties = new String[fieldMappingConfig.length] ;
+      for(int i = 0; i < properties.length; i++) {
+        properties[i] = fieldMappingConfig[i][2] ;
+      }
+      importJsonUnit.setName("importJson") ;
+      importJsonUnit.getParameters().setString("dbfile", "/user/hive/warehouse/" + table +  "/data0.rcfile") ;
+      importJsonUnit.getParameters().setString("jsonFile", this.jsonFile) ;
+      importJsonUnit.getParameters().setStringArray("properties", properties) ;
+      
+      return new TaskUnit[] { dropTask, createTask, importJsonUnit } ;
     }
   }
 }

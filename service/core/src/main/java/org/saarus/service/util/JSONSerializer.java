@@ -64,4 +64,9 @@ public class JSONSerializer {
     StringReader reader = new StringReader(data) ;
     return mapper.readValue(reader , type);
   }
+  
+  public JsonNode fromString(String data) throws IOException {
+    StringReader reader = new StringReader(data) ;
+    return mapper.readTree(reader);
+  }
 }

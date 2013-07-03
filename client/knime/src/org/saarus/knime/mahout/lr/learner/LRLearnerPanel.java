@@ -37,7 +37,7 @@ public class LRLearnerPanel extends JPanel {
   private JTextField categories = new JTextField("2"); //  --categories 2
   //--predictors  x, y, xx, xy, yy, a, b, c
   private JTextField predictors = new JTextField("x, y, xx, xy, yy, a, b, c") ; 
-  private JTextField input = new JTextField("/path/to/donut.csv"); //--input donut.csv 
+  private JTextField input = new JTextField("/jsonFile/to/donut.csv"); //--input donut.csv 
   private JComboBox<String> target = new JComboBox<String>() ; //--target color
   private JTextField output = new JTextField() ;// --output donut.model
  

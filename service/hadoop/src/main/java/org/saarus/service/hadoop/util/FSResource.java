@@ -61,6 +61,8 @@ abstract public class FSResource {
   static public FSResource get(String uri) {
     if(uri.startsWith("dfs:")) {
       return new DFSResource(uri, uri.substring("dfs:".length())) ;
+    } else if(uri.startsWith("hdfs:")) {
+      return new DFSResource(uri, uri) ;
     } else if(uri.startsWith("file:")) {
       return new LocalResource(uri, uri.substring("file:".length())) ;
     } else {

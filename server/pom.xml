@@ -20,6 +20,18 @@
   <dependencies>
     <dependency>
       <groupId>org.saarus</groupId>
+      <artifactId>saarus.service.core</artifactId>
+      <version>${org.saarus.version}</version>
+    </dependency> 
+
+    <dependency>
+      <groupId>org.saarus</groupId>
+      <artifactId>saarus.service.hadoop</artifactId>
+      <version>${org.saarus.version}</version>
+    </dependency> 
+
+    <dependency>
+      <groupId>org.saarus</groupId>
       <artifactId>saarus.service.mahout</artifactId>
       <version>${org.saarus.version}</version>
     </dependency> 

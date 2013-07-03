@@ -145,7 +145,7 @@ public class MRLogisticRegressionDecoder {
   public RunningJob run() throws Exception {
     Configuration conf = null ;
     if(clusterMode) conf = HDFSUtil.getConfiguration() ;
-    else conf = HDFSUtil.getDaultConfiguration() ;
+    else conf = HDFSUtil.getDefaultConfiguration() ;
     String yarnClasspath = conf.get("yarn.application.classpath") ;
     yarnClasspath = yarnClasspath + ",/opt/saarus/lib/*" ;
     conf.set("yarn.application.classpath", yarnClasspath);

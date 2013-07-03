@@ -22,6 +22,7 @@ CLASSPATH="$JAVA_HOME/lib/tools.jar"
 CLASSPATH="${CLASSPATH}:$APP_HOME/lib/*"
 WEBAPPS="$APP_HOME/webapps"
 LISTEN_PORT=7080
+HADOOP_USER_NAME=saarus
 
 if $cygwin; then
   JAVA_HOME=`cygpath --absolute --windows "$JAVA_HOME"`
@@ -54,8 +55,8 @@ shift
 function console() {
   JAVA_OPTS="-server -XX:+UseParallelGC -Xshare:auto -Xms128m -Xmx256m"
   CLASS="org.saarus.server.http.JettyWebServer"
-  exec $JAVACMD $JAVA_OPTS -cp $CLASSPATH $YOURKIT_PROFILE_OPTION $CLASS \
-       -webapp $WEBAPPS -port $LISTEN_PORT
+  exec $JAVACMD $JAVA_OPTS -DHADOOP_USER_NAME=$HADOOP_USER_NAME \
+       -cp $CLASSPATH $YOURKIT_PROFILE_OPTION $CLASS  -webapp $WEBAPPS -port $LISTEN_PORT
 }
 
 function deamon() {

@@ -16,7 +16,6 @@ import org.codehaus.jackson.map.SerializationConfig;
  * $Author: Tuan Nguyen$ 
  **/
 public class JSONReader {
-  private InputStream is ;
   private JsonParser parser ;
 
   public JSONReader(String file) throws Exception {
@@ -36,11 +35,11 @@ public class JSONReader {
   }
 
   private void init(InputStream is) throws Exception {
-    this.is  = is ;
     MappingJsonFactory factory = new MappingJsonFactory();
     factory.getCodec().configure(SerializationConfig.Feature.WRAP_ROOT_VALUE, false) ;
     factory.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
-    parser = factory.createJsonParser(new BufferedReader(new InputStreamReader(is, "UTF-8")));
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8")) ;
+    parser = factory.createJsonParser(reader);
   }
 
   public <T> T read(Class<T> type) throws Exception {
@@ -68,6 +67,5 @@ public class JSONReader {
 
   public void close() throws Exception {
     parser.close() ;
-    is.close() ;
   }
 }

@@ -18,9 +18,9 @@ import org.saarus.knime.uicomp.SpringUtilities;
 public class LRPredictorPanel extends JPanel {
   private JTextField nameInput = new JTextField();
   private JTextField descInput = new JTextField();
-  private JTextField input = new JTextField("/path/to/donut.csv");  
+  private JTextField input = new JTextField("/jsonFile/to/donut.csv");  
   private JTextField output = new JTextField() ;
-  private JTextField model = new JTextField("/path/to/file.model");
+  private JTextField model = new JTextField("/jsonFile/to/file.model");
   private JTextArea  colHeaders = new JTextArea("colum1,column2,column3...");
   private JCheckBox  auc = new JCheckBox() ;
   private JCheckBox  confusion = new JCheckBox() ;

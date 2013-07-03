@@ -1,5 +1,7 @@
 package org.saarus.service.sql;
 
+import org.saarus.service.util.TabularPrinter;
+
 public class QueryResult {
   private String     query ;
   private String[]   column ;

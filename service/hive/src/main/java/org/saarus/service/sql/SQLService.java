@@ -70,6 +70,7 @@ public class SQLService  {
     Statement stmt = null ;
     stmt = connection.createStatement();
     ResultSet res = stmt.executeQuery(sql);
+    res.setFetchSize(500) ;
     return res ;
   }
 
@@ -83,6 +84,7 @@ public class SQLService  {
     while(res.next()) {
       holder.add(res.getString(1));
     }
+    res.close() ;
     return holder ;
   }
   

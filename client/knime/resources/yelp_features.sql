@@ -19,9 +19,7 @@ CREATE TABLE features(
      user_average_stars     INT,
      user_vote_funny        INT,
      user_vote_useful       INT,
-     user_vote_cool         INT)
-  ROW FORMAT DELIMITED FIELDS TERMINATED BY "," ESCAPED BY '\\' STORED AS TEXTFILE
-  LOCATION '/user/hive/yelpdb/warehouse/features';
+     user_vote_cool         INT) STORED AS RCFILE;
 
 INSERT OVERWRITE TABLE features
   SELECT r.stars, IF(r.text != null, 1, 0), r.vote_funny, r.vote_useful, r.vote_cool, 

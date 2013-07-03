@@ -28,7 +28,7 @@ public class JTreeDFSFileSelector extends JDialog {
   
   public JTreeDFSFileSelector() throws Exception {
     setLayout(new BorderLayout()) ;
-    DFSFileNode  root = new DFSFileNode (getFile("/")) ;
+    DFSFileNode  root = new DFSFileNode(getFile("/")) ;
     final JTreeItemSelector treeSelector = new JTreeItemSelector(root) ;
     treeSelector.setShowsRootHandles(true);
     
@@ -125,7 +125,6 @@ public class JTreeDFSFileSelector extends JDialog {
     TaskUnitResult<DFSFile> getResult = (TaskUnitResult<DFSFile>) tresult.getTaskUnitResult(getTask.getId()) ;
     return getResult.getResult() ;
   }
-  
   
 //--------------------------------------TEST------------------------------------------------
   

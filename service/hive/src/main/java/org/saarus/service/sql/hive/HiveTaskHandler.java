@@ -5,9 +5,13 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hadoop.fs.FileSystem;
+import org.saarus.service.hadoop.util.FSResource;
+import org.saarus.service.hadoop.util.HDFSUtil;
 import org.saarus.service.sql.QueryResult;
 import org.saarus.service.sql.SQLService;
 import org.saarus.service.sql.TableMetadata;
+import org.saarus.service.sql.io.JSONImporter;
 import org.saarus.service.task.CallableTaskUnit;
 import org.saarus.service.task.TaskUnit;
 import org.saarus.service.task.TaskUnitHandler;
@@ -37,6 +41,7 @@ public class HiveTaskHandler implements TaskUnitHandler {
     else if("listTable".equals(name)) return listTable(taskUnit) ;
     else if("descTable".equals(name)) return descTable(taskUnit);
     else if("insert".equals(name)) return insert(taskUnit);
+    else if("importJson".equals(name)) return importJson(taskUnit);
     return null ;
   }
 
@@ -85,6 +90,25 @@ public class HiveTaskHandler implements TaskUnitHandler {
         String insertSql = tunit.getTaskLine() ;
         List<Object[]> data = (List<Object[]>) tunit.getParameters().getObject("data") ;
         return sqlService.insert(insertSql, data) ;
+      }
+    };
+    return callableUnit ;
+  }
+  
+  private CallableTaskUnit<String> importJson(final TaskUnit tunit) {
+    CallableTaskUnit<String> callableUnit = new CallableTaskUnit<String>(tunit, new TaskUnitResult<String>()) {
+      public String doCall() throws Exception {
+        FileSystem fs = HDFSUtil.getFileSystem() ;
+        String jsonFile = tunit.getParameters().getString("jsonFile");
+        String dbfile = tunit.getParameters().getString("dbfile");
+        String[] properties = (String[]) tunit.getParameters().getStringArray("properties", new String[] {}) ; 
+        JSONImporter.Progressable progressable = null ; //new JSONImporter.DebugProgressable() ;
+        JSONImporter.Writer writer = new JSONImporter.RCWriter(fs, dbfile, properties, null) ;
+        JSONImporter importer = new JSONImporter(writer, progressable) ;
+        FSResource resource = FSResource.get(jsonFile) ;
+        importer.doImport(resource.getInputStream(), properties) ;
+        importer.close() ;
+        return "Done" ;
       }
     };
     return callableUnit ;

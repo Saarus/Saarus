@@ -354,7 +354,7 @@ class FileReaderNodeDialog extends NodeDialogPane implements ItemListener {
 
     browse.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        // sets the path in the file text field.
+        // sets the jsonFile in the file text field.
         String newFile =
         popupFileChooser(m_urlCombo.getEditor().getItem()
             .toString(), false);
@@ -1947,13 +1947,13 @@ class FileReaderNodeDialog extends NodeDialogPane implements ItemListener {
   }
 
   /**
-   * Pops up the file selection dialog and returns the path to the selected
+   * Pops up the file selection dialog and returns the jsonFile to the selected
    * file - or <code>null</code> if the user canceled.
    *
-   * @param startingPath the path the dialog starts in
+   * @param startingPath the jsonFile the dialog starts in
    * @param readXml if <code>true</code> the filter will be set to '*.xml'
    *            files
-   * @return the path to the selected file, or <code>null</code> if user
+   * @return the jsonFile to the selected file, or <code>null</code> if user
    *         canceled
    */
   protected String popupFileChooser(final String startingPath,
@@ -1967,9 +1967,9 @@ class FileReaderNodeDialog extends NodeDialogPane implements ItemListener {
         startingDir = tmpFile.getAbsolutePath();
       }
     } catch (MalformedURLException e) {
-      // no valid path - start in the default dir of the file chooser
+      // no valid jsonFile - start in the default dir of the file chooser
     } catch (URISyntaxException ex) {
-      // no valid path - start in the default dir of the file chooser
+      // no valid jsonFile - start in the default dir of the file chooser
     }
 
     JFileChooser chooser;

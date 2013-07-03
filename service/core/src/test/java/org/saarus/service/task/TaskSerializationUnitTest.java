@@ -20,7 +20,9 @@ public class TaskSerializationUnitTest {
     taskUnit = JSONSerializer.JSON_SERIALIZER.fromString(taskUnitJson, TaskUnit.class) ;
     Assert.assertEquals("execute", taskUnit.getName()) ;
     Assert.assertEquals(3, taskUnit.getParameters().size()) ;
-  
+    String[] stringArray = taskUnit.getParameters().getStringArray("stringArray", null) ;
+    Assert.assertEquals(stringArray[0], "test1") ;
+    
     Task task = new Task() ;
     task.setId("taskUnit") ;
     task.setDescription("execute some hive sql queries....") ;
@@ -51,7 +53,7 @@ public class TaskSerializationUnitTest {
     tunit.setName(name) ;
     tunit.getParameters().setInteger("intParam", 100) ;
     tunit.getParameters().setString("stringParam", "a string") ;
-    tunit.getParameters().setObject("stringArray", new Object[] {"test1", 2 }) ;
+    tunit.getParameters().setStringArray("stringArray", new String[] {"test1", "test2" }) ;
     return tunit ;
   }
 }

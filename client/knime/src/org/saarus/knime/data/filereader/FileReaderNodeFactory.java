@@ -61,7 +61,7 @@ public class FileReaderNodeFactory extends
     private String m_defaultXMLFile;
 
     /**
-     * @param defXMLFileName this string will be set as default path to a XML
+     * @param defXMLFileName this string will be set as default jsonFile to a XML
      *            file containing settings for the dialog. Won't be supported in
      *            the future anymore.
      */

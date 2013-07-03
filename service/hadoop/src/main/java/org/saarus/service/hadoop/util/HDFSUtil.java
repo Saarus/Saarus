@@ -12,7 +12,7 @@ public class HDFSUtil {
   private static FileSystem fileSystem ;
   private static FileSystem localFileSystem ;
   
-  static public Configuration getDaultConfiguration() {
+  static public Configuration getDefaultConfiguration() {
     Configuration conf = new Configuration(false) ;
     conf.addResource("core-default.xml") ;
     conf.addResource("hdfs-default.xml") ;
@@ -41,7 +41,7 @@ public class HDFSUtil {
   
   static public FileSystem getLocalFileSystem() throws IOException {
     if(localFileSystem == null) {
-      localFileSystem = FileSystem.get(getDaultConfiguration()) ;
+      localFileSystem = FileSystem.get(getDefaultConfiguration()) ;
     }
     return localFileSystem ;
   }

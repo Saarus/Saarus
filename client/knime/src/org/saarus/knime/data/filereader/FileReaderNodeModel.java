@@ -372,7 +372,7 @@ public class FileReaderNodeModel extends NodeModel {
           + "' can't be accessed anymore!");
     } catch (NullPointerException npe) {
       // thats a bug in the windows open stream
-      // a path like c:\blah\ \ (space as dir) causes a NPE.
+      // a jsonFile like c:\blah\ \ (space as dir) causes a NPE.
       setWarningMessage("The file '" + location.toString()
           + "' can't be accessed anymore!");
     }

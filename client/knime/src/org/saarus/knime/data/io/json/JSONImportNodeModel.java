@@ -64,7 +64,8 @@ public class JSONImportNodeModel extends NodeModel {
           throw new CanceledExecutionException(t.getMessage()) ;
         }
       }
-
+      
+      
       DataColumnSpec[] allColSpecs = new DataColumnSpec[4];
       allColSpecs[0] = new DataColumnSpecCreator("Table", StringCell.TYPE).createSpec();
       allColSpecs[1] = new DataColumnSpecCreator("Description", StringCell.TYPE).createSpec();
@@ -81,7 +82,7 @@ public class JSONImportNodeModel extends NodeModel {
         TableMetadata tmeta = hiveClient.descTable(config.getTable(), false) ;
         DataCell[] cells = { 
             new StringCell(config.getTable()), new StringCell(config.getDescription()),
-            new StringCell(config.getPath()), new StringCell(JSONSerializer.JSON_SERIALIZER.toString(tmeta))
+            new StringCell(config.getJsonFile()), new StringCell(JSONSerializer.JSON_SERIALIZER.toString(tmeta))
         } ;
         container.addRowToTable(new DefaultRow(new RowKey("Row " + count), cells));
         count++ ;
