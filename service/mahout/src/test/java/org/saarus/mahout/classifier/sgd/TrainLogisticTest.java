@@ -14,10 +14,8 @@ import org.apache.mahout.classifier.AbstractVectorClassifier;
 import org.apache.mahout.classifier.sgd.ModelDissector;
 import org.apache.mahout.classifier.sgd.OnlineLogisticRegression;
 import org.apache.mahout.classifier.sgd.RecordFactory;
-import org.apache.mahout.examples.MahoutTestCase;
 import org.apache.mahout.math.DenseVector;
 import org.apache.mahout.math.Vector;
-
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
@@ -26,7 +24,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
 
-public class TrainLogisticTest extends MahoutTestCase {
+public class TrainLogisticTest extends org.apache.mahout.common.MahoutTestCase {
   static String DONUT_CSV = "src/test/resources/donut/donut.csv" ;
   static String DONUT_TEST_CSV = "src/test/resources/donut/donut-test.csv" ;
   @Test

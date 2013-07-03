@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.mahout.classifier.CsvRecordFactory;
+import org.apache.mahout.classifier.sgd.CsvRecordFactory;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.junit.Test;
