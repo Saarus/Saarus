@@ -1,6 +1,5 @@
 package org.saarus.service.sql.hive;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;

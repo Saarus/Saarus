@@ -78,5 +78,12 @@
       <artifactId>saarus.service.hive</artifactId>
       <version>${org.saarus.version}</version>
     </dependency> 
+
+    <dependency>
+      <groupId>jfree</groupId>
+      <artifactId>jfreechart</artifactId>
+      <version>1.0.13</version>
+    </dependency>
+
   </dependencies>
 </project>

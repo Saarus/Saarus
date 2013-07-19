@@ -51,7 +51,7 @@
     <module>service/hadoop</module>
     <module>service/hive</module>
     <module>service/mahout</module>
-    <module>service/mahout-examples</module>
+    <module>service/twitter</module>
 
     <module>web/rest</module>
 
