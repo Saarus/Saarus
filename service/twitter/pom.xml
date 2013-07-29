@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>org.saarus</groupId>
+    <artifactId>config</artifactId>
+    <version>1.0</version>
+  </parent> 
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>saarus.service.twitter</artifactId>
+  <name>Saarus :: Service Twitter</name>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>edu.cmu.cs</groupId>
+      <artifactId>ark-tweet-nlp</artifactId>
+      <version>0.3.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.trove4j</groupId>
+      <artifactId>trove4j</artifactId>
+      <version>3.0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>edu.stanford.nlp</groupId>
+      <artifactId>stanford-corenlp</artifactId>
+      <version>1.3.5</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-snowball</artifactId>
+      <version>3.0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>uk.ac.shef.wit</groupId>
+      <artifactId>simmetrics</artifactId>
+      <version>1.6.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.2</version>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>de.bwaldvogel</groupId>
+      <artifactId>liblinear</artifactId>
+      <version>1.92</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>2.3</version>
+    </dependency>
+  </dependencies>	
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assembly/assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>JHU repo</id>
+      <url>http://maven.mse.jhu.edu/m2repository/</url>
+    </repository>
+  </repositories>
+</project>

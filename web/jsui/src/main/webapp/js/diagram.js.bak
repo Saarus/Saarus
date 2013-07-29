@@ -1,0 +1,44 @@
+function Entity(name, desc) {
+  this.name = name ;
+  this.description = desc;
+  this.shape = null ;
+
+  this.createShape = function(canvas) {
+    canvas.rect(15, 15, 120, 60, 5);
+  };
+}
+
+function Diagram() {
+  var canvas = Raphael("Canvas", 800, 480);
+
+  var shapes = [  
+    canvas.rect(15, 15, 100, 50, 8)
+  ];
+
+  var onDrag = function () {
+    this.ox = this.attr("x");
+    this.oy = this.attr("y") ;
+    this.animate({"fill-opacity": .2}, 500);
+  };
+
+  var onMove = function (dx, dy) {
+    var att = { x: this.ox + dx, y: this.oy + dy } ;
+    this.attr(att);
+  };
+
+  var onDrop = function () {
+    this.animate({"fill-opacity": 0}, 500);
+  };
+  
+  for (var i = 0; i < shapes.length; i++) {
+    var attr = { 
+      "fill": "red", "stroke": "red", "fill-opacity": 0, "stroke-width": 2, "cursor": "move"
+    };
+    shapes[i].attr(attr);
+    shapes[i].drag(onMove, onDrag, onDrop);
+  }
+};
+
+window.onload = function () {
+  new Diagram() ;
+};

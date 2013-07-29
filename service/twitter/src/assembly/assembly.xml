@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<assembly>
+  <id>release</id>
+  <formats>
+    <format>dir</format>
+  </formats>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>org.saarus:saarus.service.twitter</include>
+        <include>edu.cmu.cs:ark-tweet-nlp</include>
+        <include>edu.stanford.nlp:stanford-corenlp</include>
+        <!--
+        <include>edu.washington.cs.knowitall.nlptools:nlptools-stem-snowball_2.9.2</include>
+        <include>edu.washington.cs.knowitall.nlptools:nlptools-core_2.9.2</include>
+        -->
+        <include>uk.ac.shef.wit:simmetrics</include>
+        <!--
+        <include>com.google.guava:guava</include>
+        -->
+        <include>com.fasterxml.jackson.core:jackson-core</include>
+        <include>edu.berkeley.nlp:berkeleyparser</include>
+        <include>com.twitter:twitter-text</include>
+  
+        <!--
+        <include>org.apache.lucene:lucene-core</include>
+        -->
+        <include>org.apache.lucene:lucene-snowball</include>
+
+        <!--
+        <include>org.scala-lang:scala-library</include>
+        -->
+
+        <include>commons-lang:commons-lang</include>
+        <include>commons-codec:commons-codec</include>
+        <include>commons-cli:commons-cli</include>
+        
+        <include>de.bwaldvogel:liblinear</include>
+        
+        <include>net.sf.opencsv:opencsv</include>
+        <include>net.sf.trove4j:trove4j</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+
+  <fileSets>
+    <fileSet>
+      <directory>src/app</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>
