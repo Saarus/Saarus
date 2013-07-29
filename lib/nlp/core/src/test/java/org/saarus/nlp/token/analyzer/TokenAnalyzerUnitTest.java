@@ -90,6 +90,7 @@ public class TokenAnalyzerUnitTest {
     TokenAnalyzer[] analyzer = {
         new CommonTokenAnalyzer(), new GroupTokenMergerAnalyzer(), new TimeTokenAnalyzer()
     } ;
+    
     WordTokenizerVerifier verifier = new WordTokenizerVerifier(analyzer) ;
     verifier.verify(
         "12:00 12:00am 12:00:00am", 
