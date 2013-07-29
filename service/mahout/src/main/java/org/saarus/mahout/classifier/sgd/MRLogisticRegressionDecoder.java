@@ -167,7 +167,6 @@ public class MRLogisticRegressionDecoder {
     jconf.setOutputKeyClass(LongWritable.class);
     jconf.setOutputValueClass(Text.class);
 
-    
     jconf.setInputFormat(TextInputFormat.class);
     jconf.setOutputFormat(TextOutputFormat.class);
 

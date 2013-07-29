@@ -40,6 +40,7 @@ public class HiveTaskHandler implements TaskUnitHandler {
     else if("dropTable".equals(name)) return dropTable(taskUnit) ;
     else if("listTable".equals(name)) return listTable(taskUnit) ;
     else if("descTable".equals(name)) return descTable(taskUnit);
+    else if("descTables".equals(name)) return descTables(taskUnit);
     else if("insert".equals(name)) return insert(taskUnit);
     else if("importJson".equals(name)) return importJson(taskUnit);
     return null ;
@@ -66,9 +67,34 @@ public class HiveTaskHandler implements TaskUnitHandler {
           if(tinfo == null) tinfo = new TableMetadata(tableName) ;
           String name = res.getString(1) ;
           String type = res.getString(2);
+          String comment = res.getString(3);
           tinfo.addField(name, type) ;
         }
         res.close() ;
+        return tinfo ;
+      }
+    };
+    return callableUnit ;
+  }
+  
+  private CallableTaskUnit<TableMetadata[]> descTables(final TaskUnit tunit) {
+    CallableTaskUnit<TableMetadata[]> callableUnit = new CallableTaskUnit<TableMetadata[]>(tunit, new TaskUnitResult<TableMetadata[]>()) {
+      public TableMetadata[] doCall() throws Exception {
+        String[] tables = tunit.getParameters().getStringArray("tableName", null) ;
+        TableMetadata[] tinfo =  new TableMetadata[tables.length] ;
+        for(int i = 0; i < tables.length; i++) {
+          long start = System.currentTimeMillis() ;
+          ResultSet res = sqlService.executeQuerySQL("DESCRIBE " + tables[i]);
+          System.out.println("desc in " + (System.currentTimeMillis() - start) + "ms");
+          tinfo[i] = new TableMetadata(tables[i]) ;
+          while (res.next()) {
+            String name    = res.getString(1) ;
+            String type    = res.getString(2);
+            String comment = res.getString(3);
+            tinfo[i].addField(name, type) ;
+          }
+          res.close() ;
+        }
         return tinfo ;
       }
     };
@@ -164,11 +190,18 @@ public class HiveTaskHandler implements TaskUnitHandler {
     return dropTable(task).call() ;
   }
 
-  public TaskUnitResult<TableMetadata> describeTable(final String tname) throws Exception {
+  public TaskUnitResult<TableMetadata> describeTable(String tname) throws Exception {
     TaskUnit task = new TaskUnit() ;
-    task.setName("describeTable") ;
+    task.setName("descTable") ;
     task.getParameters().setString("tableName", tname) ;
     return descTable(task).call() ;
+  }
+  
+  public TaskUnitResult<TableMetadata[]> describeTables(String[] tname) throws Exception {
+    TaskUnit task = new TaskUnit() ;
+    task.setName("descTables") ;
+    task.getParameters().setStringArray("tableName", tname) ;
+    return descTables(task).call() ;
   }
 
   public TaskUnitResult<List<String>> listTables() throws Exception {

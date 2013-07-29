@@ -56,7 +56,7 @@ public final class TrainLogistic {
     OnlineLogisticRegression lr = lmp.createRegression();
     DataReader dataReader = argParser.getDataReader() ;
     csv.configVariableNames(dataReader.getHeaderNames());
-    
+    System.out.println("Max Read = " + maxRead);
     for (int pass = 0; pass < argParser.passes; pass++) {
       dataReader.reset() ;
       try {

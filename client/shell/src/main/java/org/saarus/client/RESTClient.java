@@ -8,8 +8,10 @@ import org.saarus.service.util.JSONSerializer;
 import org.springframework.web.client.RestTemplate;
 
 public class RESTClient {
+  
   private RestTemplate restTemplate;
   private String restUrl ;
+  private HiveClient hiveClient ;
   
   public RESTClient() {
   }
@@ -20,7 +22,10 @@ public class RESTClient {
   public String getRestUrl() { return this.restUrl ; }
   public void   setRestUrl(String url) { this.restUrl = url ; }
   
-  public HiveClient getHiveClient() { return new HiveClient(restTemplate, restUrl) ; }
+  public HiveClient getHiveClient() { 
+    if(hiveClient == null) hiveClient = new HiveClient(restTemplate, restUrl) ; 
+    return hiveClient ;
+  }
   
   public TaskResult submitTask(Task task) throws Exception {
     TaskResult taskResult = 

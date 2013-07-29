@@ -39,10 +39,6 @@
       <node category-path="/"
             factory-class="org.saarus.knime.mahout.lr.predictor.LRPredictorNodeFactory"
             id="org.saarus.knime.mahout.lr.predictor.LRPredictorNodeFactory"/>
-
-      <node category-path="/"
-            factory-class="org.saarus.knime.data.filereader.FileReaderNodeFactory"
-            id="org.saarus.knime.data.filereader.FileReaderNodeFactory"/>
    </extension>
    
 </plugin>

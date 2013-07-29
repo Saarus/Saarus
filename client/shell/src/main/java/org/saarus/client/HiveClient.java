@@ -14,6 +14,7 @@ public class HiveClient {
   private String restUrl ;
 
   private List<String> availableTables ;
+  private TableMetadata[] tableMetadata ;
   private Map<String, TableMetadata> tableMetadatas = new HashMap<String, TableMetadata>() ;
 
   public HiveClient() { }
@@ -35,10 +36,9 @@ public class HiveClient {
   }
 
   public List<String> listTable(boolean forceUpdate) {
-    if(forceUpdate) {
-      availableTables = null ;
-    }
+    if(forceUpdate) availableTables = null ;
     if(availableTables == null) {
+      System.out.println("list tables from server" );
       TaskUnitResult<List<String>> listResult = 
           restTemplate.getForObject(restUrl + "/hive/table/list?forceUpdate=true", TaskUnitResult.class);
       availableTables = listResult.getResult() ;
@@ -50,10 +50,19 @@ public class HiveClient {
     if(forceUpdate) tableMetadatas.remove(table) ;
     TableMetadata tmetadata = tableMetadatas.get(table) ;
     if(tmetadata == null) {
+      System.out.println("load table meta from server: " + table);
       TaskUnitResult<TableMetadata> tableResult = 
           restTemplate.getForObject(restUrl + "/hive/table/desc/" + table, TaskUnitResult.class);
       tmetadata =  tableResult.getResult() ;
       tableMetadatas.put(table, tmetadata) ;
+    }
+    return tmetadata ;
+  }
+  
+  public TableMetadata[] descTables(String[] table, boolean forceUpdate) {
+    TableMetadata[] tmetadata = new TableMetadata[table.length] ;
+    for(int i = 0; i < table.length; i++) {
+      tmetadata[i] = descTable(table[i], forceUpdate) ;
     }
     return tmetadata ;
   }

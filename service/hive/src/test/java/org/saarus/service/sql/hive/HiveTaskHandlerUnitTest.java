@@ -22,14 +22,23 @@ public class HiveTaskHandlerUnitTest {
     handler.execute("CREATE EXTERNAL TABLE " + tableName + " (key INT, value STRING) STORED AS RCFILE LOCATION '/tmp/testdb/testtable'");
     // show tables
     TaskUnitResult<List<String>> listResult = handler.listTables() ;
+    List<String> listTables = listResult.getResult();
     System.out.println(listResult);
     System.out.println("Available Tables: ");
-    for(String selTable : listResult.getResult()) {
+    for(String selTable : listTables) {
       System.out.println("  " + selTable);
     }
     // describe table
     TaskUnitResult<TableMetadata> descResult = handler.describeTable(tableName) ;
     System.out.println(descResult);
+    //describe tables
+    long start = System.currentTimeMillis() ;
+    String[] tables = listTables.toArray(new String[listTables.size()]) ;
+    TaskUnitResult<TableMetadata[]> descTablesResult = handler.describeTables(tables) ;
+    for(TableMetadata sel : descTablesResult.getResult()) {
+      System.out.println("TableMetadata " + sel.getTableName());
+    }
+    System.out.println("Desc tables in " + (System.currentTimeMillis() - start) + "ms");
     
     TaskUnitResult<String> importResult = 
         (TaskUnitResult<String>)handler.getCallableTaskUnit(createImportJsonTask()).call() ;

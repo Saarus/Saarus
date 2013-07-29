@@ -27,10 +27,11 @@ Bundle-ClassPath: saarus.client.knime.jar,
  lib/commons-configuration-1.6.jar,
  lib/commons-lang-2.6.jar,
  lib/hadoop-auth-2.0.0-cdh4.3.0.jar,
- lib/protobuf-java-2.4.0a.jar
+ lib/protobuf-java-2.4.0a.jar,
+ lib/saarus.lib.swingui-1.0.jar,
+ lib/jgraph-5.13.0.0.jar
 Bundle-Activator: org.saarus.knime.SaarusKnimePlugin
 Export-Package: org.saarus.knime,
- org.saarus.knime.data.filereader,
  org.saarus.knime.data.hive,
  org.saarus.knime.data.io.json,
  org.saarus.knime.data.stat,

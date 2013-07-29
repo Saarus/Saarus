@@ -12,14 +12,15 @@ CREATE TABLE features(
      business_id            STRING,
      business_city          STRING,
      business_state         STRING,
-     business_open          INT,
+     business_open          BOOLEAN,
      business_review_count  INT,
      business_stars         INT,
      user_review_count      INT,
      user_average_stars     INT,
      user_vote_funny        INT,
      user_vote_useful       INT,
-     user_vote_cool         INT) STORED AS RCFILE;
+     user_vote_cool         INT)
+     ROW FORMAT DELIMITED FIELDS TERMINATED BY "," ESCAPED BY '\\' STORED AS TEXTFILE ;
 
 INSERT OVERWRITE TABLE features
   SELECT r.stars, IF(r.text != null, 1, 0), r.vote_funny, r.vote_useful, r.vote_cool, 

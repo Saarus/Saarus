@@ -46,6 +46,11 @@
   </dependencies>   
 
   <modules>
+    <module>lib/common</module>
+    <module>lib/nlp/core</module>
+    <module>lib/nlp/pos</module>
+    <module>lib/swingui</module>
+
     <module>service/core</module>
     <module>service/mongodb</module>
     <module>service/hadoop</module>

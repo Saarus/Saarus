@@ -53,7 +53,7 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
         TrainLogistic tl = new TrainLogistic().setHiveService(sqlService) ;
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw, true);
-        tl.setMaxRead(30000) ;
+        tl.setMaxRead(210000) ;
         tl.train(args, pw) ;
         return  sw.toString() ;
       }
