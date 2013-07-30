@@ -12,7 +12,9 @@ public class JSONImportNodeFactory extends NodeFactory<JSONImportNodeModel> {
 
   /** {@inheritDoc} */
   @Override
-  public JSONImportNodeModel createNodeModel() { return new JSONImportNodeModel(); }
+  public JSONImportNodeModel createNodeModel() { 
+    return new JSONImportNodeModel(); 
+  }
 
   /** {@inheritDoc} */
   @Override
