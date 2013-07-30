@@ -55,6 +55,10 @@ public class TokenCollection extends IToken {
   public String getOriginalForm() { 
     return getOriginalForm(0, token.length) ;
   }
+  
+  public void setNormalizeForm(String s) { 
+    throw new RuntimeException("Not supported") ;
+  }
 
   public String getOriginalForm(int from, int to) { 
     StringBuilder b = new StringBuilder() ;

@@ -10,8 +10,6 @@ import java.util.List;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-import sample.ml.classifier.FeatureGenerator;
-import sample.ml.classifier.FeatureSet;
 import sample.nlp.twitter.parsing.TweetParsing;
 import sample.nlp.twitter.parsing.TweetToken;
 
@@ -23,7 +21,9 @@ public class SentimentTraining {
   static String fileModel = "target/models/fullSentiment.model";
   static String fileWordlist = "target/models/fullSentiment.wordlist";
 
-  public static FeatureGenerator<List<TweetToken>, String>[] mFeatureGenerators = new FeatureGenerator[] { new SentimentBOWFeatureGenerator() };
+  public static FeatureGenerator<List<TweetToken>, String>[] mFeatureGenerators = new FeatureGenerator[] { 
+    new SentimentBOWFeatureGenerator() 
+  };
 
   static SentimentContextGenerator contextGenerator;
   static FeatureSet featureSet;

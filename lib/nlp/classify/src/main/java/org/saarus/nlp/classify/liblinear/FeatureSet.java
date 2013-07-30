@@ -1,16 +1,17 @@
-package sample.ml.classifier;
+package org.saarus.nlp.classify.liblinear;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.TreeMap;
 
 public class FeatureSet implements java.io.Serializable {
   private static final long serialVersionUID = 1L;
 
   TObjectIntHashMap<String> wordlist;
-  ArrayList<String> labels;
+  List<String> labels;
 
   int labelKey = 0;
 
@@ -20,32 +21,16 @@ public class FeatureSet implements java.io.Serializable {
     labels = new ArrayList<String>();
   }
 
-  public TObjectIntHashMap<String> getWordlist() {
-    return wordlist;
-  }
+  public TObjectIntHashMap<String> getWordlist() { return wordlist; }
+  public void setWordlist(TObjectIntHashMap<String> wordlist) { this.wordlist = wordlist; }
 
-  public void setWordlist(TObjectIntHashMap<String> wordlist) {
-    this.wordlist = wordlist;
-  }
+  public List<String> getLabels() { return labels; }
+  public void setLabels(List<String> labels) { this.labels = labels; }
 
-  public ArrayList<String> getLabels() {
-    return labels;
-  }
+  public int getLabelKey() { return labelKey; }
+  public void setLabelKey(int labelKey) { this.labelKey = labelKey; }
 
-  public void setLabels(ArrayList<String> labels) {
-    this.labels = labels;
-  }
-
-  public int getLabelKey() {
-    return labelKey;
-  }
-
-  public void setLabelKey(int labelKey) {
-    this.labelKey = labelKey;
-  }
-
-  public TreeMap<Integer, Integer> addStringFeatureVector(
-      String[] strFeatures, String label, boolean flagTest) {
+  public TreeMap<Integer, Integer> addStringFeatureVector(String[] strFeatures, String label, boolean flagTest) {
     HashSet<String> setFeatures = new HashSet<String>();
     TreeMap<Integer, Integer> vector = new TreeMap<Integer, Integer>();
 
@@ -82,16 +67,12 @@ public class FeatureSet implements java.io.Serializable {
     return vector;
   }
 
-  public TreeMap<Integer, Integer> addStringFeatureVector(ArrayList<String> strFeatures, String label, boolean flagTest) {
+  public TreeMap<Integer, Integer> addStringFeatureVector(List<String> strFeatures, String label, boolean flagTest) {
     if (strFeatures == null) return null;
     return addStringFeatureVector(strFeatures.toArray(new String[strFeatures.size()]), label, flagTest);
   }
 
-  public TreeMap<Integer, Integer> addStringFeatureVector(String strFeatures, String label, boolean flagTest) {
-    return addStringFeatureVector(strFeatures.split(" "), label, flagTest);
-  }
-
-  public String addprintVector(ArrayList<String> strFeatures, String label, boolean flagTest) {
+  public String addprintVector(List<String> strFeatures, String label, boolean flagTest) {
     TreeMap<Integer, Integer> vector = addStringFeatureVector(strFeatures, label, flagTest);
     if (vector == null) return "";
 
@@ -104,8 +85,8 @@ public class FeatureSet implements java.io.Serializable {
   }
 
   public static void main(String[] args) {
-    String strVector1 = "shuttle shuttl 2G:sh 2G:hu 2G:ut";
-    String strVector2 = "abt shuttl anf 2G:hu 2G:ut";
+    String[] strVector1 = "shuttle shuttl 2G:sh 2G:hu 2G:ut".split(" ");
+    String[] strVector2 = "abt shuttl anf 2G:hu 2G:ut".split(" ");
 
     FeatureSet featureSet = new FeatureSet();
     TreeMap<Integer, Integer> vector1 = featureSet.addStringFeatureVector(strVector1, "ABC", false);

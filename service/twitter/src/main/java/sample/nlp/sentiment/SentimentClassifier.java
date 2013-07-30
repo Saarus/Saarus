@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-import sample.ml.classifier.FeatureSet;
 import sample.nlp.twitter.parsing.TweetParsing;
 import sample.nlp.twitter.parsing.TweetToken;
 import de.bwaldvogel.liblinear.FeatureNode;

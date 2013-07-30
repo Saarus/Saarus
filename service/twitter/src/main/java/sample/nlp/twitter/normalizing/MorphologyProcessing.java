@@ -1,7 +1,6 @@
 package sample.nlp.twitter.normalizing;
 
 import org.tartarus.snowball.ext.EnglishStemmer;
-
 import edu.stanford.nlp.process.Morphology;
 
 public class MorphologyProcessing {

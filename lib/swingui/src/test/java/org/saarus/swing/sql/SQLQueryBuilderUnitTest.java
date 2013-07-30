@@ -24,7 +24,7 @@ public class SQLQueryBuilderUnitTest {
         editor.insertSample(createTables(SQLTable.INPUT_TABLE_TYPE, 3), createTable(SQLTable.OUTPUT_TABLE_TYPE, "Output", 10)) ;
       }
     });
-    
+
     editor.getToolbar().add(editor, "Query", null, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         SQLOutputTable outTable = SQLQueryBuilderUtil.getSQLOutputTable(editor) ;
@@ -42,7 +42,7 @@ public class SQLQueryBuilderUnitTest {
     frame.setVisible(true) ;
     Thread.currentThread().join() ;
   }
-  
+
   SQLTable[] createTables(String type, int num) {
     SQLTable[] table = new SQLTable[num] ;
     for(int i = 0; i < table.length; i++) {
@@ -50,7 +50,7 @@ public class SQLQueryBuilderUnitTest {
     }
     return table ;
   }
-  
+
   SQLTable createTable(String tableType, String tableName, int numOfField) {
     if(numOfField < 3) numOfField = 3 ;
     SQLTable table = new SQLTable(tableName) ;

@@ -3,7 +3,6 @@ package sample.nlp.sentiment;
 import java.util.ArrayList;
 import java.util.List;
 
-import sample.ml.classifier.FeatureGenerator;
 import sample.nlp.twitter.parsing.TweetToken;
 
 public class SentimentBOWFeatureGenerator implements FeatureGenerator<List<TweetToken>, String> {

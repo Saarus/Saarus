@@ -16,6 +16,7 @@ abstract public class IToken {
   abstract public String[] getWord() ;
   abstract public String   getOriginalForm() ;
   abstract public String   getNormalizeForm() ;
+  abstract public void     setNormalizeForm(String token) ;
   abstract public char[]   getNormalizeFormBuf() ;
 
   public void reset(String text) {
