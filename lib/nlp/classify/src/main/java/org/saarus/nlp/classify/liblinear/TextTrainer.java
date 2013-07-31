@@ -88,7 +88,7 @@ public class TextTrainer {
   
   public static void main(String[] args) throws Exception {
   //static String corpusFile = "d:/fullSentimentCorpus.csv";
-    DataReader reader = new DataReader.CVSDataReader("d:/50kSentimentCorpus.csv") {
+    DataReader reader = new DataReader.CSVDataReader("d:/50kSentimentCorpus.csv") {
       protected Record createRecord(String[] cell) {
         String label = (cell[1].equals("1")) ? "POSITIVE" : "NEGATIVE";
         return new Record(label, cell[3]) ;
