@@ -1,4 +1,4 @@
-package org.saarus.knime.data.io.json;
+package org.saarus.knime.data.io.file;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,24 +15,26 @@ import org.knime.core.node.config.ConfigRO;
 import org.knime.core.node.config.ConfigWO;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskUnit;
-import org.saarus.service.util.StringUtil;
 
-public class JSONImportConfigs {
+public class FileImportConfigs {
   final static String PREFIX = "file:" ;
   final static String IMPORT_NAMES = PREFIX + "import.names" ;
   
-  private Map<String, JSONImportConfig> fileSettings = new LinkedHashMap<String, JSONImportConfig>() ;
+  private Map<String, FileImportConfig> fileSettings = new LinkedHashMap<String, FileImportConfig>() ;
  
-  public JSONImportConfigs() {}
+  public FileImportConfigs() {}
   
-  public JSONImportConfigs(NodeSettingsRO settings) throws InvalidSettingsException {
+  public FileImportConfigs(NodeSettingsRO settings) throws InvalidSettingsException {
     if(!settings.containsKey(IMPORT_NAMES)) return ;
     String names = settings.getString(IMPORT_NAMES) ;
     String[] name = names.split(",") ;
     for(String selName : name) {
       ConfigRO config = settings.getConfig(PREFIX + selName) ;
-      JSONImportConfig importConfig = 
-          new JSONImportConfig(config.getString("table"), config.getString("description"), config.getString("jsonFile")) ;
+      String table = config.getString("table") ;
+      String desc = config.getString("description") ;
+      String file = config.getString("file") ;
+      String importType = config.getString("importType") ;
+      FileImportConfig importConfig = new FileImportConfig(table, desc, file, importType) ;
       importConfig.fieldConfigs = config.getString("fieldConfigs") ;
       fileSettings.put(selName, importConfig) ;
     }
@@ -42,43 +44,44 @@ public class JSONImportConfigs {
     if(fileSettings.size() == 0) return ;
     
     StringBuilder names = new StringBuilder() ;
-    Iterator<JSONImportConfig> i = fileSettings.values().iterator() ;
+    Iterator<FileImportConfig> i = fileSettings.values().iterator() ;
     while(i.hasNext()) {
-      JSONImportConfig sel = i.next() ;
+      FileImportConfig sel = i.next() ;
       if(names.length() > 0) names.append(",") ;
       names.append(sel.table) ;
       ConfigWO config = settings.addConfig(PREFIX  + sel.table) ;
       config.addString("table", sel.table) ;
       config.addString("description", sel.description) ;
-      config.addString("jsonFile", sel.jsonFile) ;
+      config.addString("file", sel.file) ;
+      config.addString("importType", sel.importType) ;
       config.addString("fieldConfigs", sel.fieldConfigs) ;
     }
     settings.addString(IMPORT_NAMES, names.toString()) ;
   }
   
-  public void merge(JSONImportConfigs other) {
+  public void merge(FileImportConfigs other) {
     System.out.println("Current setting has " + fileSettings.size() + " config");
     System.out.println("Other setting has " + fileSettings.size() + " config");
     
-    Iterator<JSONImportConfig> i = other.fileSettings.values().iterator() ;
+    Iterator<FileImportConfig> i = other.fileSettings.values().iterator() ;
     while(i.hasNext()) {
-      JSONImportConfig sel = i.next() ;
+      FileImportConfig sel = i.next() ;
       fileSettings.put(sel.table, sel) ;
     }
   }
   
-  public void addConfig(JSONImportConfig config) {
+  public void addConfig(FileImportConfig config) {
     fileSettings.put(config.table, config) ;
   }
   
-  public Collection<JSONImportConfig>  getFileImportConfig() { return fileSettings.values() ; }
+  public Collection<FileImportConfig>  getFileImportConfig() { return fileSettings.values() ; }
   
   public Task getGeneratedTask() throws IOException {
     Task task = new Task() ;
     List<TaskUnit> units = new ArrayList<TaskUnit>() ;
-    Iterator<JSONImportConfig> i = fileSettings.values().iterator() ;
+    Iterator<FileImportConfig> i = fileSettings.values().iterator() ;
     while(i.hasNext()) {
-      JSONImportConfig config = i.next() ;
+      FileImportConfig config = i.next() ;
       for(TaskUnit sel : config.getGeneratedTaskUnits()) {
         units.add(sel) ;
       }
@@ -86,35 +89,37 @@ public class JSONImportConfigs {
     task.setTaskHandler("SQLService") ;
     task.setTaskUnits(units) ;
     task.setTaskSubmitWait(3000l) ;
-    task.setDescription("create json tables") ;
+    task.setDescription("create tables") ;
     return task ;
   }
   
   public String toString() {
     StringBuilder b = new StringBuilder() ;
     b.append("Config:\n") ;
-    Iterator<JSONImportConfig> i = fileSettings.values().iterator() ;
+    Iterator<FileImportConfig> i = fileSettings.values().iterator() ;
     while(i.hasNext()) {
-      JSONImportConfig sel = i.next() ;
+      FileImportConfig sel = i.next() ;
       b.append("Name = ").append(sel.table).
         append(", Desc = ").append(sel.description).
-        append(", Json File = ").append(sel.jsonFile).append("\n") ;
+        append(", File = ").append(sel.file).append("\n") ;
     }
     return b.toString() ;
   }
   
-  static public class JSONImportConfig {
+  static public class FileImportConfig {
     String table = "TableName";
-    String description = "Import json file as a hive table using json serializer and deserializer";
-    String jsonFile = "";
+    String description = "Import file into a hive table";
+    String file = "";
+    String importType = "";
     String fieldConfigs ;
     
-    public JSONImportConfig() {} 
+    public FileImportConfig() {} 
     
-    JSONImportConfig(String name, String desc, String path) {
+    FileImportConfig(String name, String desc, String path, String importType) {
       this.table = name ;
       this.description = desc ;
-      this.jsonFile = path ;
+      this.file = path ;
+      this.importType = importType; 
     }
 
     public String getTable() { return table; }
@@ -122,13 +127,15 @@ public class JSONImportConfigs {
     
     public String getDescription() { return description ; }
 
-    public String getJsonFile() { return jsonFile; }
+    public String getFile() { return file; }
     
-    public void addFieldConfig(String fname, String ftype, String jsonProperty) {
+    public String getImportType() { return this.importType ; }
+    
+    public void addFieldConfig(String fname, String ftype, String recordProperty) {
       if(fieldConfigs == null) {
-        fieldConfigs = fname + "," + ftype + "," + jsonProperty ;
+        fieldConfigs = fname + "," + ftype + "," + recordProperty ;
       } else {
-        fieldConfigs += "\n" + fname + "," + ftype + "," + jsonProperty ;
+        fieldConfigs += "\n" + fname + "," + ftype + "," + recordProperty ;
       }
     }
     
@@ -147,7 +154,7 @@ public class JSONImportConfigs {
       
       TaskUnit dropTask = new TaskUnit() ;
       dropTask.setName("execute") ;
-      dropTask.setDescription("drop json table " + table) ;
+      dropTask.setDescription("drop table " + table) ;
       String dropTable = "DROP TABLE if exists %1s" ;
       dropTask.setTaskLine(String.format(dropTable, table)) ;
       
@@ -165,17 +172,17 @@ public class JSONImportConfigs {
       createTask.setName("execute") ;
       createTask.setTaskLine(createTable.toString()) ;
       
-      TaskUnit importJsonUnit = new TaskUnit() ;
+      TaskUnit importFileUnit = new TaskUnit() ;
       String[] properties = new String[fieldMappingConfig.length] ;
       for(int i = 0; i < properties.length; i++) {
         properties[i] = fieldMappingConfig[i][2] ;
       }
-      importJsonUnit.setName("importJson") ;
-      importJsonUnit.getParameters().setString("dbfile", "/user/hive/warehouse/" + table +  "/data0.rcfile") ;
-      importJsonUnit.getParameters().setString("jsonFile", this.jsonFile) ;
-      importJsonUnit.getParameters().setStringArray("properties", properties) ;
+      importFileUnit.setName("import" + importType) ;
+      importFileUnit.getParameters().setString("dbfile", "/user/hive/warehouse/" + table +  "/data0.rcfile") ;
+      importFileUnit.getParameters().setString("file", this.file) ;
+      importFileUnit.getParameters().setStringArray("properties", properties) ;
       
-      return new TaskUnit[] { dropTask, createTask, importJsonUnit } ;
+      return new TaskUnit[] { dropTask, createTask, importFileUnit } ;
     }
   }
 }

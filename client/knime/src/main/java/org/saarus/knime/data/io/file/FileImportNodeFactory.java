@@ -1,4 +1,4 @@
-package org.saarus.knime.data.io.json;
+package org.saarus.knime.data.io.file;
 
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
@@ -8,12 +8,12 @@ import org.knime.core.node.NodeView;
  * <code>NodeFactory</code> for the "HadoopNode" Node. Hadoop plugin for Knime
  * @author Tuan Nguyen
  */
-public class JSONImportNodeFactory extends NodeFactory<JSONImportNodeModel> {
+public class FileImportNodeFactory extends NodeFactory<FileImportNodeModel> {
 
   /** {@inheritDoc} */
   @Override
-  public JSONImportNodeModel createNodeModel() { 
-    return new JSONImportNodeModel(); 
+  public FileImportNodeModel createNodeModel() { 
+    return new FileImportNodeModel(); 
   }
 
   /** {@inheritDoc} */
@@ -22,8 +22,8 @@ public class JSONImportNodeFactory extends NodeFactory<JSONImportNodeModel> {
 
   /** {@inheritDoc} */
   @Override
-  public NodeView<JSONImportNodeModel> createNodeView(final int viewIndex, final JSONImportNodeModel nodeModel) {
-    return new JSONImportNodeView(nodeModel);
+  public NodeView<FileImportNodeModel> createNodeView(final int viewIndex, final FileImportNodeModel nodeModel) {
+    return new FileImportNodeView(nodeModel);
   }
 
   /** {@inheritDoc} */
@@ -33,6 +33,6 @@ public class JSONImportNodeFactory extends NodeFactory<JSONImportNodeModel> {
   /** {@inheritDoc} */
   @Override
   public NodeDialogPane createNodeDialogPane() { 
-    return new JSONImportNodeDialog(); 
+    return new FileImportNodeDialog(); 
   }
 }

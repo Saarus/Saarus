@@ -33,7 +33,7 @@ public class LRPredictorNodeFactory extends NodeFactory<LRPredictorNodeModel> {
   /** {@inheritDoc} */
   @Override
   public NodeDialogPane createNodeDialogPane() {
-    //return new JSONImportNodeDialog();
+    //return new FileImportNodeDialog();
     return new LRPredictorNodeDialog();
   }
 }

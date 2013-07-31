@@ -33,7 +33,7 @@ public class StatisticNodeFactory extends NodeFactory<StatisticNodeModel> {
   /** {@inheritDoc} */
   @Override
   public NodeDialogPane createNodeDialogPane() {
-    //return new JSONImportNodeDialog();
+    //return new FileImportNodeDialog();
     return new StatisticNodeDialog();
   }
 }

@@ -2,14 +2,14 @@
 <!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
 
 <knimeNode icon="./default.png" type="Manipulator">
-    <name>JSON Import</name>
+    <name>File Import</name>
     
     <shortDescription>
-        JSON Import Plugin For Saarus
+        File Import Plugin For Saarus
     </shortDescription>
     
     <fullDescription>
-        <intro>JSON Import Plugin For Saarus</intro>
+        <intro>File Import Plugin For Saarus</intro>
         
         <option name="short name of first option (like in the dialog)">description of first option</option>
         <option name="short name of second option (like in the dialog)">description of second option</option>

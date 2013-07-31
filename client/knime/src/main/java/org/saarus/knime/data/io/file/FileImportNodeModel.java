@@ -1,4 +1,4 @@
-package org.saarus.knime.data.io.json;
+package org.saarus.knime.data.io.file;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import org.saarus.client.ClientContext;
 import org.saarus.client.HiveClient;
 import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
-import org.saarus.knime.data.io.json.JSONImportConfigs.JSONImportConfig;
+import org.saarus.knime.data.io.file.FileImportConfigs.FileImportConfig;
 import org.saarus.service.sql.TableMetadata;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
@@ -33,12 +33,12 @@ import org.saarus.service.util.JSONSerializer;
 /**
  * @author Tuan Nguyen
  */
-public class JSONImportNodeModel extends NodeModel {
-  private static final NodeLogger logger = NodeLogger.getLogger(JSONImportNodeModel.class);
+public class FileImportNodeModel extends NodeModel {
+  private static final NodeLogger logger = NodeLogger.getLogger(FileImportNodeModel.class);
 
-  private JSONImportConfigs currentSettings = new JSONImportConfigs();
+  private FileImportConfigs currentSettings = new FileImportConfigs();
 
-  protected JSONImportNodeModel() {
+  protected FileImportNodeModel() {
     super(0, 1);
   }
 
@@ -70,19 +70,19 @@ public class JSONImportNodeModel extends NodeModel {
       allColSpecs[0] = new DataColumnSpecCreator("Table", StringCell.TYPE).createSpec();
       allColSpecs[1] = new DataColumnSpecCreator("Description", StringCell.TYPE).createSpec();
       allColSpecs[2] = new DataColumnSpecCreator("Path", StringCell.TYPE).createSpec();
-      allColSpecs[3] = new DataColumnSpecCreator("JSON", StringCell.TYPE).createSpec();
+      allColSpecs[3] = new DataColumnSpecCreator("Table Metadata", StringCell.TYPE).createSpec();
       DataTableSpec outputSpec = new DataTableSpec(allColSpecs);
       BufferedDataContainer container = exec.createDataContainer(outputSpec);
 
-      Iterator<JSONImportConfig> i = currentSettings.getFileImportConfig().iterator(); 
+      Iterator<FileImportConfig> i = currentSettings.getFileImportConfig().iterator(); 
       int count = 0 ;
       HiveClient hiveClient = restClient.getHiveClient() ;
       while(i.hasNext()) {
-        JSONImportConfig config = i.next() ;
+        FileImportConfig config = i.next() ;
         TableMetadata tmeta = hiveClient.descTable(config.getTable(), false) ;
         DataCell[] cells = { 
             new StringCell(config.getTable()), new StringCell(config.getDescription()),
-            new StringCell(config.getJsonFile()), new StringCell(JSONSerializer.JSON_SERIALIZER.toString(tmeta))
+            new StringCell(config.getFile()), new StringCell(JSONSerializer.JSON_SERIALIZER.toString(tmeta))
         } ;
         container.addRowToTable(new DefaultRow(new RowKey("Row " + count), cells));
         count++ ;
@@ -102,7 +102,7 @@ public class JSONImportNodeModel extends NodeModel {
    */
   @Override
   protected void reset() {
-    currentSettings = new JSONImportConfigs() ;
+    currentSettings = new FileImportConfigs() ;
     System.out.println("Call reset..........................");
   }
 
@@ -123,7 +123,7 @@ public class JSONImportNodeModel extends NodeModel {
   /** {@inheritDoc} */
   @Override
   protected void loadValidatedSettingsFrom(final NodeSettingsRO settings) throws InvalidSettingsException {
-    this.currentSettings.merge(new JSONImportConfigs(settings)) ;
+    this.currentSettings.merge(new FileImportConfigs(settings)) ;
     System.out.println("Load loadValidatedSettings(merge)") ;
     System.out.println(this.currentSettings) ;
   }

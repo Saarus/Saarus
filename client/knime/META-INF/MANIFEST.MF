@@ -29,11 +29,12 @@ Bundle-ClassPath: saarus.client.knime.jar,
  lib/hadoop-auth-2.0.0-cdh4.3.0.jar,
  lib/protobuf-java-2.4.0a.jar,
  lib/saarus.lib.swingui-1.0.jar,
- lib/jgraph-5.13.0.0.jar
+ lib/jgraph-5.13.0.0.jar,
+ lib/saarus.lib.common-1.0.jar
 Bundle-Activator: org.saarus.knime.SaarusKnimePlugin
 Export-Package: org.saarus.knime,
  org.saarus.knime.data.hive,
- org.saarus.knime.data.io.json,
+ org.saarus.knime.data.io.file,
  org.saarus.knime.data.stat,
  org.saarus.knime.mahout.lr.learner,
  org.saarus.knime.mahout.lr.predictor,

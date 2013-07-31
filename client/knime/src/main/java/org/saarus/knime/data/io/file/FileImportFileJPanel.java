@@ -1,4 +1,4 @@
-package org.saarus.knime.data.io.json;
+package org.saarus.knime.data.io.file;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ import org.codehaus.jackson.JsonNode;
 import org.saarus.client.HiveClient;
 import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
-import org.saarus.knime.data.io.json.JSONImportConfigs.JSONImportConfig;
+import org.saarus.knime.data.io.file.FileImportConfigs.FileImportConfig;
 import org.saarus.knime.uicomp.JInfoDialog;
 import org.saarus.knime.uicomp.JTreeDFSFileSelector;
 import org.saarus.knime.uicomp.SpringUtilities;
@@ -37,22 +39,23 @@ import org.saarus.service.sql.TableMetadata;
 import org.saarus.service.util.JSONReader;
 import org.saarus.service.util.JSONSerializer;
 
-public class JSONImportFileJPanel extends JPanel {
-  final static int MAX_WIDTH = JSONImportNodeDialog.WIDTH ;
+public class FileImportFileJPanel extends JPanel {
+  final static int MAX_WIDTH = FileImportNodeDialog.WIDTH ;
   
-  private URLInput urlInput;
   private JTextField descInput, tableInput ;
+  private URLInput urlInput;
+  private JComboBox<String> importType ;
   private JCheckBox   newTable ;
   private SQLTableConfig tableConfig ;
-  private JSONStruct jsonStruct = new JSONStruct();
+  private FileDataSample dataSample = new FileDataSample();
   
-  public JSONImportFileJPanel(JSONImportConfig config) {
+  public FileImportFileJPanel(FileImportConfig config) {
     setLayout(new BorderLayout()) ;
     add(createInputBox(config),       BorderLayout.NORTH);
     add(createPreviewDataBox(config), BorderLayout.CENTER) ;
   }
   
-  private JPanel createInputBox(JSONImportConfig config) {
+  private JPanel createInputBox(FileImportConfig config) {
     JPanel panel = new JPanel(new SpringLayout()) ;
     String title = "Import(press 'Enter' to update preview)" ;
     panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), title));
@@ -71,7 +74,7 @@ public class JSONImportFileJPanel extends JPanel {
         try {
           JSONFileSelector selector = new JSONFileSelector();
           selector.setSize(new Dimension(300, 500)) ;
-          selector.setLocationRelativeTo(JSONImportFileJPanel.this) ;
+          selector.setLocationRelativeTo(FileImportFileJPanel.this) ;
           selector.setVisible(true) ;
         } catch (Exception e1) {
           e1.printStackTrace();
@@ -84,12 +87,13 @@ public class JSONImportFileJPanel extends JPanel {
     preview.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         String urlLoc = urlInput.getURLLocation() ;
-        jsonStruct.load(urlLoc) ;
+        String type =  importType.getSelectedItem().toString() ;
+        dataSample.load(urlLoc, type) ;
         
         JInfoDialog dialog = JInfoDialog.getInstance() ;
         dialog.setSize(new Dimension(400, 500)) ;
-        dialog.setInfo(jsonStruct.getDisplayText()) ;
-        dialog.setLocationRelativeTo(JSONImportFileJPanel.this) ;
+        dialog.setInfo(dataSample.getDisplayText()) ;
+        dialog.setLocationRelativeTo(FileImportFileJPanel.this) ;
         dialog.setVisible(true) ;
         System.out.println("end preview action") ;
       }
@@ -97,13 +101,20 @@ public class JSONImportFileJPanel extends JPanel {
     urlButtonPanel.add(preview) ;
     
     urlInput = new URLInput();
-    urlInput.setSelectedItem(config.getJsonFile()) ;
+    urlInput.setSelectedItem(config.getFile()) ;
     JPanel urlPanel = new JPanel(new BorderLayout());
     urlPanel.add(urlInput, BorderLayout.CENTER) ;
     urlPanel.add(urlButtonPanel, BorderLayout.EAST) ;
-    panel.add(new JLabel("JSON File")) ;
+    panel.add(new JLabel("File")) ;
     panel.add(urlPanel) ;
-
+    
+    importType = new JComboBox<String>(new String[] {"Json", "Csv"}) ;
+    importType.setEditable(false);
+    importType.setSelectedItem(config.getImportType()) ;
+    
+    panel.add(new JLabel("Import Type")) ;
+    panel.add(importType) ;
+    
     tableInput = new JTextField(config.getTable()) ;
     panel.add(new JLabel("Table")) ;
     panel.add(tableInput) ;
@@ -112,11 +123,11 @@ public class JSONImportFileJPanel extends JPanel {
     panel.add(new JLabel("Create New")) ;
     panel.add(newTable) ;
     
-    SpringUtilities.makeCompactGrid(panel, /*rows, cols*/4, 2,  /*initX, initY*/ 6, 6, /*xPad, yPad*/6, 6);       
+    SpringUtilities.makeCompactGrid(panel, /*rows, cols*/5, 2,  /*initX, initY*/ 6, 6, /*xPad, yPad*/6, 6);       
     return panel ;
   }
   
-  private JPanel createPreviewDataBox(JSONImportConfig config) {
+  private JPanel createPreviewDataBox(FileImportConfig config) {
     JPanel panel = new JPanel(new BorderLayout()) ;
     panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Table Config"));
     
@@ -130,8 +141,8 @@ public class JSONImportFileJPanel extends JPanel {
           RESTClient restClient = context.getClientContext().getBean(RESTClient.class) ;
           HiveClient hclient = restClient.getHiveClient() ;
           TableMetadata tableMetadata = hclient.descTable(tableInput.getText(), false) ;
-          jsonStruct.load(urlInput.getURLLocation()) ;
-          String[][] mappingData = jsonStruct.autoDetectMapping(tableMetadata) ;
+          dataSample.load(urlInput.getURLLocation(), importType.getSelectedItem().toString()) ;
+          String[][] mappingData = dataSample.autoDetectMapping(tableMetadata) ;
           tableConfig.update(mappingData) ;
         } catch(Throwable t) {
           t.printStackTrace() ;
@@ -144,11 +155,12 @@ public class JSONImportFileJPanel extends JPanel {
     return panel ;
   }
   
-  JSONImportConfig getJSONImportConfig() {
+  FileImportConfig getJSONImportConfig() {
     String table = tableInput.getText() ;
     String desc  = descInput.getText() ;
     String loc = urlInput.getURLLocation() ;
-    JSONImportConfig config = new JSONImportConfig(table, desc, loc) ;
+    String type = importType.getSelectedItem().toString() ; 
+    FileImportConfig config = new FileImportConfig(table, desc, loc, type) ;
     String[][] fieldMappingConfig = tableConfig.getFielMappingConfig() ;
     for(int i = 0; i < fieldMappingConfig.length; i++) {
       config.addFieldConfig(fieldMappingConfig[i][0], fieldMappingConfig[i][1], fieldMappingConfig[i][2]) ;
@@ -172,6 +184,7 @@ public class JSONImportFileJPanel extends JPanel {
   static class URLInput extends JComboBox<String> {
     public URLInput() {
       setEditable(true);
+      setPreferredSize(new Dimension(160, 15));
       setToolTipText("Enter an URL of an ASCII data file, select from recent files, or browse");
       addFocusListener(new FocusAdapter() {
         @Override
@@ -188,7 +201,7 @@ public class JSONImportFileJPanel extends JPanel {
   }
   
   static public class SQLTableConfig extends JTable {
-    public SQLTableConfig(JSONImportConfig config) {
+    public SQLTableConfig(FileImportConfig config) {
       TableFieldModel model = new TableFieldModel(config.getFieldMappingConfig());
       setModel(model) ;
       getColumnModel().getColumn(2).setMinWidth(300);
@@ -220,7 +233,7 @@ public class JSONImportFileJPanel extends JPanel {
   }
 
   static class TableFieldModel extends AbstractTableModel {
-    static String columnNames[] = { "Field Name", "Field Type", "JSON Property"};
+    static String columnNames[] = { "Field Name", "Field Type", "Data Property"};
 
     String data[][] ;
     
@@ -256,22 +269,24 @@ public class JSONImportFileJPanel extends JPanel {
     public boolean isCellEditable(int row, int column) { return true ; }
   }
   
-  static class JSONStruct {
-    String jsonLoc ;
-    String jsonSample ;
+  static class FileDataSample {
+    String fileLoc ;
+    String type ;
+    String sampleData ;
     Exception error ;
     
-    public void load(String jsonLoc) {
-      if(jsonLoc.equals(this.jsonLoc)) return ;
+    public void load(String fileLoc, String type) {
+      if(fileLoc.equals(this.fileLoc) && this.type.equals(type)) return ;
+      this.fileLoc = fileLoc ;
+      this.type = type ;
       error = null ;
-      jsonSample = null ;
+      sampleData = null ;
       try {
-        this.jsonLoc = jsonLoc ;
-        FSResource res = FSResource.get(jsonLoc) ;
-        JSONReader reader = new JSONReader(res.getInputStream()) ;
-        JsonNode node = reader.read() ;
-        reader.close() ;
-        this.jsonSample = JSONSerializer.JSON_SERIALIZER.toString(node) ;
+        if("Json".equals(type)) {
+          this.sampleData = readJsonSample(fileLoc) ;
+        } else {
+          this.sampleData = readCSVSample(fileLoc) ;
+        }
       } catch(Exception ex) {
         this.error = ex ;
         ex.printStackTrace() ;
@@ -280,18 +295,57 @@ public class JSONImportFileJPanel extends JPanel {
     
     public String getDisplayText() {
       if(error != null) return error.getMessage() ;
-      return jsonSample; 
+      return sampleData; 
     }
     
     public String[][] autoDetectMapping(TableMetadata mdata) {
+      if("Json".equals(type)) {
+        return autoDetectJSONMapping(mdata) ;
+      } else {
+        return autoDetectCSVMapping(mdata) ;
+      }
+    }
+    
+    public String[][] autoDetectJSONMapping(TableMetadata mdata) {
       try {
-        JsonNode node = JSONSerializer.JSON_SERIALIZER.fromString(jsonSample) ;
+        JsonNode node = JSONSerializer.JSON_SERIALIZER.fromString(sampleData) ;
         node.isValueNode() ;
         return TableMetadata.autoDetectMapping(mdata, node) ;
       } catch (IOException e) {
         e.printStackTrace();
       }
       return null ;
+    }
+    
+    public String[][] autoDetectCSVMapping(TableMetadata mdata) {
+      String data = sampleData ;
+      if(data == null) data = "" ;
+      String[] line = data.split("\n") ;
+      String[] header = {} ;
+      if(line.length > 0 ) header = line[0].split(",") ;
+      return TableMetadata.autoDetectMapping(mdata, header) ;
+    }
+    
+    private String readJsonSample(String loc) throws Exception {
+      FSResource res = FSResource.get(fileLoc) ;
+      JSONReader reader = new JSONReader(res.getInputStream()) ;
+      JsonNode node = reader.read() ;
+      reader.close() ;
+      return JSONSerializer.JSON_SERIALIZER.toString(node) ;
+    }
+    
+    private String readCSVSample(String loc) throws Exception {
+      FSResource res = FSResource.get(fileLoc) ;
+      BufferedReader reader = new BufferedReader(new InputStreamReader(res.getInputStream())) ;
+      StringBuilder b = new StringBuilder() ;
+      String line  = null ;
+      int count  = 0 ;
+      while(count < 16 && (line = reader.readLine()) != null) {
+        if(count > 0) b.append("\n") ;
+        b.append(line.trim()) ;
+        count++ ;
+      }
+      return b.toString() ;
     }
   }
 }

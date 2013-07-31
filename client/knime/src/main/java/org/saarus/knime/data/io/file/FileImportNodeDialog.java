@@ -1,4 +1,4 @@
-package org.saarus.knime.data.io.json;
+package org.saarus.knime.data.io.file;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -17,7 +17,7 @@ import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
-import org.saarus.knime.data.io.json.JSONImportConfigs.JSONImportConfig;
+import org.saarus.knime.data.io.file.FileImportConfigs.FileImportConfig;
 import org.saarus.knime.uicomp.JInfoDialog;
 import org.saarus.knime.uicomp.JTabbedPaneUI;
 import org.saarus.service.util.JSONSerializer;
@@ -25,21 +25,21 @@ import org.saarus.service.util.JSONSerializer;
 /** 
  * @author Tuan Nguyen
  */
-public class JSONImportNodeDialog extends NodeDialogPane {
+public class FileImportNodeDialog extends NodeDialogPane {
   final static public int WIDTH  = 750 ;
   final static public int HEIGHT = 500 ;
   
   private JTabbedPaneUI tabbedPane ;
   
-  protected JSONImportNodeDialog() {
+  protected FileImportNodeDialog() {
     getPanel().setPreferredSize(new Dimension(WIDTH, HEIGHT)) ;
     
     tabbedPane = new JTabbedPaneUI();
     tabbedPane.addAddButton(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        JSONImportConfig config = new JSONImportConfig() ;
+        FileImportConfig config = new FileImportConfig() ;
         config.setTable("Table"  + tabbedPane.getTabCount()) ;
-        tabbedPane.addTabView(config.getTable(), new JSONImportFileJPanel(config));
+        tabbedPane.addTabView(config.getTable(), new FileImportFileJPanel(config));
       }
     }) ;
     JPanel panel = new JPanel(new BorderLayout()) ;
@@ -73,8 +73,8 @@ public class JSONImportNodeDialog extends NodeDialogPane {
           tabbedPane.removeTabAt(i) ;
         }
         
-        JSONImportConfig userTableConfig =
-          new JSONImportConfig("user", "create table user....", "dfs:/user/hive/yelpdb/json/training/user/data.json") ;
+        FileImportConfig userTableConfig =
+          new FileImportConfig("user", "create table user....", "dfs:/user/hive/yelpdb/json/training/user/data.json", "Json") ;
         userTableConfig.addFieldConfig("user_id", "STRING", "user_id") ;
         userTableConfig.addFieldConfig("name", "STRING", "name") ;
         userTableConfig.addFieldConfig("review_count", "INT", "review_count") ;
@@ -83,8 +83,8 @@ public class JSONImportNodeDialog extends NodeDialogPane {
         userTableConfig.addFieldConfig("vote_useful", "INT", "votes.useful") ;
         userTableConfig.addFieldConfig("vote_cool",   "INT", "votes.cool") ;
         
-        JSONImportConfig businessTableConfig =
-            new JSONImportConfig("business", "create table business", "dfs:/user/hive/yelpdb/json/training/business/data.json") ;
+        FileImportConfig businessTableConfig =
+            new FileImportConfig("business", "create table business", "dfs:/user/hive/yelpdb/json/training/business/data.json", "Json") ;
         businessTableConfig.addFieldConfig("business_id", "STRING", "business_id") ;
         businessTableConfig.addFieldConfig("name", "STRING", "name") ;
         businessTableConfig.addFieldConfig("full_address", "STRING", "full_address") ;
@@ -98,13 +98,13 @@ public class JSONImportNodeDialog extends NodeDialogPane {
         businessTableConfig.addFieldConfig("stars", "FLOAT", "stars") ;
         businessTableConfig.addFieldConfig("neighborhoods", "STRING", "neighborhoods") ;
         
-        JSONImportConfig checkinTableConfig =
-            new JSONImportConfig("checkin", "create table checkin", "dfs:/user/hive/yelpdb/json/training/checkin/data.json") ;
+        FileImportConfig checkinTableConfig =
+            new FileImportConfig("checkin", "create table checkin", "dfs:/user/hive/yelpdb/json/training/checkin/data.json", "Json") ;
         checkinTableConfig.addFieldConfig("business_id", "STRING", "business_id") ;
         checkinTableConfig.addFieldConfig("checkin_info", "STRING", "checkin_info") ;
         
-        JSONImportConfig reviewTableConfig =
-            new JSONImportConfig("review", "create table review", "dfs:/user/hive/yelpdb/json/training/review/data.json") ;
+        FileImportConfig reviewTableConfig =
+            new FileImportConfig("review", "create table review", "dfs:/user/hive/yelpdb/json/training/review/data.json", "Json") ;
         reviewTableConfig.addFieldConfig("review_id", "STRING", "review_id") ;
         reviewTableConfig.addFieldConfig("business_id", "STRING", "business_id") ;
         reviewTableConfig.addFieldConfig("user_id", "STRING", "user_id") ;
@@ -115,11 +115,11 @@ public class JSONImportNodeDialog extends NodeDialogPane {
         reviewTableConfig.addFieldConfig("vote_useful", "INT", "votes.useful") ;
         reviewTableConfig.addFieldConfig("vote_cool", "INT", "votes.cool") ;
         
-        JSONImportConfig[] config ={
+        FileImportConfig[] config ={
           userTableConfig, businessTableConfig, checkinTableConfig, reviewTableConfig 
         };
-        for(JSONImportConfig sel : config) {
-          tabbedPane.addTabView(sel.getTable(), new JSONImportFileJPanel(sel));
+        for(FileImportConfig sel : config) {
+          tabbedPane.addTabView(sel.getTable(), new FileImportFileJPanel(sel));
         }
         tabbedPane.setSelectedTab(1) ;
       }
@@ -132,15 +132,15 @@ public class JSONImportNodeDialog extends NodeDialogPane {
   protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {
     System.out.println("dialog load settings from " );
     try {
-      JSONImportConfigs configs = new JSONImportConfigs(settings) ;
-      Iterator<JSONImportConfig> i = configs.getFileImportConfig().iterator() ;
+      FileImportConfigs configs = new FileImportConfigs(settings) ;
+      Iterator<FileImportConfig> i = configs.getFileImportConfig().iterator() ;
       while(i.hasNext()) {
-        JSONImportConfig config = i.next() ;
-        tabbedPane.addTabView(config.getTable(), new JSONImportFileJPanel(config));
+        FileImportConfig config = i.next() ;
+        tabbedPane.addTabView(config.getTable(), new FileImportFileJPanel(config));
       }
       if(tabbedPane.getTabCount() == 1) {
-        JSONImportConfig config = new JSONImportConfig() ;
-        tabbedPane.addTabView(config.getTable(), new JSONImportFileJPanel(config));
+        FileImportConfig config = new FileImportConfig() ;
+        tabbedPane.addTabView(config.getTable(), new FileImportFileJPanel(config));
       }
       tabbedPane.setSelectedTab(1) ;
       System.out.println(configs);
@@ -149,11 +149,11 @@ public class JSONImportNodeDialog extends NodeDialogPane {
     }
   }
   
-  public JSONImportConfigs getJSONImportConfigs() {
-    JSONImportConfigs configs = new JSONImportConfigs() ;
+  public FileImportConfigs getJSONImportConfigs() {
+    FileImportConfigs configs = new FileImportConfigs() ;
     int tabCount = tabbedPane.getTabCount() ;
     for(int i = 1; i < tabCount; i++) {
-      JSONImportFileJPanel panel = (JSONImportFileJPanel) tabbedPane.getTabAt(i) ;
+      FileImportFileJPanel panel = (FileImportFileJPanel) tabbedPane.getTabAt(i) ;
       configs.addConfig(panel.getJSONImportConfig()) ;
     }
     return configs ;
@@ -162,7 +162,7 @@ public class JSONImportNodeDialog extends NodeDialogPane {
   @Override
   protected void saveSettingsTo(NodeSettingsWO settings) throws InvalidSettingsException {
     System.out.println("dialog saveSettingsTo..................");
-    JSONImportConfigs configs = getJSONImportConfigs() ;
+    FileImportConfigs configs = getJSONImportConfigs() ;
     configs.saveSettings(settings) ;
     System.out.println("dialog saveSettingsTo.................. done");
   }
