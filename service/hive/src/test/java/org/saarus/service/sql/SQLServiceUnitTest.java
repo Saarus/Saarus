@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.saarus.service.hadoop.HadoopInfo;
 import org.saarus.service.hadoop.util.HDFSUtil;
 import org.saarus.service.sql.SQLService;
-import org.saarus.service.sql.io.RCFileWriter;
+import org.saarus.service.sql.io.TableRCFileWriter;
 import org.saarus.service.util.JSONSerializer;
 import org.saarus.service.util.TabularPrinter;
 
@@ -24,15 +24,16 @@ public class SQLServiceUnitTest {
     hservice.executeSQL(String.format("CREATE EXTERNAL TABLE %s (key INT, value STRING) STORED AS RCFILE LOCATION '%s'", tableName, location));
     Configuration conf = HDFSUtil.getConfiguration() ;
     FileSystem fs = FileSystem.get(conf) ;
-    RCFileWriter writer = new RCFileWriter(fs, location + "/data0.rcfile", 2, new HashMap<String, String>()) ;
+    String[] colNames = {"key", "value"} ;
+    TableRCFileWriter writer = new TableRCFileWriter(fs, location + "/data0.rcfile", colNames, new HashMap<String, String>()) ;
     for(int i = 0; i < 100; i++) {
-      writer.append(Integer.toString(i), "value " + i) ;
+      writer.writeRow(Integer.toString(i), "value " + i) ;
     }
     writer.close() ;
     
-    writer = new RCFileWriter(fs, location + "/data1.rcfile", 2, new HashMap<String, String>()) ;
+    writer = new TableRCFileWriter(fs, location + "/data1.rcfile", colNames, new HashMap<String, String>()) ;
     for(int i = 100; i < 200; i++) {
-      writer.append(Integer.toString(i), "value " + i) ;
+      writer.writeRow(Integer.toString(i), "value " + i) ;
     }
     writer.close() ;
     

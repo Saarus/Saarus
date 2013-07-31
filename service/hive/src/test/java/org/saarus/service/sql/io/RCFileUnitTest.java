@@ -22,7 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.saarus.service.hadoop.util.HDFSUtil;
 import org.saarus.service.sql.io.RCFileReader;
-import org.saarus.service.sql.io.RCFileWriter;
+import org.saarus.service.sql.io.TableRCFileWriter;
 
 public class RCFileUnitTest {
   @Test
@@ -39,9 +39,9 @@ public class RCFileUnitTest {
     Map<String, String> metaData = new HashMap<String, String>() ;
     metaData.put("apple", "block") ;
     metaData.put("cat",   "dog") ;
-    RCFileWriter writer = new RCFileWriter(fs, file, rec1.length, metaData) ;
-    writer.append(rec1) ;
-    writer.append(rec2) ;
+    TableRCFileWriter writer = new TableRCFileWriter(fs, file, rec1, metaData) ;
+    writer.writeRow(rec1) ;
+    writer.writeRow(rec2) ;
     writer.close() ;
 
     Object[] expectedRecord_1 = { new ByteWritable((byte) 123),

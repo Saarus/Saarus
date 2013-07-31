@@ -11,7 +11,11 @@ import org.saarus.service.hadoop.util.HDFSUtil;
 import org.saarus.service.sql.QueryResult;
 import org.saarus.service.sql.SQLService;
 import org.saarus.service.sql.TableMetadata;
+import org.saarus.service.sql.io.CSVImporter;
 import org.saarus.service.sql.io.JSONImporter;
+import org.saarus.service.sql.io.Progressable;
+import org.saarus.service.sql.io.TableRCFileWriter;
+import org.saarus.service.sql.io.TableWriter;
 import org.saarus.service.task.CallableTaskUnit;
 import org.saarus.service.task.TaskUnit;
 import org.saarus.service.task.TaskUnitHandler;
@@ -43,6 +47,7 @@ public class HiveTaskHandler implements TaskUnitHandler {
     else if("descTables".equals(name)) return descTables(taskUnit);
     else if("insert".equals(name)) return insert(taskUnit);
     else if("importJson".equals(name)) return importJson(taskUnit);
+    else if("importCsv".equals(name)) return importCsv(taskUnit);
     return null ;
   }
 
@@ -125,12 +130,31 @@ public class HiveTaskHandler implements TaskUnitHandler {
     CallableTaskUnit<String> callableUnit = new CallableTaskUnit<String>(tunit, new TaskUnitResult<String>()) {
       public String doCall() throws Exception {
         FileSystem fs = HDFSUtil.getFileSystem() ;
-        String jsonFile = tunit.getParameters().getString("jsonFile");
+        String jsonFile = tunit.getParameters().getString("file");
         String dbfile = tunit.getParameters().getString("dbfile");
         String[] properties = (String[]) tunit.getParameters().getStringArray("properties", new String[] {}) ; 
-        JSONImporter.Progressable progressable = null ; //new JSONImporter.DebugProgressable() ;
-        JSONImporter.Writer writer = new JSONImporter.RCWriter(fs, dbfile, properties, null) ;
+        Progressable progressable = null ; //new DebugProgressable() ;
+        TableWriter writer = new TableRCFileWriter(fs, dbfile, properties, null) ;
         JSONImporter importer = new JSONImporter(writer, progressable) ;
+        FSResource resource = FSResource.get(jsonFile) ;
+        importer.doImport(resource.getInputStream(), properties) ;
+        importer.close() ;
+        return "Done" ;
+      }
+    };
+    return callableUnit ;
+  }
+  
+  private CallableTaskUnit<String> importCsv(final TaskUnit tunit) {
+    CallableTaskUnit<String> callableUnit = new CallableTaskUnit<String>(tunit, new TaskUnitResult<String>()) {
+      public String doCall() throws Exception {
+        FileSystem fs = HDFSUtil.getFileSystem() ;
+        String jsonFile = tunit.getParameters().getString("file");
+        String dbfile = tunit.getParameters().getString("dbfile");
+        String[] properties = (String[]) tunit.getParameters().getStringArray("properties", new String[] {}) ; 
+        Progressable progressable = null ; //new DebugProgressable() ;
+        TableWriter writer = new TableRCFileWriter(fs, dbfile, properties, null) ;
+        CSVImporter importer = new CSVImporter(writer, progressable) ;
         FSResource resource = FSResource.get(jsonFile) ;
         importer.doImport(resource.getInputStream(), properties) ;
         importer.close() ;

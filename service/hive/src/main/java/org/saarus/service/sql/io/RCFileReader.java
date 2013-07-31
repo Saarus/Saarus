@@ -26,7 +26,7 @@ public class RCFileReader {
     Configuration conf = fs.getConf() ;
     reader = new RCFile.Reader(fs, new Path(file), conf);
     serDe = new ColumnarSerDe();
-    serDe.initialize(conf, RCFileWriter.createProperties());
+    serDe.initialize(conf, TableRCFileWriter.createProperties());
   }
   
   public ColumnarSerDe getColumnarSerDe() { return this.serDe ; }

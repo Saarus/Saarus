@@ -1,20 +1,15 @@
 package org.saarus.service.sql.io;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
-import org.apache.hadoop.fs.FileSystem;
 import org.codehaus.jackson.JsonNode;
-import org.saarus.service.sql.TableMetadata;
 import org.saarus.service.util.JSONReader;
-import org.saarus.service.util.JSONSerializer;
 
 public class JSONImporter {
-  private Writer writer ;
+  private TableWriter writer ;
   private Progressable progressable ;
   
-  public JSONImporter(Writer writer, Progressable progressable) throws Exception {
+  public JSONImporter(TableWriter writer, Progressable progressable) throws Exception {
     this.writer = writer ;
     this.progressable = progressable ;
   }
@@ -34,7 +29,7 @@ public class JSONImporter {
     while(((node = reader.read()) != null)) {
       String[] value = preader.read(node, properties) ;
       if(progressable != null) progressable.progress(properties, value) ;
-      writer.write(value) ;
+      writer.writeRow(value) ;
     }
   }
   
@@ -42,35 +37,35 @@ public class JSONImporter {
     writer.close() ;
   }
   
-  static public interface Writer {
-    public void write(String[] val) throws Exception ;
-    public void close() throws Exception ;
-  }
-  
-  static public class RCWriter implements Writer {
-    private RCFileWriter writer ;
-
-    public RCWriter(FileSystem fs, String file, String[] properties, Map<String, String> meta) throws Exception {
-      this.writer = new RCFileWriter(fs, file, properties.length, meta) ;
+  public class JSONPropertiesReader {
+    public String[] read(JsonNode node, String[] property) {
+      String[] value = new String[property.length] ;
+      for(int i = 0; i < value.length; i++) {
+        value[i] = getProperty(node, property[i], null) ;
+      }
+      return value ;
     }
 
-    public void write(String[] val) throws Exception { writer.append(val) ; }
-
-    public void close() throws Exception { writer.close() ; }
-  }
-
-  static public interface Progressable {
-    public void progress(String[] properties, String[] val) ;
-  }
-  
-  static public class DebugProgressable implements Progressable {
-    public void progress(String[] properties, String[] val) {
-      StringBuilder b = new StringBuilder() ;
-      for(int i = 0; i < val.length; i++) {
-        if(i > 0 ) b.append(", ") ;
-        b.append(properties[i]).append("=").append(val[i]);
+    String getProperty(JsonNode node, String s, String dval) {
+      if(s.indexOf(".") < 0) {
+        JsonNode fnode = node.get(s) ;
+        if(fnode == null) return dval ;
+        String retVal = fnode.asText() ;
+        if(retVal == null) return dval ;
+        return retVal ;
+      } else {
+        String[] field = s.split("\\.");
+        int idx = 0 ;
+        while(idx < field.length) {
+          String n = field[idx];
+          JsonNode current = node.get(n) ;
+          idx++ ;
+          if(current == null) return dval ;
+          if(idx == field.length) return current.asText() ;
+          node = current ;
+        }
+        return dval;
       }
-      System.out.println(b);
     }
   }
 }
