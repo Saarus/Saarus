@@ -22,6 +22,7 @@
         <include>org.codehaus.jackson:jackson-core-asl</include>
         <include>org.codehaus.jackson:jackson-mapper-asl</include>
 
+
         <include>com.google.guava:guava</include>
         <include>com.google.protobuf:protobuf-java</include>
 
@@ -30,6 +31,8 @@
         <include>org.apache.thrift:libfb303</include>
         <include>org.apache.thrift:libthrift</include>
         -->
+
+        <include>net.sf.opencsv:opencsv</include>
 
 
         <include>org.springframework:spring-core</include>
@@ -109,6 +112,7 @@
         -->
 
         <include>org.saarus:saarus.server</include>
+        <include>org.saarus:saarus.lib.common</include>
         <include>org.saarus:saarus.service.core</include>
         <include>org.saarus:saarus.service.hive</include>
         <include>org.saarus:saarus.service.hadoop</include>
