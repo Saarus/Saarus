@@ -1,4 +1,4 @@
-package org.saarus.service.sql.hive;
+package org.saarus.service.sql.hive.udtf;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,10 @@ import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorFactory;
 import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
 
-@Description(name = "statistic",
-    value = "_FUNC_(array) - Compute the statistic of column/row")
+@Description(
+  name  = "statistic",
+  value = "_FUNC_(array) - Compute the statistic of column/row"
+)
 public class GenericUDTFExplode2 extends GenericUDTF {
 
   ListObjectInspector listOI = null;
@@ -27,7 +29,7 @@ public class GenericUDTFExplode2 extends GenericUDTF {
     if (args.length != 1) {
       throw new UDFArgumentException("explode() takes only one argument");
     }
-
+    
     if (args[0].getCategory() != ObjectInspector.Category.LIST) {
       throw new UDFArgumentException("explode() takes an array as a parameter");
     }

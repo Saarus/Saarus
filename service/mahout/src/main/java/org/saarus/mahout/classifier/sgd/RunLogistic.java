@@ -10,6 +10,7 @@ import org.apache.mahout.math.Matrix;
 import org.apache.mahout.math.SequentialAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.saarus.service.hadoop.util.FSResource;
+import org.saarus.service.sql.DataReader;
 
 public final class RunLogistic {
   public void predict(String[] args, PrintWriter output) throws Exception {

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public interface DataReader {
+public interface TextClassifyDataReader {
   
   public Record next() throws Exception ;
   
@@ -26,7 +26,7 @@ public interface DataReader {
     public String getLabel() { return this.label; }
   }
   
-  static public class CSVDataReader implements DataReader {
+  static public class CSVDataReader implements TextClassifyDataReader {
     CSVReader csvReader ;
     String[] header ;
     
@@ -59,6 +59,5 @@ public interface DataReader {
     public void close() throws Exception {
       csvReader.close() ;
     }
-    
   }
 }

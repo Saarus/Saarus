@@ -1,27 +1,18 @@
-package org.saarus.service.sql.hive;
+package org.saarus.service.sql.hive.udaf;
 
 import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
 
-public final class UDAFStringFieldStat extends UDAF {
+public final class UDAFFieldStat extends UDAF {
   static public class FieldStatistic {
     long recordCount = 0;
     long count = 0;
     long nullCount = 0;
     
-    long sumLength ;
-    int minLength ;
-    int maxLength ;
-    
-    
-    public void incObject(String o) {
+    public void incObject(Object o) {
       recordCount++ ;
       if (o != null) count++;
       else nullCount++ ;
-      if(o == null) return ;
-      if(o.length() < minLength) minLength = o.length() ;
-      if(o.length() > maxLength) maxLength = o.length() ;
-      sumLength += o.length() ;
     }
     
     public boolean merge(FieldStatistic o) {
@@ -29,10 +20,6 @@ public final class UDAFStringFieldStat extends UDAF {
       count += o.count;
       nullCount += o.nullCount ;
       recordCount +=  o.recordCount ;
-
-      if(o.minLength < minLength) minLength = o.minLength ;
-      if(o.maxLength > maxLength) maxLength = o.maxLength ;
-      sumLength += o.sumLength ;
       return true;
     }
     
@@ -41,15 +28,12 @@ public final class UDAFStringFieldStat extends UDAF {
       b.append("{") ;
       b.append("\"recordCount\": ").append(recordCount).append(", ") ;
       b.append("\"count\": ").append(count).append(", ") ;
-      b.append("\"nullCount\": ").append(nullCount).append(",") ;
-      b.append("\"minLength\": ").append(minLength).append(", ") ;
-      b.append("\"maxLength\": ").append(maxLength).append(", ") ;
-      b.append("\"sumLength\": ").append(sumLength).append(", ") ;
-      b.append("\"avgLength\": ").append(sumLength/count) ;
+      b.append("\"nullCount\": ").append(nullCount) ;
       b.append("}") ;
       return b.toString() ;
     }
   }
+
   
   public static class UDAFFieldStatEvaluator implements UDAFEvaluator {
     FieldStatistic state;
@@ -67,7 +51,7 @@ public final class UDAFStringFieldStat extends UDAF {
      * Iterate through one row of original data. The number and type of arguments need to the same 
      * as we call this UDAF from Hive command line. This function should always return true.
      */
-    public boolean iterate(String o) {
+    public boolean iterate(Object o) {
       state.incObject(o) ;
       return true;
     }
@@ -98,5 +82,5 @@ public final class UDAFStringFieldStat extends UDAF {
     }
   }
 
-  private UDAFStringFieldStat() { /*prevent instantiation */ }
+  private UDAFFieldStat() { /*prevent instantiation */ }
 }

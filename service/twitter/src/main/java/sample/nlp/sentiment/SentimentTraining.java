@@ -16,7 +16,7 @@ import sample.nlp.twitter.parsing.TweetToken;
 import de.bwaldvogel.liblinear.Train;
 
 public class SentimentTraining {
-  static String fileCorpus = "d:/50kSentimentCorpus.csv";
+  static String fileCorpus = "d:/twitter-data/50kSentimentCorpus.csv";
   static String fileTraining = "target/models/fullSentiment.training";
   static String fileModel = "target/models/fullSentiment.model";
   static String fileWordlist = "target/models/fullSentiment.wordlist";
@@ -68,9 +68,9 @@ public class SentimentTraining {
     // Training
     start = System.currentTimeMillis() ;
     System.out.println("Start train") ;
-    Train.main(new String[] { "-c", "0.5", "-s", "2", fileTraining, fileModel });
+    //Train.main(new String[] { "-c", "0.5", "-s", "2", fileTraining, fileModel });
     // Cross-validation
-    //Train.main(new String[] {"-v", "2", "-c", "0.5", "-s", "2", fileTraining, modelFile });
+    Train.main(new String[] {"-v", "2", "-c", "0.5", "-s", "2", fileTraining, fileModel });
     System.out.println("Train in " + (System.currentTimeMillis() - start)) ;
   }
 }

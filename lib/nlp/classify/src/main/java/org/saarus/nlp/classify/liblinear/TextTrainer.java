@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.ObjectOutputStream;
 
-import org.saarus.nlp.classify.liblinear.DataReader.Record;
+import org.saarus.nlp.classify.liblinear.TextClassifyDataReader.Record;
 import org.saarus.nlp.token.IToken;
 import org.saarus.nlp.token.TextSegmenter;
 import org.saarus.nlp.token.analyzer.CommonTokenAnalyzer;
@@ -36,7 +36,7 @@ public class TextTrainer {
     this.textTokenizer = textTokenizer ;
   }
   
-  private FeatureSet createVectorTrainingFile(DataReader reader, String trainingDataFile) throws Exception {
+  private FeatureSet createVectorTrainingFile(TextClassifyDataReader reader, String trainingDataFile) throws Exception {
     FeatureSet featureSet = new FeatureSet(); 
     
     BufferedWriter writer = new BufferedWriter(new FileWriter(new File(trainingDataFile)));
@@ -53,7 +53,7 @@ public class TextTrainer {
     return featureSet ;
   }
  
-  public void prepareTrain(DataReader reader, String outdir) throws Exception {
+  public void prepareTrain(TextClassifyDataReader reader, String outdir) throws Exception {
     System.out.println("Preparing........") ;
     
     trainingDataFile = outdir + "/text-classify.train" ;
@@ -70,7 +70,7 @@ public class TextTrainer {
     System.out.println("Create the training file in " + (System.currentTimeMillis() - start) + "ms") ;
   }
   
-  public void train(DataReader reader, String outdir) throws Exception {
+  public void train(TextClassifyDataReader reader, String outdir) throws Exception {
     FileUtil.mkdirs(outdir) ;
     prepareTrain(reader, outdir) ;
     // Training
@@ -79,7 +79,7 @@ public class TextTrainer {
     FileUtil.removeIfExist(trainingDataFile) ;
   }
  
-  public void crossValidation(DataReader reader, String outdir) throws Exception {
+  public void crossValidation(TextClassifyDataReader reader, String outdir) throws Exception {
     prepareTrain(reader, outdir) ;
     // Training
     System.out.println("Start running cross validation") ;
@@ -88,7 +88,7 @@ public class TextTrainer {
   
   public static void main(String[] args) throws Exception {
   //static String corpusFile = "d:/fullSentimentCorpus.csv";
-    DataReader reader = new DataReader.CSVDataReader("d:/50kSentimentCorpus.csv") {
+    TextClassifyDataReader reader = new TextClassifyDataReader.CSVDataReader("d:/50kSentimentCorpus.csv") {
       protected Record createRecord(String[] cell) {
         String label = (cell[1].equals("1")) ? "POSITIVE" : "NEGATIVE";
         return new Record(label, cell[3]) ;

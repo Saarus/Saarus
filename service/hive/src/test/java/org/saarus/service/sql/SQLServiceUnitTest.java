@@ -1,15 +1,12 @@
 package org.saarus.service.sql;
 
 import java.sql.ResultSet;
-import java.util.HashMap;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
 import org.codehaus.jackson.JsonNode;
 import org.junit.Test;
 import org.saarus.service.hadoop.HadoopInfo;
 import org.saarus.service.hadoop.util.HDFSUtil;
-import org.saarus.service.sql.SQLService;
 import org.saarus.service.sql.io.TableRCFileWriter;
 import org.saarus.service.util.JSONSerializer;
 import org.saarus.service.util.TabularPrinter;
@@ -18,20 +15,28 @@ public class SQLServiceUnitTest {
   @Test
   public void testClient() throws Exception {
     SQLService hservice  = new SQLService(HadoopInfo.HIVE_CONNECTION_URL, "hive", "");
+    
     String tableName = "testtable";
     String location = "/tmp/testdb/testtable" ;
-    System.out.println(hservice.dropTable(tableName)) ;
-    hservice.executeSQL(String.format("CREATE EXTERNAL TABLE %s (key INT, value STRING) STORED AS RCFILE LOCATION '%s'", tableName, location));
+    
+    TableMetadata tmeta = new TableMetadata(tableName) ;
+    tmeta.addField("key", "INT") ;
+    tmeta.addField("value", "STRING") ;
+    SQLTable sqlTable = new SQLTable(hservice, tmeta) ;
+    System.out.println("Drop Table: " + sqlTable.dropTable()) ;
+    
+    sqlTable.createTable(location) ;
+    
+    //hservice.executeSQL(String.format("CREATE EXTERNAL TABLE %s (key INT, value STRING) STORED AS RCFILE LOCATION '%s'", tableName, location));
+    
     Configuration conf = HDFSUtil.getConfiguration() ;
-    FileSystem fs = FileSystem.get(conf) ;
-    String[] colNames = {"key", "value"} ;
-    TableRCFileWriter writer = new TableRCFileWriter(fs, location + "/data0.rcfile", colNames, new HashMap<String, String>()) ;
+    TableRCFileWriter writer = sqlTable.createTableWriter(conf, "data0.rcfile") ;
     for(int i = 0; i < 100; i++) {
       writer.writeRow(Integer.toString(i), "value " + i) ;
     }
     writer.close() ;
     
-    writer = new TableRCFileWriter(fs, location + "/data1.rcfile", colNames, new HashMap<String, String>()) ;
+    writer = sqlTable.createTableWriter(conf, "data1.rcfile") ;
     for(int i = 100; i < 200; i++) {
       writer.writeRow(Integer.toString(i), "value " + i) ;
     }

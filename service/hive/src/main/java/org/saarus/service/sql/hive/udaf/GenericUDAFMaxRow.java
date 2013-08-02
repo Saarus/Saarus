@@ -1,4 +1,4 @@
-package org.saarus.service.sql.hive;
+package org.saarus.service.sql.hive.udaf;
 
 import java.util.ArrayList;
 import java.util.Arrays;

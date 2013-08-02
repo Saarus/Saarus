@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.saarus.service.sql.TableMetadata.FieldInfo;
+
 public class SQLService  {
   private Connection connection ;
 
@@ -41,6 +43,18 @@ public class SQLService  {
       stmt = connection.createStatement();
       boolean ret = stmt.execute(sql);
       return ret ;
+    } finally {
+      if(stmt != null) stmt.close();
+    }
+  }
+  
+  public void addJar(String ... jarLoc) throws Exception {
+    Statement stmt = null ;
+    try {
+      stmt = connection.createStatement();
+      for(String selLoc : jarLoc) {
+        boolean ret = stmt.execute("ADD jar " + selLoc);
+      }
     } finally {
       if(stmt != null) stmt.close();
     }
@@ -99,6 +113,10 @@ public class SQLService  {
     }
     res.close() ;
     return tinfo ;
+  }
+  
+  public boolean createTable(TableMetadata tmeta, String location) throws Exception {
+    return executeSQL(tmeta.createTableSQL(location)) ;
   }
   
   public String getUrl() { return url; }

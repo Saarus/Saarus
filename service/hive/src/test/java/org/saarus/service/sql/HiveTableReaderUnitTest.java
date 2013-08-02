@@ -1,8 +1,10 @@
-package org.saarus.mahout.classifier.sgd;
+package org.saarus.service.sql;
 
 import java.util.List;
 
 import org.junit.Test;
+import org.saarus.service.sql.DataReader;
+import org.saarus.service.sql.HiveTableDataReader;
 import org.saarus.service.sql.SQLService;
 
 public class HiveTableReaderUnitTest {

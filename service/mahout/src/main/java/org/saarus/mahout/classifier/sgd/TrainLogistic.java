@@ -16,6 +16,7 @@ import org.apache.mahout.classifier.sgd.RecordFactory;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.saarus.service.hadoop.util.FSResource;
+import org.saarus.service.sql.DataReader;
 import org.saarus.service.sql.SQLService;
 
 import com.google.common.base.Charsets;

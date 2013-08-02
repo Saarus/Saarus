@@ -1,4 +1,4 @@
-package org.saarus.mahout.classifier.sgd;
+package org.saarus.service.sql;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

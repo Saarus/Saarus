@@ -1,4 +1,4 @@
-package org.saarus.mahout.classifier.sgd;
+package org.saarus.service.sql;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.saarus.service.sql.SQLService;
 
 public class HiveTableDataReader implements DataReader {
   private SQLService hservice;

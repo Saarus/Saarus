@@ -12,6 +12,10 @@ import org.apache.commons.cli2.builder.GroupBuilder;
 import org.apache.commons.cli2.commandline.Parser;
 import org.apache.commons.cli2.util.HelpFormatter;
 import org.saarus.service.hadoop.util.FSResource;
+import org.saarus.service.sql.CacheDataReader;
+import org.saarus.service.sql.CvsFileDataReader;
+import org.saarus.service.sql.DataReader;
+import org.saarus.service.sql.HiveTableDataReader;
 import org.saarus.service.sql.SQLService;
 
 public final class TrainLogisticArgumentParser {

@@ -29,6 +29,23 @@ public class TableMetadata {
     fields.add(new FieldInfo(name, type)) ;
   }
   
+  public String createTableSQL(String location) {
+    StringBuilder b = new StringBuilder() ;
+    b.append("CREATE TABLE ").append(getTableName()).append("(\n") ;
+    List<FieldInfo> fields = getFields() ;
+    for(int i = 0; i < fields.size(); i++) {
+      FieldInfo field = fields.get(i) ;
+      b.append("  ").append(field.getName()).append("  ").append(field.getType()) ;
+      if(i < fields.size() - 1) b.append(",") ;
+      b.append("\n") ;
+    }
+    b.append(") STORED AS RCFILE") ;
+    if(location != null) {
+      b.append(" LOCATION '").append(location).append("'") ;
+    }
+    return b.toString() ;
+  }
+  
   public String toString() {
     StringBuilder b = new StringBuilder() ;
     b.append("Table: ").append(tableName).append("\n") ;
