@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -31,6 +33,7 @@ import org.apache.mahout.math.SequentialAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.saarus.service.hadoop.util.FSResource;
 import org.saarus.service.hadoop.util.HDFSUtil;
+import org.saarus.service.hadoop.util.JsonOutputFormat;
 
 public class MRLogisticRegressionDecoder {
   private String    inputUri ;
@@ -53,7 +56,7 @@ public class MRLogisticRegressionDecoder {
     this.columnHeaders = column ;
     return this ;
   }
-  
+    
   public MRLogisticRegressionDecoder setModelUri(String s) {
     this.modelUri = s ;
     return this ;
@@ -108,6 +111,7 @@ public class MRLogisticRegressionDecoder {
       List<String> vals = Arrays.asList(line.split(",")) ;
       Vector v = new SequentialAccessSparseVector(lmp.getNumFeatures());
       int target = csv.processData(vals, v);
+      
 
       double score = lr.classifyScalar(v);
       int targetScore = (int)Math.round(score) ;
@@ -117,7 +121,8 @@ public class MRLogisticRegressionDecoder {
        // output.printf(Locale.ENGLISH, "%d,%.3f,%.6f\n", target, score, lr.logLikelihood(target, v));
       }
       collector.add(target, score);
-      mapCollector.collect(key, new Text(String.format("%.3f, %s", score, targetLabel))) ;
+      mapCollector.collect(key, new Text(StringUtils.join(vals,",")+","+new Double(score).intValue()+","+targetLabel));
+      //mapCollector.collect(key, new Text(String.format("%.3f, %s", score, targetLabel))) ;
     }
 
     @Override
@@ -137,7 +142,7 @@ public class MRLogisticRegressionDecoder {
   public static class Reduce extends MapReduceBase implements Reducer<LongWritable, Text, LongWritable, Text> {
     public void reduce(LongWritable key, Iterator<Text> values, OutputCollector<LongWritable, Text> output, Reporter reporter) throws IOException {
       while (values.hasNext()) {
-        output.collect(key, values.next());
+    	  output.collect(key, values.next());        
       }
     }
   }
@@ -168,7 +173,8 @@ public class MRLogisticRegressionDecoder {
     jconf.setOutputValueClass(Text.class);
 
     jconf.setInputFormat(TextInputFormat.class);
-    jconf.setOutputFormat(TextOutputFormat.class);
+    jconf.setOutputFormat(JsonOutputFormat.class);
+    
 
     FileInputFormat.setInputPaths(jconf, new Path(inputUri));
     FileOutputFormat.setOutputPath(jconf, new Path(outputUri));
