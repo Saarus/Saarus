@@ -2,12 +2,12 @@ package org.saarus.service.sql;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
 import org.saarus.service.util.TabularPrinter;
+import org.saarus.util.text.CosineSimilarity;
 
 public class TableMetadata {
   private String tableName ;
@@ -27,6 +27,23 @@ public class TableMetadata {
   
   public void addField(String name, String type) {
     fields.add(new FieldInfo(name, type)) ;
+  }
+  
+  public String createTableSQL(String location) {
+    StringBuilder b = new StringBuilder() ;
+    b.append("CREATE TABLE ").append(getTableName()).append("(\n") ;
+    List<FieldInfo> fields = getFields() ;
+    for(int i = 0; i < fields.size(); i++) {
+      FieldInfo field = fields.get(i) ;
+      b.append("  ").append(field.getName()).append("  ").append(field.getType()) ;
+      if(i < fields.size() - 1) b.append(",") ;
+      b.append("\n") ;
+    }
+    b.append(") STORED AS RCFILE") ;
+    if(location != null) {
+      b.append(" LOCATION '").append(location).append("'") ;
+    }
+    return b.toString() ;
   }
   
   public String toString() {
@@ -64,48 +81,74 @@ public class TableMetadata {
   
   static public String[][] autoDetectMapping(TableMetadata mdata, JsonNode node) {
     try {
-      Map<String, String> properties = new LinkedHashMap<String, String>() ;
+      List<KeyValue> properties = new ArrayList<KeyValue>() ;
+      
       findProperties(properties, null, node) ;
-      if(mdata == null) {
-        String[][] mappingData = new String[properties.size()][] ;
-        Iterator<Map.Entry<String, String>> i = properties.entrySet().iterator() ;
-        int entryIndex = 0 ;
-        while(i.hasNext()) {
-          Map.Entry<String, String> entry = i.next() ;
-          String property = entry.getKey() ;
-          String value = entry.getValue() ;
-          String type = "" ;
-          if(value.matches("[a-zA-Z]")) type = "STRING" ;
-          int idx = property.lastIndexOf('.') ;
-          if(idx < 0) {
-            mappingData[entryIndex] = new String[] {property, type, property};
-          } else {
-            String fieldName = property.replace('.', '_') ;
-            mappingData[entryIndex] = new String[] {fieldName, type, property};
-          }
-          entryIndex++ ;
-        }
-        return mappingData ;
-      } else {
-        List<FieldInfo> fieldInfos = mdata.getFields();
-        String[][] mappingData = new String[fieldInfos.size()][] ;
-        for(int i = 0; i < fieldInfos.size(); i++) {
-          FieldInfo finfo = fieldInfos.get(i) ;
-          String mapProperty = finfo.getName();
-          if(!properties.containsKey(mapProperty)) mapProperty = "" ;
-          mappingData[i] = new String[] {finfo.getName(), finfo.getType(), mapProperty} ;
-        }
-        return mappingData ;
-      }
+      return autoDetectMapping(mdata, properties) ;
     } catch (Throwable e) {
       e.printStackTrace();
     }
     return new String[0][3] ;
   }
   
-  static private void findProperties(Map<String, String> holder, String field, JsonNode node) {
+  static public String[][] autoDetectMapping(TableMetadata mdata, String[] fieldNames) {
+    try {
+      List<KeyValue> properties = new ArrayList<KeyValue>() ;
+      for(String sel : fieldNames) {
+        properties.add(new KeyValue(sel, "")) ;
+      }
+      return autoDetectMapping(mdata, properties) ;
+    } catch (Throwable e) {
+      e.printStackTrace();
+    }
+    return new String[0][3] ;
+  }
+  
+  static public String[][] autoDetectMapping(TableMetadata mdata, List<KeyValue> properties) {
+    if(mdata == null) {
+      String[][] mappingData = new String[properties.size()][] ;
+      Iterator<KeyValue> i = properties.iterator() ;
+      int entryIndex = 0 ;
+      while(i.hasNext()) {
+        KeyValue entry = i.next() ;
+        String type = "" ;
+        if(entry.value.matches("[a-zA-Z]")) type = "STRING" ;
+        int idx = entry.key.lastIndexOf('.') ;
+        if(idx < 0) {
+          mappingData[entryIndex] = new String[] {entry.key, type, entry.key};
+        } else {
+          String fieldName = entry.key.replace('.', '_') ;
+          mappingData[entryIndex] = new String[] {fieldName, type, entry.key};
+        }
+        entryIndex++ ;
+      }
+      return mappingData ;
+    } else {
+      List<FieldInfo> fieldInfos = mdata.getFields();
+      String[][] mappingData = new String[fieldInfos.size()][] ;
+      for(int i = 0; i < fieldInfos.size(); i++) {
+        FieldInfo finfo = fieldInfos.get(i) ;
+        KeyValue matchKeyValue = findMatch(properties, finfo.getName()) ;
+        String matchKey = "" ;
+        if(matchKeyValue != null) matchKey = matchKeyValue.key ;
+        mappingData[i] = new String[] {finfo.getName(), finfo.getType(), matchKey} ;
+      }
+      return mappingData ;
+    }
+  }
+  
+  static KeyValue findMatch(List<KeyValue> keyValues, String key) {
+    for(int i = 0; i < keyValues.size(); i++) {
+      KeyValue kv = keyValues.get(i) ;
+      double similarity = CosineSimilarity.INSTANCE.similarity(key.toCharArray(), kv.key.toCharArray()) ;
+      if(similarity > 0.8) return kv ;
+    }
+    return null ;
+  }
+  
+  static private void findProperties(List<KeyValue> holder, String field, JsonNode node) {
     if(node.isValueNode()) {
-      holder.put(field, node.asText()) ;
+      holder.add(new KeyValue(field, node.asText())) ;
     } else {
       Iterator<Map.Entry<String, JsonNode>> i = node.getFields() ;
       while(i.hasNext()) {
@@ -115,6 +158,14 @@ public class TableMetadata {
         findProperties(holder, fname, entry.getValue()) ;
       }
     }
+  }
+  
+  static class KeyValue {
+    String key, value ;
     
+    KeyValue(String key, String value) {
+      this.key = key ;
+      this.value = value ;
+    }
   }
 }

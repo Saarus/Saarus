@@ -17,6 +17,12 @@
   <dependencies>
     <dependency>
       <groupId>org.saarus</groupId>
+      <artifactId>saarus.lib.common</artifactId>
+      <version>${org.saarus.version}</version>
+    </dependency> 
+
+    <dependency>
+      <groupId>org.saarus</groupId>
       <artifactId>saarus.service.core</artifactId>
       <version>${org.saarus.version}</version>
     </dependency> 
@@ -31,6 +37,12 @@
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
       <version>${hive.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>2.3</version>
     </dependency>
   </dependencies>
 </project>

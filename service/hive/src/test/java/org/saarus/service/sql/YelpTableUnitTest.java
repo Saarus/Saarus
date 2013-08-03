@@ -8,6 +8,10 @@ import org.junit.Test;
 import org.saarus.service.hadoop.util.FSResource;
 import org.saarus.service.hadoop.util.HDFSUtil;
 import org.saarus.service.sql.io.JSONImporter;
+import org.saarus.service.sql.io.Progressable;
+import org.saarus.service.sql.io.Progressable.DebugProgressable;
+import org.saarus.service.sql.io.TableRCFileWriter;
+import org.saarus.service.sql.io.TableWriter;
 
 public class YelpTableUnitTest {
   @Test
@@ -27,15 +31,15 @@ public class YelpTableUnitTest {
     System.out.println(hservice.dropTable("user_test")) ;
     hservice.executeSQL(userTableSQL);
     
-    String userSetFile     = "../../../yelp/yelpdb/json/training/user/data.json" ;
+    String userSetFile     = "src/test/resources/yelpdb/user.json" ;
     Configuration conf = HDFSUtil.getConfiguration() ;
     FileSystem fs = FileSystem.get(conf) ;
     String[] properties = {
       "user_id", "name", "average_stars", "review_count", "votes.funny", "votes.useful", "votes.cool"
     } ;
     
-    JSONImporter.Progressable progressable = new JSONImporter.DebugProgressable() ;
-    JSONImporter.Writer writer = new JSONImporter.RCWriter(fs, "/tmp/yelpdb/user_test/data0.rcfile", properties, null) ;
+    Progressable progressable = new DebugProgressable() ;
+    TableWriter writer = new TableRCFileWriter(fs, "/tmp/yelpdb/user_test/data0.rcfile", properties, null) ;
     JSONImporter importer = new JSONImporter(writer, progressable) ;
     FSResource resource = FSResource.get(userSetFile) ;
     importer.doImport(resource.getInputStream(), properties) ;

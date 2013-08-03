@@ -40,17 +40,16 @@ public class HiveTaskHandlerUnitTest {
     }
     System.out.println("Desc tables in " + (System.currentTimeMillis() - start) + "ms");
     
+    
+    doImportTask(handler, createImportJsonTask()) ;
+    doImportTask(handler, createImportCsvTask()) ;
+  }
+  
+  private void doImportTask(HiveTaskHandler handler, TaskUnit importTask) throws Exception {
     TaskUnitResult<String> importResult = 
-        (TaskUnitResult<String>)handler.getCallableTaskUnit(createImportJsonTask()).call() ;
+        (TaskUnitResult<String>)handler.getCallableTaskUnit(importTask).call() ;
     System.out.println(importResult);
-//    String inserSql = "insert into testtable (key, value) values (?, ?)" ;
-//    List<Object[]> paramHolder = new ArrayList<Object[]>() ;
-//    for(int i = 0; i < 100; i++) {
-//      paramHolder.add(new Object[] {i, "value " + i}) ;
-//    }
-//    hservice.insert(inserSql, paramHolder) ;
-//    System.out.println("insert done.................................");
-//    
+    
     // select * query
     TaskUnitResult<QueryResult> queryResult = handler.executeQuery("SELECT * FROM testtable");
     System.out.println(queryResult);
@@ -60,8 +59,17 @@ public class HiveTaskHandlerUnitTest {
   private TaskUnit createImportJsonTask() {
     TaskUnit tunit = new TaskUnit() ;
     tunit.setName("importJson") ;
-    tunit.getParameters().setString("dbfile", "/tmp/testdb/testtable/data0.rcfile") ;
-    tunit.getParameters().setString("jsonFile", "src/test/resources/testtable.json") ;
+    tunit.getParameters().setString("dbfile", "/tmp/testdb/testtable/data-json.rcfile") ;
+    tunit.getParameters().setString("file", "src/test/resources/testtable.json") ;
+    tunit.getParameters().setStringArray("properties", new String[]{"key", "value"}) ;
+    return tunit ;
+  }
+  
+  private TaskUnit createImportCsvTask() {
+    TaskUnit tunit = new TaskUnit() ;
+    tunit.setName("importCsv") ;
+    tunit.getParameters().setString("dbfile", "/tmp/testdb/testtable/data-csv.rcfile") ;
+    tunit.getParameters().setString("file", "src/test/resources/testtable.csv") ;
     tunit.getParameters().setStringArray("properties", new String[]{"key", "value"}) ;
     return tunit ;
   }

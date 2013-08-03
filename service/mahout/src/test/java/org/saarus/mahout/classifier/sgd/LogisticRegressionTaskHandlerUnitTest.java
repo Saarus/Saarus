@@ -56,7 +56,7 @@ public class LogisticRegressionTaskHandlerUnitTest {
     String TRAIN_FILE = "src/test/resources/yelp/train.csv" ; 
     String MODEL_FILE = "target/yelp-features.model" ;
     
-    SQLService hservice  = new SQLService(HIVE2_SERVER_URL, "hive", "");
+    SQLService hservice  = null ; //new SQLService(HIVE2_SERVER_URL, "hive", "");
     LogisticRegressionTaskHandler handler  = new LogisticRegressionTaskHandler(hservice);
     
     TaskUnit tunit = new TaskUnit() ;

@@ -120,6 +120,7 @@ public class MRLogisticRegressionDecoder {
         output.printf(Locale.ENGLISH, "%d %.3f, %s\n", lineNum, score, targetLabel);
        // output.printf(Locale.ENGLISH, "%d,%.3f,%.6f\n", target, score, lr.logLikelihood(target, v));
       }
+      
       collector.add(target, score);
       mapCollector.collect(key, new Text(StringUtils.join(vals,",")+","+new Double(score).intValue()+","+targetLabel));
       //mapCollector.collect(key, new Text(String.format("%.3f, %s", score, targetLabel))) ;
@@ -160,7 +161,7 @@ public class MRLogisticRegressionDecoder {
    
     JobConf jconf = new JobConf(conf, MRLogisticRegressionDecoder.class);
     jconf.setJobName(MRLogisticRegressionDecoder.class.getSimpleName());
-   // jconf.setUser("hadoop") ;
+    jconf.setUser("hadoop") ;
     jconf.setStrings("column.headers", this.columnHeaders) ;
     jconf.set("model.file", this.modelUri) ;
     jconf.setMapperClass(Map.class);

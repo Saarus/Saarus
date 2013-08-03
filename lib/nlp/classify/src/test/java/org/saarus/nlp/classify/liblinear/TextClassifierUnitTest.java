@@ -8,7 +8,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.saarus.nlp.classify.liblinear.DataReader.Record;
+import org.saarus.nlp.classify.liblinear.TextClassifyDataReader.Record;
 
 public class TextClassifierUnitTest {
   @Test
@@ -40,7 +40,7 @@ public class TextClassifierUnitTest {
     System.out.println(text + ": predict = " + predict + ", label = " + label);
   }
   
-  static public class DataReaderHolder implements DataReader {
+  static public class DataReaderHolder implements TextClassifyDataReader {
     private int currentPos = 0 ;
     private List<Record> holder = new ArrayList<Record>() ;
     

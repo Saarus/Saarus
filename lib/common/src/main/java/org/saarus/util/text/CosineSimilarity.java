@@ -30,6 +30,14 @@ public class CosineSimilarity {
     return similarityTFVectors(TF_X, TF_Y);
   }
 
+  public double similarity(char[] buf1, char[] buf2) {
+    int[] v1 = new int[buf1.length] ;
+    for(int i = 0; i < v1.length; i++) v1[i] = buf1[i] ;
+    int[] v2 = new int[buf2.length] ;
+    for(int i = 0; i < v2.length; i++) v2[i] = buf2[i] ;
+    return similarity(v1, v2);
+  }
+  
   private double similarityTFVectors(double[] v1, double[] v2) {
     double a = dotProduct(v1, v2);
     double b = norm(v1) * norm(v2);
