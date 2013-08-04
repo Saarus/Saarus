@@ -38,6 +38,18 @@
 
     <dependency>
       <groupId>org.saarus</groupId>
+      <artifactId>saarus.lib.nlp.classify</artifactId>
+      <version>${org.saarus.version}</version>
+    </dependency> 
+
+    <dependency>
+      <groupId>org.saarus</groupId>
+      <artifactId>saarus.service.nlp</artifactId>
+      <version>${org.saarus.version}</version>
+    </dependency> 
+
+    <dependency>
+      <groupId>org.saarus</groupId>
       <artifactId>saarus.web.rest</artifactId>
       <version>${org.saarus.version}</version>
       <type>war</type>

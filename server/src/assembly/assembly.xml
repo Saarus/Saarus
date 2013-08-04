@@ -34,6 +34,11 @@
 
         <include>net.sf.opencsv:opencsv</include>
 
+        <include>net.sf.trove4j:trove4j</include>
+        <include>org.apache.lucene:lucene-snowball</include>
+        <include>de.bwaldvogel:liblinear</include>
+        <include>edu.stanford.nlp:stanford-corenlp</include>
+
 
         <include>org.springframework:spring-core</include>
         <!--
@@ -113,10 +118,14 @@
 
         <include>org.saarus:saarus.server</include>
         <include>org.saarus:saarus.lib.common</include>
+        <include>org.saarus:saarus.lib.nlp.core</include>
+        <include>org.saarus:saarus.lib.nlp.pos</include>
+        <include>org.saarus:saarus.lib.nlp.classify</include>
         <include>org.saarus:saarus.service.core</include>
         <include>org.saarus:saarus.service.hive</include>
         <include>org.saarus:saarus.service.hadoop</include>
         <include>org.saarus:saarus.service.mahout</include>
+        <include>org.saarus:saarus.service.nlp</include>
         <include>org.saarus:saarus.client.shell</include>
       </includes>
     </dependencySet>
