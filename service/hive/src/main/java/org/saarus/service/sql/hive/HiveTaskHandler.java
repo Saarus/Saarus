@@ -169,32 +169,13 @@ public class HiveTaskHandler implements TaskUnitHandler {
     CallableTaskUnit<QueryResult> callableUnit = new CallableTaskUnit<QueryResult>(tunit, new TaskUnitResult<QueryResult>()) {
       public QueryResult doCall() throws Exception {
         ResultSet res = sqlService.executeQuerySQL(taskUnit.getTaskLine());
-        ResultSetMetaData rsmd = res.getMetaData() ;
-        int columnCount = rsmd.getColumnCount() ;
-        String[] columnNames = new String[columnCount];
-        for(int i = 0; i < columnCount; i++) {
-          columnNames[i] = rsmd.getColumnName(i + 1) ;
-        }
-        List<Object[]> rows = new ArrayList<Object[]>() ;
-        while(res.next()) {
-          Object[] row = new Object[columnCount] ;
-          for(int i = 0; i < columnCount; i++) {
-            row[i] = res.getObject(i + 1) ;
-          }
-          rows.add(row) ;
-        }
-        res.close() ;
-        QueryResult qresult = new QueryResult() ;
-        qresult.setQuery(taskUnit.getTaskLine()) ;
-        qresult.setColumn(columnNames) ;
-        Object[][] data = rows.toArray(new Object[rows.size()][]) ;
-        qresult.setData(data) ;
+        QueryResult qresult = new QueryResult(taskUnit.getTaskLine(), res) ;
         return  qresult ;
       }
     };
     return callableUnit ;
   }
-  
+
   
   private CallableTaskUnit<List<String>> listTable(final TaskUnit tunit) {
     tunit.setTaskLine("SHOW TABLES") ;

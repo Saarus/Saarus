@@ -8,8 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.saarus.service.sql.TableMetadata.FieldInfo;
-
 public class SQLService  {
   private Connection connection ;
 
