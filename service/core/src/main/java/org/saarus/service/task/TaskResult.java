@@ -31,7 +31,6 @@ public class TaskResult {
     return taskResults.size()/(float)task.getTaskUnits().size(); 
   }
   
-  
   public List<TaskUnitResult<?>> getTaskUnitResults() { 
     List<TaskUnitResult<?>> holder = new ArrayList<TaskUnitResult<?>>() ;
     holder.addAll(taskResults.values()) ;

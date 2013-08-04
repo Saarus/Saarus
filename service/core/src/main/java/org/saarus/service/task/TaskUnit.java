@@ -8,6 +8,8 @@ public class TaskUnit {
   private String name ;
   private String description ;
   private String[] task ;
+  private TaskUnitConfig config ;
+  
   private Parameters parameters = new Parameters() ;
   
   public TaskUnit() { }
@@ -44,6 +46,8 @@ public class TaskUnit {
     this.task = new String[] { task }; 
   }
   
+  public <T extends TaskUnitConfig> T getTaskUnitConfig() { return (T) config ; }
+  public <T extends TaskUnitConfig> void setTaskUnitConfig(T config) { this.config = config ; }
   
   public Parameters getParameters() { return this.parameters ; }
   public void       setParameters(Parameters params) { this.parameters = params ; }

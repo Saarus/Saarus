@@ -35,7 +35,7 @@ public class TaskUnitResult<T> {
   }
 
   @JsonDeserialize(using = TaskUnitResultDeserializer.class)
-  @JsonSerialize(using = TaskUnitResultSerializer.class)
+  @JsonSerialize(using   = TaskUnitResultSerializer.class)
   public T getResult() { return result; }
   public void setResult(T result) { this.result = result; }
 
