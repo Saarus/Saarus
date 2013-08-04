@@ -55,7 +55,7 @@ abstract public class FSResource {
       if(maxRead - read < available) available = maxRead - read ;
       os.write(data, 0, available);
       read += available ;
-    }   
+    } 
   }
 
   static public FSResource get(String uri) {
@@ -83,6 +83,7 @@ abstract public class FSResource {
       OutputStream out = new FileOutputStream(getPath()) ;
       write(out, is) ;
       out.close() ;
+      is.close() ;
     }
     
     public void write(byte[] buf) throws Exception {
@@ -128,6 +129,7 @@ abstract public class FSResource {
       write(out, is) ;
       out.hflush() ;
       out.close() ;
+      is.close() ;
     }
 
     public void write(byte[] buf) throws Exception {
