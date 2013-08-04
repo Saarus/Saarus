@@ -1,4 +1,4 @@
-package org.saarus.knime.mahout.lr.learner;
+package org.saarus.knime.nlp.text.learner;
 
 import org.knime.core.node.NodeView;
 
@@ -6,14 +6,14 @@ import org.knime.core.node.NodeView;
  * <code>NodeView</code> for the "HadoopNode" Node.Hadoop plugin for Knime
  * @author Tuan Nguyen
  */
-public class LRLearnerNodeView extends NodeView<LRLearnerNodeModel> {
+public class TextLearnerNodeView extends NodeView<TextLearnerNodeModel> {
 
   /**
    * Creates a new view.
    * 
    * @param nodeModel The model (class: {@link TextLearnerNodeModel})
    */
-  protected LRLearnerNodeView(final LRLearnerNodeModel nodeModel) {
+  protected TextLearnerNodeView(final TextLearnerNodeModel nodeModel) {
     super(nodeModel);
     //TODO instantiate the components of the view here.
   }
@@ -25,7 +25,7 @@ public class LRLearnerNodeView extends NodeView<LRLearnerNodeModel> {
   protected void modelChanged() {
     // TODO retrieve the new model from your nodemodel and 
     // update the view.
-    LRLearnerNodeModel nodeModel = (LRLearnerNodeModel)getNodeModel();
+    TextLearnerNodeModel nodeModel = (TextLearnerNodeModel)getNodeModel();
     assert nodeModel != null;
     // be aware of a possibly not executed nodeModel! The data you retrieve
     // from your nodemodel could be null, emtpy, or invalid in any kind.

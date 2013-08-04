@@ -39,6 +39,10 @@
       <node category-path="/"
             factory-class="org.saarus.knime.mahout.lr.predictor.LRPredictorNodeFactory"
             id="org.saarus.knime.mahout.lr.predictor.LRPredictorNodeFactory"/>
+      
+      <node category-path="/"
+            factory-class="org.saarus.knime.nlp.text.learner.TextLearnerNodeFactory"
+            id="org.saarus.knime.nlp.text.learner.TextLearnerNodeFactory"/>
    </extension>
    
 </plugin>
