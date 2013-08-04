@@ -4,7 +4,6 @@ import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.io.Text;
 import org.saarus.nlp.classify.liblinear.TextClassifier;
-import org.saarus.nlp.token.TokenException;
 import org.saarus.service.hadoop.util.FSResource;
 /**
  * UDFLiblinearTextClassify.
@@ -20,39 +19,38 @@ public class UDFLiblinearTextClassify extends UDF {
 
   private TextClassifier classifier ;
   private Text result = new Text();
-
-  public UDFLiblinearTextClassify() throws Exception {
-    
-  }
-
+  private Throwable error ;
+  
   public Text evaluate(Text text, Text confDir) {
     if (text == null || confDir == null) {
       return null;
     }
-    if(!confDir.equals(currentConfDir)) {
-      currentConfDir.set(confDir) ;
-      classifier = createTextClassifier(confDir.toString()) ;
+    if(error != null) {
+      result.set(error.getMessage()) ;
+      return result ;
     }
-    ;
+    
     try {
+      if(!confDir.equals(currentConfDir)) {
+        currentConfDir.set(confDir) ;
+        classifier = createTextClassifier(confDir.toString()) ;
+      }
+
       double predict = classifier.classify(text.toString());
       String label = classifier.getFeatureSet().getLabels().get((int) predict);
       result.set(label);
-    } catch (TokenException e) {
-      result.set(e.getMessage()) ;
+    } catch (Throwable t) {
+      error = t ;
+      result.set(t.getMessage()) ;
     }
     return result;
   }
 
-  private TextClassifier createTextClassifier(String modelDir) {
+  private TextClassifier createTextClassifier(String modelDir) throws Exception {
     FSResource modelRes  = FSResource.get(modelDir + "/text-classify.model");
     FSResource dictRes  = FSResource.get(modelDir + "/text-classify.dict");
     TextClassifier classifier;
-    try {
-      classifier = new TextClassifier(modelRes.getInputStream(), dictRes.getInputStream());
-      return classifier ;
-    } catch (Exception e) {
-      throw new RuntimeException(e) ;
-    }
+    classifier = new TextClassifier(modelRes.getInputStream(), dictRes.getInputStream());
+    return classifier ;
   }
 }

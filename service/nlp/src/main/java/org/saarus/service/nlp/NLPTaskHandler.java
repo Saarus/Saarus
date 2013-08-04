@@ -1,11 +1,16 @@
 package org.saarus.service.nlp;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.sql.ResultSet;
 import java.util.List;
 
 import org.saarus.nlp.classify.liblinear.TextClassifyDataReader;
 import org.saarus.nlp.classify.liblinear.TextTrainer;
 import org.saarus.service.hadoop.HadoopInfo;
+import org.saarus.service.hadoop.util.FSResource;
 import org.saarus.service.sql.HiveTableDataReader;
+import org.saarus.service.sql.QueryResult;
 import org.saarus.service.sql.SQLService;
 import org.saarus.service.task.CallableTaskUnit;
 import org.saarus.service.task.Parameters;
@@ -42,14 +47,9 @@ public class NLPTaskHandler implements TaskUnitHandler {
   private CallableTaskUnit<String> liblinearTrainText(TaskUnit tunit) {
     CallableTaskUnit<String> callableUnit = new CallableTaskUnit<String>(tunit, new TaskUnitResult<String>()) {
       public String doCall() throws Exception {
-        Parameters params = taskUnit.getParameters() ;
-        String table = params.getString("table") ;
-        String textField = params.getString("textField") ;
-        String labelField = params.getString("labelField") ;
-        String modelOutputLoc = params.getString("modelOutputLoc") ;
-        String tmpDir = params.getString("tmpDir", "target/nlpTEMP") ;
+        NLPLiblinearTrainTextConfig config = taskUnit.getTaskUnitConfig() ;
         final HiveTableDataReader tableReader = 
-          new HiveTableDataReader(sqlService, table, new String[] {textField, labelField}) ;
+          new HiveTableDataReader(sqlService, config.getTable(), new String[] {config.getLabelField(), config.getTextField()}) ;
         tableReader.reset() ;
         TextClassifyDataReader dataReader = new TextClassifyDataReader()  {
           public Record next() throws Exception {
@@ -62,10 +62,16 @@ public class NLPTaskHandler implements TaskUnitHandler {
         };
         
         TextTrainer trainer = new TextTrainer() ;
-        trainer.train(dataReader, tmpDir) ;
+        trainer.train(dataReader, config.getTmpDir()) ;
         dataReader.close() ;
-        if(modelOutputLoc != null) {
-          
+        if(config.getModelOutputLoc() != null) {
+          File[] files = new File(config.getTmpDir()).listFiles() ;
+          for(File sel : files) {
+            FSResource res = FSResource.get(config.getModelOutputLoc() + "/" + sel.getName()) ;
+            FileInputStream is = new FileInputStream(sel) ;
+            res.write(is) ;
+            is.close() ;
+          }
         }
         return  "done" ;
       }
@@ -73,12 +79,12 @@ public class NLPTaskHandler implements TaskUnitHandler {
     return callableUnit ;
   }
   
-  private CallableTaskUnit<Boolean> liblinearPredictText(TaskUnit tunit) {
-    CallableTaskUnit<Boolean> callableUnit = new CallableTaskUnit<Boolean>(tunit, new TaskUnitResult<Boolean>()) {
-      public Boolean doCall() throws Exception {
-        Parameters params = taskUnit.getParameters() ;
-        
-        return true ;
+  private CallableTaskUnit<QueryResult> liblinearPredictText(TaskUnit tunit) {
+    CallableTaskUnit<QueryResult> callableUnit = new CallableTaskUnit<QueryResult>(tunit, new TaskUnitResult<QueryResult>()) {
+      public QueryResult doCall() throws Exception {
+        ResultSet res = sqlService.executeQuerySQL(taskUnit.getTaskLine());
+        QueryResult qresult = new QueryResult(taskUnit.getTaskLine(), res) ;
+        return  qresult ;
       }
     };
     return callableUnit ;
@@ -89,6 +95,14 @@ public class NLPTaskHandler implements TaskUnitHandler {
       public Boolean doCall() throws Exception {
         Parameters params = taskUnit.getParameters() ;
         sqlService.addJar(
+          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/trove4j-3.0.3.jar",
+          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/stanford-corenlp-1.3.5.jar",
+          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/lucene-snowball-3.0.3.jar",
+          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/liblinear-1.92.jar",
+          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.lib.common-1.0.jar",
+          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.lib.nlp.core-1.0.jar",
+          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.lib.nlp.classify-1.0.jar",
+          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.service.hadoop-1.0.jar",
           HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.service.nlp-1.0.jar"
         ) ;
           

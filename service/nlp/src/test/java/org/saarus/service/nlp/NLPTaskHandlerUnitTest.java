@@ -5,11 +5,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.saarus.service.hadoop.HadoopInfo;
 import org.saarus.service.hadoop.util.HDFSUtil;
+import org.saarus.service.sql.QueryResult;
 import org.saarus.service.sql.SQLService;
 import org.saarus.service.sql.SQLTable;
 import org.saarus.service.sql.TableMetadata;
 import org.saarus.service.sql.io.TableRCFileWriter;
-import org.saarus.service.task.Parameters;
 import org.saarus.service.task.TaskUnit;
 import org.saarus.service.task.TaskUnitResult;
 
@@ -22,10 +22,16 @@ public class NLPTaskHandlerUnitTest {
   public void testNLPTaskHandlerFunctions() throws Exception {
     SQLService sqlService  = new SQLService(HadoopInfo.HIVE_CONNECTION_URL, "hive", "");
     NLPTaskHandler handler  = new NLPTaskHandler(sqlService);
+    
+    TaskUnit registerUnit = new TaskUnit() ;
+    registerUnit.setName("registerNLPFunctions") ;
+    @SuppressWarnings("unchecked")
     TaskUnitResult<Boolean> registerResult = 
-      (TaskUnitResult<Boolean>)handler.getCallableTaskUnit(this.createRegisterNLPFunctions()).call() ;
+      (TaskUnitResult<Boolean>)handler.getCallableTaskUnit(registerUnit).call() ;
     Assert.assertTrue(registerResult.getResult()) ;
+    
     testTrain(sqlService, handler) ;
+    testPredict(sqlService, handler) ;
   }
   
   private void testTrain(SQLService sqlService, NLPTaskHandler handler) throws Exception {
@@ -43,12 +49,13 @@ public class NLPTaskHandlerUnitTest {
     
     TaskUnit trainTaskUnit = new TaskUnit() ;
     trainTaskUnit.setName("liblinearTrainText") ;
-    Parameters params = trainTaskUnit.getParameters() ;
-    params.setString("table", tmeta.getTableName()) ;
-    params.setString("textField", "tweet") ;
-    params.setString("labelField", "label") ;
-    params.setString("modelOutputLoc", MODEL_LOCATION) ;
-    params.setString("tmpDir", "target/nlpTEMP") ;
+    NLPLiblinearTrainTextConfig trainConfig = new NLPLiblinearTrainTextConfig() ; 
+    trainConfig.setTable(tmeta.getTableName()) ;
+    trainConfig.setTextField("tweet") ;
+    trainConfig.setLabelField("label") ;
+    trainConfig.setModelOutputLoc(MODEL_LOCATION) ;
+    trainConfig.setTmpDir("target/nlpTEMP") ;
+    trainTaskUnit.setTaskUnitConfig(trainConfig) ;
     TaskUnitResult<String> trainResult = 
         (TaskUnitResult<String>) handler.getCallableTaskUnit(trainTaskUnit).call() ;
     System.out.println("Train Result = " + trainResult.getResult());
@@ -61,15 +68,19 @@ public class NLPTaskHandlerUnitTest {
     sqlTable.createTable(TABLE_LOCATION + "/" + tmeta.getTableName()) ;
     Configuration conf = HDFSUtil.getConfiguration() ;
     TableRCFileWriter writer = sqlTable.createTableWriter(conf, "data0.rcfile") ;
+    writer.writeRow("1", "iphone battery issue", "NEGATIVE", "") ;
+    writer.writeRow("2", "iphone look slim", "POSITIVE", "") ;
     writer.close() ;
+    
+    String query = "SELECT tweet, label, nlp_classify(tweet, 'dfs:/tmp/twitter/model') as predict FROM twitter_predict" ;
+    TaskUnit predictTaskUnit = new TaskUnit() ;
+    predictTaskUnit.setTaskLine(query) ;
+    predictTaskUnit.setName("liblinearPredictText") ;
+    TaskUnitResult<QueryResult> predictResult = 
+        (TaskUnitResult<QueryResult>) handler.getCallableTaskUnit(predictTaskUnit).call() ;
+    predictResult.getResult().dump();
   }
 
-  private TaskUnit createRegisterNLPFunctions() {
-    TaskUnit tunit = new TaskUnit() ;
-    tunit.setName("registerNLPFunctions") ;
-    return tunit ;
-  }
-  
   private TableMetadata createTwitterTableMetadata(String tableName) throws Exception {
     TableMetadata tmeta = new TableMetadata(tableName) ;
     tmeta.addField("id", "INT") ;
