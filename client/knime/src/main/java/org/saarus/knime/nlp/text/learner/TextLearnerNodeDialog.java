@@ -16,7 +16,6 @@ import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
-import org.saarus.knime.nlp.text.learner.TextLearnerConfigs.MahoutConfig;
 import org.saarus.knime.uicomp.JInfoDialog;
 import org.saarus.service.util.JSONSerializer;
 
@@ -35,56 +34,27 @@ public class TextLearnerNodeDialog extends NodeDialogPane {
     learnerPanel = new TextLearnerPanel() ;
     panel.add(learnerPanel, BorderLayout.CENTER) ;
     panel.add(createToolBox(), BorderLayout.SOUTH) ;
-    addTab("Logistic Regression Learner", panel);
+    addTab("Text Learner", panel);
   }
 
   private JPanel createToolBox() {
     JPanel panel = new JPanel(new FlowLayout()) ;
     panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Tools"));
     
-    JButton saarusWorkFlow = new JButton("Saarus Work Flow");
+    JButton saarusWorkFlow = new JButton("Saarus Twitter");
     saarusWorkFlow.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        MahoutConfig config = new MahoutConfig() ;
-        config.name = "Yelp Features";
-        config.description = "Yelp Features Data";
-        config.passes = "100" ; 
-        config.rate = "50" ;  
-        config.lambda = "0.001" ; 
-        config.features = "1000" ;
-        config.categories = "2"; 
-        config.predictors = "n:user_review_count | n:user_average_stars | n:user_vote_useful | n:stars | n:business_stars | n:business_review_count | n:vote_useful | n:vote_funny | n:vote_cool | n:percentage_useful" ; 
-        config.input = "hive://features" ; 
-        config.target = "cat_useful"; 
-        config.output = "dfs:/tmp/yelp-features.model" ;
-        TextLearnerConfigs configs = new TextLearnerConfigs() ;
-        configs.mahoutConfig = config ;
-        learnerPanel.init(configs) ;
+        TextLearnerConfigs learnerConfig = new TextLearnerConfigs() ;
+        learnerConfig.description = "Train Twitter positive/negative sentiment" ;
+        learnerConfig.config.setTable("twitter") ;
+        learnerConfig.config.setTextField("sentimenttext") ;
+        learnerConfig.config.setLabelField("sentiment") ;
+        learnerConfig.config.setModelOutputLoc("dfs:/tmp/twitter/model") ;
+        learnerConfig.config.setTmpDir("target/nlpTEMP") ;
+        learnerPanel.init(learnerConfig) ;
       }
     });
     panel.add(saarusWorkFlow) ;
-    
-    JButton donut = new JButton("Donut");
-    donut.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        MahoutConfig config = new MahoutConfig() ;
-        config.name = "Donut Data";
-        config.description = "Donut Sample Data";
-        config.passes = "100" ; 
-        config.rate = "50" ;  
-        config.lambda = "0.001" ; 
-        config.features = "20" ;
-        config.categories = "2"; 
-        config.predictors = "n:x | n:y | n:xx | n:xy | n:yy | n:a | n:b | n:c" ; 
-        config.input = "hive://donut_train" ; 
-        config.target = "color"; 
-        config.output = "dfs:/tmp/donut.model" ;
-        TextLearnerConfigs configs = new TextLearnerConfigs() ;
-        configs.mahoutConfig = config ;
-        learnerPanel.init(configs) ;
-      }
-    });
-    panel.add(donut) ;
     
     JButton viewScript = new JButton("View Script");
     viewScript.addActionListener(new ActionListener() {
@@ -105,9 +75,7 @@ public class TextLearnerNodeDialog extends NodeDialogPane {
   }
 
   public TextLearnerConfigs getLRLearnerConfigs() {
-    TextLearnerConfigs configs = new TextLearnerConfigs() ;
-    configs.mahoutConfig = learnerPanel.getMahoutConfig() ;
-    return configs ;
+    return learnerPanel.getTextLearnerConfigs() ;
   }
   
   protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {

@@ -18,9 +18,6 @@ public class LRLearnerNodeView extends NodeView<LRLearnerNodeModel> {
     //TODO instantiate the components of the view here.
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected void modelChanged() {
     // TODO retrieve the new model from your nodemodel and 
@@ -31,17 +28,11 @@ public class LRLearnerNodeView extends NodeView<LRLearnerNodeModel> {
     // from your nodemodel could be null, emtpy, or invalid in any kind.
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected void onClose() {
     // TODO things to do when closing the view
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected void onOpen() {
     // TODO things to do when opening the view

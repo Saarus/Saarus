@@ -22,10 +22,8 @@ import org.knime.core.node.NodeSettingsWO;
 import org.saarus.client.ClientContext;
 import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
-import org.saarus.knime.nlp.text.learner.TextLearnerConfigs.MahoutConfig;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
-import org.saarus.service.task.TaskUnitResult;
 /**
  * @author Tuan Nguyen
  */
@@ -35,7 +33,7 @@ public class TextLearnerNodeModel extends NodeModel {
   private TextLearnerConfigs currentConfigs = new TextLearnerConfigs();
   
   protected TextLearnerNodeModel() {
-    super(1, 1);
+    super(0, 1);
   }
 
   @Override
@@ -68,13 +66,7 @@ public class TextLearnerNodeModel extends NodeModel {
       DataTableSpec outputSpec = new DataTableSpec(allColSpecs);
       BufferedDataContainer container = exec.createDataContainer(outputSpec);
       
-      MahoutConfig config = this.currentConfigs.mahoutConfig ;
-      TaskUnitResult<String> unitResult = 
-          (TaskUnitResult<String>)taskResult.getTaskUnitResult(config.getTaskUnitId()) ;
-      System.out.println(unitResult) ;
-      container.addRowToTable(new DefaultRow(new RowKey("Model"), new StringCell(config.output)));
-      container.addRowToTable(new DefaultRow(new RowKey("Log"), new StringCell(unitResult.getResult())));
-
+      container.addRowToTable(new DefaultRow(new RowKey("Model"), new StringCell(this.currentConfigs.config.getModelOutputLoc())));
       // once we are done, we close the container and return its table
       container.close();
       BufferedDataTable out = container.getTable();
@@ -115,8 +107,6 @@ public class TextLearnerNodeModel extends NodeModel {
     System.out.println(currentConfigs) ;
   }
 
-
-  
   /** {@inheritDoc} */
   @Override
   protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
