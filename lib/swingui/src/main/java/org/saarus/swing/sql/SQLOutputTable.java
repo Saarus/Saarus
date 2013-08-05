@@ -117,6 +117,7 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
       add(tableName) ;
       
       newTable = new JCheckBox() ;
+      newTable.setSelected(sqlQuery.getCreateNewOutputTable()) ;
       newTable.addItemListener(new ItemListener() {
         public void itemStateChanged(ItemEvent e) {
           sqlQuery.setCreateNewOutputTable(newTable.isSelected()) ;
