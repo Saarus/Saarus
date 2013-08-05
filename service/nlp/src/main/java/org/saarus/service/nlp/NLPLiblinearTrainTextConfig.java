@@ -2,7 +2,7 @@ package org.saarus.service.nlp;
 
 import org.saarus.service.task.TaskUnitConfig;
 
-public class NLPLiblinearTrainTextConfig implements TaskUnitConfig {
+public class NLPLiblinearTrainTextConfig extends TaskUnitConfig {
   private String table ;
   private String textField;
   private String labelField ;

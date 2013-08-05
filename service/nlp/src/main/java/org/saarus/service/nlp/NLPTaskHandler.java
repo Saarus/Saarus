@@ -13,7 +13,6 @@ import org.saarus.service.sql.HiveTableDataReader;
 import org.saarus.service.sql.QueryResult;
 import org.saarus.service.sql.SQLService;
 import org.saarus.service.task.CallableTaskUnit;
-import org.saarus.service.task.Parameters;
 import org.saarus.service.task.TaskUnit;
 import org.saarus.service.task.TaskUnitHandler;
 import org.saarus.service.task.TaskUnitResult;
@@ -27,27 +26,43 @@ public class NLPTaskHandler implements TaskUnitHandler {
   }
 
   public NLPTaskHandler(SQLService sqlService) throws Exception {
-    this.sqlService = sqlService ;
+    setSqlService(sqlService) ;
   }
   
   public String getName() { return NAME ; }
   
   public SQLService getSqlService() { return this.sqlService ; }
-  public void setSqlService(SQLService service) { this.sqlService = service ; }
+  public void setSqlService(SQLService service) throws Exception { 
+    this.sqlService = service ; 
+    sqlService.addJar(
+        HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/trove4j-3.0.3.jar",
+        HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/stanford-corenlp-1.3.5.jar",
+        HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/lucene-snowball-3.0.3.jar",
+        HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/liblinear-1.92.jar",
+        HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.lib.common-1.0.jar",
+        HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.lib.nlp.core-1.0.jar",
+        HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.lib.nlp.classify-1.0.jar",
+        HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.service.hadoop-1.0.jar",
+        HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.service.nlp-1.0.jar"
+      ) ;
+        
+      sqlService.executeSQL(
+        "CREATE TEMPORARY FUNCTION nlp_classify AS 'org.saarus.service.nlp.hive.udf.UDFLiblinearTextClassify'"
+      ) ;
+  }
 
   
   public CallableTaskUnit<?> getCallableTaskUnit(TaskUnit taskUnit) {
     String name = taskUnit.getName();
     if("liblinearTrainText".equals(name))   return liblinearTrainText(taskUnit) ;
     if("liblinearPredictText".equals(name)) return liblinearPredictText(taskUnit) ;
-    if("registerNLPFunctions".equals(name)) return registerNLPFunctions(taskUnit) ;
     return null ;
   }
 
   private CallableTaskUnit<String> liblinearTrainText(TaskUnit tunit) {
     CallableTaskUnit<String> callableUnit = new CallableTaskUnit<String>(tunit, new TaskUnitResult<String>()) {
       public String doCall() throws Exception {
-        NLPLiblinearTrainTextConfig config = taskUnit.getTaskUnitConfig() ;
+        NLPLiblinearTrainTextConfig config = (NLPLiblinearTrainTextConfig) taskUnit.getTaskUnitConfig() ;
         final HiveTableDataReader tableReader = 
           new HiveTableDataReader(sqlService, config.getTable(), new String[] {config.getLabelField(), config.getTextField()}) ;
         tableReader.reset() ;
@@ -69,7 +84,8 @@ public class NLPTaskHandler implements TaskUnitHandler {
           for(File sel : files) {
             FSResource res = FSResource.get(config.getModelOutputLoc() + "/" + sel.getName()) ;
             FileInputStream is = new FileInputStream(sel) ;
-            res.write(is) ;
+            int bytes = res.write(is) ;
+            System.out.println(sel.getName() + " , write " + bytes + " bytes");
             is.close() ;
           }
         }
@@ -85,31 +101,6 @@ public class NLPTaskHandler implements TaskUnitHandler {
         ResultSet res = sqlService.executeQuerySQL(taskUnit.getTaskLine());
         QueryResult qresult = new QueryResult(taskUnit.getTaskLine(), res) ;
         return  qresult ;
-      }
-    };
-    return callableUnit ;
-  }
-  
-  private CallableTaskUnit<Boolean> registerNLPFunctions(TaskUnit tunit) {
-    CallableTaskUnit<Boolean> callableUnit = new CallableTaskUnit<Boolean>(tunit, new TaskUnitResult<Boolean>()) {
-      public Boolean doCall() throws Exception {
-        Parameters params = taskUnit.getParameters() ;
-        sqlService.addJar(
-          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/trove4j-3.0.3.jar",
-          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/stanford-corenlp-1.3.5.jar",
-          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/lucene-snowball-3.0.3.jar",
-          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/liblinear-1.92.jar",
-          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.lib.common-1.0.jar",
-          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.lib.nlp.core-1.0.jar",
-          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.lib.nlp.classify-1.0.jar",
-          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.service.hadoop-1.0.jar",
-          HadoopInfo.MASTER_NODE_SAARUS_LIB_LOC + "/saarus.service.nlp-1.0.jar"
-        ) ;
-          
-        sqlService.executeSQL(
-          "CREATE TEMPORARY FUNCTION nlp_classify AS 'org.saarus.service.nlp.hive.udf.UDFLiblinearTextClassify'"
-        ) ;
-        return true ;
       }
     };
     return callableUnit ;

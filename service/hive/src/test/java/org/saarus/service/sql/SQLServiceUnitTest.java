@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.saarus.service.hadoop.HadoopInfo;
 import org.saarus.service.hadoop.util.HDFSUtil;
 import org.saarus.service.sql.io.TableRCFileWriter;
-import org.saarus.service.util.JSONSerializer;
 import org.saarus.service.util.TabularPrinter;
+import org.saarus.util.json.JSONSerializer;
 
 public class SQLServiceUnitTest {
   @Test

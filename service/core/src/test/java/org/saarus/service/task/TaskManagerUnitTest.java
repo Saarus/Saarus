@@ -7,7 +7,7 @@ import org.saarus.service.task.DummyTaskUnitHandler;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskManager;
 import org.saarus.service.task.TaskResult;
-import org.saarus.service.util.JSONSerializer;
+import org.saarus.util.json.JSONSerializer;
 
 public class TaskManagerUnitTest {
   static String TASK_JSON = 

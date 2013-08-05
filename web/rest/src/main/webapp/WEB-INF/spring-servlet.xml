@@ -53,6 +53,10 @@
     <property name="sqlService" ref="SQLService" />
   </bean>
 
+  <bean id="NLPTaskHandler" class="org.saarus.service.nlp.NLPTaskHandler">
+    <property name="sqlService" ref="SQLService" />
+  </bean>
+
   <bean id="DummyTaskUnitHandler" class="org.saarus.service.task.DummyTaskUnitHandler"/>
 
   <bean id="TaskManager" class="org.saarus.service.task.TaskManager">
@@ -61,6 +65,7 @@
         <ref bean="DFSTaskHandler"/>
         <ref bean="HiveTaskHandler"/>
         <ref bean="LogisticRegressionTaskHandler"/>
+        <ref bean="NLPTaskHandler"/>
         <ref bean="DummyTaskUnitHandler"/>
       </list>
     </property>

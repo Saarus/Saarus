@@ -3,7 +3,7 @@ package org.saarus.client;
 import org.junit.Assert;
 import org.junit.Test;
 import org.saarus.service.sql.TableMetadata;
-import org.saarus.service.util.JSONSerializer;
+import org.saarus.util.json.JSONSerializer;
 
 public class HiveClientUnitTest {
   @Test

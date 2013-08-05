@@ -11,18 +11,11 @@
   <name>Saarus :: Service Core</name>
 
   <dependencies>
-		<!-- JSON parser -->
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>1.9.7</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.7</version>
-		</dependency>
+    <dependency>
+      <groupId>org.saarus</groupId>
+      <artifactId>saarus.lib.common</artifactId>
+      <version>${org.saarus.version}</version>
+    </dependency> 
 
 		<dependency>
 			<groupId>org.springframework</groupId>

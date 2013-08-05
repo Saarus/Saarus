@@ -45,6 +45,7 @@ public class TextTrainer {
       String text  = record.getText() ;
       String label = record.getLabel();
       IToken[] tokens = textTokenizer.segment(text) ;
+      if(text == null || label == null) continue ;
       String vector = featureSet.addprintVector(featureGenerators.getContext(tokens, text), label, false);
       if (vector.length() > 0) writer.append(vector).append("\n");
     }

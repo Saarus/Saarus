@@ -129,7 +129,7 @@ public class QueryConfigs {
         if(selQuery.length() == 0) continue ;
         TaskUnit taskUnit = new TaskUnit() ;
         taskUnit.setName("execute") ;
-        taskUnit.setTaskLine(query[i].trim()) ;
+        taskUnit.setTaskLine(selQuery) ;
         holder.add(taskUnit) ;
       }
       return holder.toArray(new TaskUnit[holder.size()])  ;

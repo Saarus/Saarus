@@ -1,7 +1,5 @@
 package org.saarus.swing.sql;
 
-import static org.saarus.swing.sql.SQLStringBuilder.padding;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +10,7 @@ public class SQLQuery {
   SQLTable outputTable ;
   List<SQLTable> inputTables = new ArrayList<SQLTable>() ;
   private QueryTemplate queryTemplate ;
-  
+  private boolean createNewOutputTable = true ;
   
   public SQLQuery(SQLTable table)  {
     this.outputTable =  table ;
@@ -21,9 +19,13 @@ public class SQLQuery {
   public SQLTable getOutputSQLTable() { return this.outputTable ; }
   public void     setOutputSQLTable(SQLTable table) { this.outputTable = table ; }
   
+  public boolean getCreateNewOutputTable() { return createNewOutputTable ; }
+  public void setCreateNewOutputTable(boolean b) { this.createNewOutputTable = b ; }
+  
   public List<SQLTable> getInputTables() { return inputTables; }
   public void setInputTables(List<SQLTable> inputTables) { this.inputTables = inputTables; }
 
+  
   public void addInputSQLTable(SQLTable table) {
     for(Field sel : table.getFields()) {
       if(sel.isSelect()) outputTable.addField(sel) ;

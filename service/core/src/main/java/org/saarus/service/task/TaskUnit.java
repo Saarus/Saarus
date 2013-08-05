@@ -1,7 +1,10 @@
 package org.saarus.service.task;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.saarus.service.util.StringUtil;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.saarus.util.json.JSONSerializer;
+import org.saarus.util.text.StringUtil;
 
 public class TaskUnit {
   private String id ;
@@ -41,13 +44,16 @@ public class TaskUnit {
   public String getTaskLine() {
     return StringUtil.joinStringArray(task, "\n") ;
   }
+  
   @JsonIgnore
   public void     setTaskLine(String task) { 
     this.task = new String[] { task }; 
   }
   
-  public <T extends TaskUnitConfig> T getTaskUnitConfig() { return (T) config ; }
-  public <T extends TaskUnitConfig> void setTaskUnitConfig(T config) { this.config = config ; }
+  @JsonDeserialize(using = JSONSerializer.GenericTypeDeserializer.class)
+  @JsonSerialize(using   = JSONSerializer.GenericTypeSerializer.class)
+  public TaskUnitConfig getTaskUnitConfig() { return  config ; }
+  public  void setTaskUnitConfig(TaskUnitConfig config) { this.config = config ; }
   
   public Parameters getParameters() { return this.parameters ; }
   public void       setParameters(Parameters params) { this.parameters = params ; }

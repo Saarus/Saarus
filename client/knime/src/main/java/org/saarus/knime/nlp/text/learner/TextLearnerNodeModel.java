@@ -33,7 +33,7 @@ public class TextLearnerNodeModel extends NodeModel {
   private TextLearnerConfigs currentConfigs = new TextLearnerConfigs();
   
   protected TextLearnerNodeModel() {
-    super(0, 1);
+    super(1, 1);
   }
 
   @Override
@@ -102,7 +102,7 @@ public class TextLearnerNodeModel extends NodeModel {
   /** {@inheritDoc} */
   @Override
   protected void loadValidatedSettingsFrom(final NodeSettingsRO settings) throws InvalidSettingsException {
-    this.currentConfigs.merge(new TextLearnerConfigs(settings)) ;
+    this.currentConfigs = new TextLearnerConfigs(settings) ;
     System.out.println("Load loadValidatedSettings(merge)") ;
     System.out.println(currentConfigs) ;
   }

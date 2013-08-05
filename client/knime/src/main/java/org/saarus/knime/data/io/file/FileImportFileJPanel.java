@@ -37,7 +37,7 @@ import org.saarus.service.hadoop.dfs.DFSFile;
 import org.saarus.service.hadoop.util.FSResource;
 import org.saarus.service.sql.TableMetadata;
 import org.saarus.service.util.JSONReader;
-import org.saarus.service.util.JSONSerializer;
+import org.saarus.util.json.JSONSerializer;
 
 public class FileImportFileJPanel extends JPanel {
   final static int MAX_WIDTH = FileImportNodeDialog.WIDTH ;
@@ -175,7 +175,13 @@ public class FileImportFileJPanel extends JPanel {
     
     public void onClickOK(DFSFile selectFile) {
       if(selectFile != null) {
-        urlInput.setSelectedItem(selectFile.getPath());
+        String path = selectFile.getPath() ;
+        urlInput.setSelectedItem(path);
+        if(path.endsWith(".json")) {
+          importType.setSelectedItem("Json") ;
+        } else if(path.endsWith(".csv")) {
+          importType.setSelectedItem("Csv") ;
+        }
       }
       dispose() ;
     }

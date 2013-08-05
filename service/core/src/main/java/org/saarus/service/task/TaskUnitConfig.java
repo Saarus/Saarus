@@ -1,5 +1,5 @@
 package org.saarus.service.task;
 
-public interface TaskUnitConfig {
+abstract public class TaskUnitConfig {
 
 }

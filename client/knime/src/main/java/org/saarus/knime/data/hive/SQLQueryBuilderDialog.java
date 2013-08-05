@@ -2,9 +2,11 @@ package org.saarus.knime.data.hive;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JDialog;
 
@@ -28,10 +30,13 @@ public class SQLQueryBuilderDialog extends JDialog {
     setModalityType(ModalityType.APPLICATION_MODAL) ;
     
     queryBuilder = new SQLQueryBuilder();
-    TableMetadata[] tmeta = getTableMetadata() ;
-    queryBuilder.addSources(createSQLInputTables(tmeta)) ;
-    queryBuilder.addOutput(createSQLOutputTables(tmeta)) ;
+    loadTables(getTableMetadata(false)) ;
     
+    addToolbarAction("Reload Tables", new AbstractAction() {
+      public void actionPerformed(ActionEvent evt) {
+        loadTables(getTableMetadata(true)) ;
+      }
+    });
     add(queryBuilder, BorderLayout.CENTER) ;
   }
 
@@ -39,6 +44,13 @@ public class SQLQueryBuilderDialog extends JDialog {
   
   public void addToolbarAction(String label, Action action) {
     queryBuilder.getToolbar().add(queryBuilder, label, null, action);
+  }
+  
+  private void loadTables(TableMetadata[] tmeta) {
+    queryBuilder.getSourcePallete().removeAll() ;
+    queryBuilder.getOutputPallete().removeAll() ;
+    queryBuilder.addSources(createSQLInputTables(tmeta)) ;
+    queryBuilder.addOutput(createSQLOutputTables(tmeta)) ;
   }
   
   SQLTable[] createSQLInputTables(TableMetadata[] tmeta) {
@@ -69,13 +81,13 @@ public class SQLQueryBuilderDialog extends JDialog {
     return holder.toArray(new SQLTable[holder.size()]) ;
   }
   
-  TableMetadata[] getTableMetadata() {
+  TableMetadata[] getTableMetadata(boolean reload) {
     ServiceContext context = ServiceContext.getInstance() ;
     RESTClient restClient = context.getClientContext().getBean(RESTClient.class) ;
     HiveClient hclient = restClient.getHiveClient() ;
-    List<String> listTables = hclient.listTable(false) ;
+    List<String> listTables = hclient.listTable(reload) ;
     String[] table = listTables.toArray(new String[listTables.size()]) ;
-    TableMetadata[] tmeta = hclient.descTables(table, false) ;
+    TableMetadata[] tmeta = hclient.descTables(table, reload) ;
     return tmeta ;
   }
 }

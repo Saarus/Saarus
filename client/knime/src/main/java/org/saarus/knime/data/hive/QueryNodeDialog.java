@@ -26,9 +26,8 @@ import org.osgi.framework.Bundle;
 import org.saarus.knime.data.hive.QueryConfigs.QueryConfig;
 import org.saarus.knime.uicomp.JInfoDialog;
 import org.saarus.knime.uicomp.JTabbedPaneUI;
-import org.saarus.service.util.IOUtil;
-import org.saarus.service.util.JSONSerializer;
-
+import org.saarus.util.IOUtil;
+import org.saarus.util.json.JSONSerializer;
 /**
  * @author Tuan Nguyen
  */

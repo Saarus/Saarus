@@ -36,7 +36,7 @@ abstract public class FSResource {
   
   abstract public InputStream getInputStream() throws Exception ;
 
-  abstract public void write(InputStream is) throws Exception ;
+  abstract public int write(InputStream is) throws Exception ;
   
   abstract public void write(byte[] buf) throws Exception ;
 
@@ -46,16 +46,15 @@ abstract public class FSResource {
 
   abstract public boolean mkdirs() throws Exception ;
   
-  protected void write(OutputStream os, InputStream is) throws Exception {
-    int maxRead = 4096;
+  protected int write(OutputStream os, InputStream is) throws Exception {
     BufferedInputStream buffer = new BufferedInputStream(is);    
-    byte[] data  = new byte[4912];      
+    byte[] data  = new byte[4096];      
     int available = -1, read = 0 ;
-    while((available = buffer.read(data)) > -1 && read < maxRead){
-      if(maxRead - read < available) available = maxRead - read ;
+    while((available = buffer.read(data)) > -1){
       os.write(data, 0, available);
       read += available ;
     } 
+    return read ;
   }
 
   static public FSResource get(String uri) {
@@ -79,11 +78,12 @@ abstract public class FSResource {
       return new FileInputStream(getPath());
     }
 
-    public void write(InputStream is) throws Exception {
+    public int write(InputStream is) throws Exception {
       OutputStream out = new FileOutputStream(getPath()) ;
-      write(out, is) ;
+      int count = write(out, is) ;
       out.close() ;
       is.close() ;
+      return count ;
     }
     
     public void write(byte[] buf) throws Exception {
@@ -122,14 +122,15 @@ abstract public class FSResource {
       return fs.open(new Path(getPath()));
     }
 
-    public void write(InputStream is) throws Exception {
+    public int write(InputStream is) throws Exception {
       Path src = new Path(getPath()) ;
       FileSystem fs = HDFSUtil.getFileSystem() ;
       FSDataOutputStream out = fs.create(src, true) ;
-      write(out, is) ;
+      int count  = write(out, is) ;
       out.hflush() ;
       out.close() ;
       is.close() ;
+      return count ;
     }
 
     public void write(byte[] buf) throws Exception {

@@ -50,26 +50,8 @@ public class QueryConfigPanel extends JPanel {
   }
   
   private JPanel createQueryBox(QueryConfig config) {
-    String query = 
-      "CREATE TABLE yelp_features (\n" +
-      "  review_id      STRING,\n" +
-      "  user_id        STRING,\n" +
-      "  user_name      STRING,\n" +
-      "  business_id    STRING,\n" +
-      "  business_name  STRING,\n" +
-      "  vote_useful    INT,\n" +
-      "  vote_cool      INT,\n" +
-      "  vote_funny     INT,\n" +
-      ") ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' ; \n\n" +
-      
-      "INSERT OVERWRITE TABLE yelp_features \n" +
-      "SELECT r.review_id, r.user_id, u.name, r.business_id, b.name, r.vote_funny, r.vote_useful, r.vote_cool\n" +
-      "FROM review r \n " +
-      "JOIN user u ON(r.user_id = u.user_id) \n " +
-      "JOIN business b ON(r.business_id = b.business_id) \n " ;
-    if(config.query != null && config.query.length() > 0) {
-      query = config.query ;
-    }
+    String query = "" ;
+    if(config.query != null)  query = config.query ;
     JPanel panel = new JPanel(new BorderLayout()) ;
     panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Query"));
     JToolBar toolbar = new JToolBar() ;
@@ -105,9 +87,13 @@ public class QueryConfigPanel extends JPanel {
           SQLOutputTable outTable = SQLQueryBuilderUtil.getSQLOutputTable(queryBuilderDialog.getSQLQueryBuilder()) ;
           SQLQuery sqlQuery = outTable.getSQLQuery() ;
           StringBuilder b = new StringBuilder() ;
-          b.append(sqlQuery.getOutputSQLTable().buildDropTableSQL() + ";\n\n");
-          b.append(sqlQuery.getOutputSQLTable().buildCreateTable() + ";\n\n");
+          if(sqlQuery.getCreateNewOutputTable()) {
+            b.append(sqlQuery.getOutputSQLTable().buildDropTableSQL() + ";\n\n");
+            b.append(sqlQuery.getOutputSQLTable().buildCreateTable() + ";\n\n");
+          }
           b.append(sqlQuery.buildInsertSQLQuery() + ";\n\n");
+           
+          nameInput.setText(sqlQuery.getOutputSQLTable().getTableName()) ;
           queryArea.setText(b.toString());
           queryBuilderDialog.setVisible(false) ;
         }

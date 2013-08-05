@@ -7,7 +7,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskUnit;
-import org.saarus.service.util.JSONSerializer;
+import org.saarus.util.json.JSONSerializer;
 
 public class TaskSerializationUnitTest {
   @Test

@@ -29,7 +29,7 @@ import org.saarus.knime.data.hive.QueryConfigs.QueryConfig;
 import org.saarus.service.sql.TableMetadata;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
-import org.saarus.service.util.JSONSerializer;
+import org.saarus.util.json.JSONSerializer;
 /**
  * @author Tuan Nguyen
  */

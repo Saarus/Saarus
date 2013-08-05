@@ -20,7 +20,7 @@ import org.knime.core.node.NotConfigurableException;
 import org.saarus.knime.data.stat.StatisticConfigs.StatisticConfig;
 import org.saarus.knime.uicomp.JInfoDialog;
 import org.saarus.knime.uicomp.JTabbedPaneUI;
-import org.saarus.service.util.JSONSerializer;
+import org.saarus.util.json.JSONSerializer;
 /**
  * @author Tuan Nguyen
  */

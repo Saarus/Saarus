@@ -1,7 +1,6 @@
 package org.saarus.service.nlp;
 
 import org.apache.hadoop.conf.Configuration;
-import org.junit.Assert;
 import org.junit.Test;
 import org.saarus.service.hadoop.HadoopInfo;
 import org.saarus.service.hadoop.util.HDFSUtil;
@@ -23,13 +22,6 @@ public class NLPTaskHandlerUnitTest {
     SQLService sqlService  = new SQLService(HadoopInfo.HIVE_CONNECTION_URL, "hive", "");
     NLPTaskHandler handler  = new NLPTaskHandler(sqlService);
     
-    TaskUnit registerUnit = new TaskUnit() ;
-    registerUnit.setName("registerNLPFunctions") ;
-    @SuppressWarnings("unchecked")
-    TaskUnitResult<Boolean> registerResult = 
-      (TaskUnitResult<Boolean>)handler.getCallableTaskUnit(registerUnit).call() ;
-    Assert.assertTrue(registerResult.getResult()) ;
-    
     testTrain(sqlService, handler) ;
     testPredict(sqlService, handler) ;
   }
@@ -50,9 +42,15 @@ public class NLPTaskHandlerUnitTest {
     TaskUnit trainTaskUnit = new TaskUnit() ;
     trainTaskUnit.setName("liblinearTrainText") ;
     NLPLiblinearTrainTextConfig trainConfig = new NLPLiblinearTrainTextConfig() ; 
+    
     trainConfig.setTable(tmeta.getTableName()) ;
     trainConfig.setTextField("tweet") ;
     trainConfig.setLabelField("label") ;
+    
+    //trainConfig.setTable("twitter") ;
+    //trainConfig.setTextField("sentimenttext") ;
+    //trainConfig.setLabelField("sentiment") ;
+    
     trainConfig.setModelOutputLoc(MODEL_LOCATION) ;
     trainConfig.setTmpDir("target/nlpTEMP") ;
     trainTaskUnit.setTaskUnitConfig(trainConfig) ;

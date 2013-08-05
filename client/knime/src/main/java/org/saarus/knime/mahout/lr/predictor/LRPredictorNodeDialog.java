@@ -18,7 +18,7 @@ import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.saarus.knime.mahout.lr.predictor.LRPredictorConfigs.MahoutConfig;
 import org.saarus.knime.uicomp.JInfoDialog;
-import org.saarus.service.util.JSONSerializer;
+import org.saarus.util.json.JSONSerializer;
 
 /**
  * @author Tuan Nguyen

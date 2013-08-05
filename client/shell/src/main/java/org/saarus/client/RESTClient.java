@@ -4,7 +4,7 @@ import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
 import org.saarus.service.util.CommandParser;
 import org.saarus.service.util.JSONReader;
-import org.saarus.service.util.JSONSerializer;
+import org.saarus.util.json.JSONSerializer;
 import org.springframework.web.client.RestTemplate;
 
 public class RESTClient {

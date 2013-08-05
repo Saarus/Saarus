@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.saarus.util.json.JSONSerializer;
 
 public class TaskUnitResult<T> {
   private String        taskId = "" ;
@@ -34,8 +35,8 @@ public class TaskUnitResult<T> {
     logs.add(new TaskLog(level, log)) ;
   }
 
-  @JsonDeserialize(using = TaskUnitResultDeserializer.class)
-  @JsonSerialize(using   = TaskUnitResultSerializer.class)
+  @JsonDeserialize(using = JSONSerializer.GenericTypeDeserializer.class)
+  @JsonSerialize(using   = JSONSerializer.GenericTypeSerializer.class)
   public T getResult() { return result; }
   public void setResult(T result) { this.result = result; }
 
@@ -60,6 +61,4 @@ public class TaskUnitResult<T> {
     }
     return b.toString() ;
   }
-  
-  
 }

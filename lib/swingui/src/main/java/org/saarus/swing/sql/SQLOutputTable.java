@@ -8,6 +8,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -15,6 +17,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -27,6 +30,8 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
@@ -43,7 +48,7 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
   static String COLUMN_NAMES[] = {"Field", "Type", "Map From",  "Expression"};
 
   private SQLQuery sqlQuery ;
-  private JTextField tableName ;
+  
   private ListTableField listField ;
   private QueryPanel queryPanel ;
   private OtherPanel otherPanel ;
@@ -53,14 +58,7 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
     this.sqlQuery = new SQLQuery(sqlTable) ;
 
     setLayout(new SpringLayout()) ;
-    tableName = new JTextField(sqlTable.getTableName()) ;
-    tableName.getDocument().addDocumentListener(new ChangeTextListener() {
-      void onChange(String text) {
-        sqlQuery.getOutputSQLTable().setTableName(text) ;
-      }
-    });
-    tableName.setMaximumSize(new Dimension(250, 25)) ;
-    add(tableName) ;
+    add(new TableInfo()) ;
 
     listField = new ListTableField() ;
     JScrollPane scroll = new JScrollPane(listField) ;
@@ -73,7 +71,7 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
     otherPanel = new OtherPanel() ;
     tabbedPane.addTab("Other", otherPanel) ;
     add(tabbedPane) ;
-    SpringUtilities.makeCompactGrid(this, /*rows, cols*/3, 1,  /*initX, initY*/ 6, 6, /*xPad, yPad*/6, 6); 
+    SpringUtilities.makeCompactGrid(this, /*rows, cols*/3, 1,  /*initX, initY*/ 3, 3, /*xPad, yPad*/2, 2); 
   }
 
   public SQLQuery getSQLQuery() { return this.sqlQuery ; }
@@ -102,6 +100,34 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
     }
   }
 
+  public class TableInfo extends JPanel {
+    JTextField tableName ;
+    JCheckBox  newTable ;
+    
+    public TableInfo() {
+      setLayout(new SpringLayout()) ;
+      tableName = new JTextField(sqlQuery.getOutputSQLTable().getTableName()) ;
+      tableName.getDocument().addDocumentListener(new ChangeTextListener() {
+        void onChange(String text) {
+          sqlQuery.getOutputSQLTable().setTableName(text) ;
+        }
+      });
+      tableName.setMaximumSize(new Dimension(250, 25)) ;
+      add(new JLabel("Table")) ;
+      add(tableName) ;
+      
+      newTable = new JCheckBox() ;
+      newTable.addItemListener(new ItemListener() {
+        public void itemStateChanged(ItemEvent e) {
+          sqlQuery.setCreateNewOutputTable(newTable.isSelected()) ;
+        }
+      });
+      add(new JLabel("Create New")) ;
+      add(newTable) ;
+      SpringUtilities.makeCompactGrid(this, /*rows, cols*/1, 4,  /*initX, initY*/ 6, 6, /*xPad, yPad*/6, 6); 
+    }
+  }
+  
   public class ListTableField extends JTable {
     private List<Field> fields ;
 

@@ -47,7 +47,12 @@ public class SQLQueryBuilder extends GraphEditor {
     
     sourcePallete = insertPalette("Sources");
     outputPallete = insertPalette("Output");
+    
   }
+  
+  public GraphEditorPalette getSourcePallete() { return this.sourcePallete ; }
+  
+  public GraphEditorPalette getOutputPallete() { return this.outputPallete ; }
   
   public void addSources(SQLTable ... tables) {
     ImageIcon tableIcon = new ImageIcon(getClass().getResource("/icons/rectangle.png")) ;
@@ -180,8 +185,10 @@ public class SQLQueryBuilder extends GraphEditor {
               Object model = ((mxCell)cell[i]).getValue() ;
               if(model instanceof SQLTable) {
                 SQLTable table = (SQLTable) model ;
-                if(SQLQueryBuilderUtil.getSQLTableCell(builder, table.getTableName()) != null) return false ;
-                if(SQLTable.OUTPUT_TABLE_TYPE.equals(table.getType())) {
+                
+                if(SQLTable.INPUT_TABLE_TYPE.equals(table.getType())) {
+                  if(SQLQueryBuilderUtil.getSQLTableCell(builder, table.getTableName()) != null) return false ;
+                } else if(SQLTable.OUTPUT_TABLE_TYPE.equals(table.getType())) {
                   if(SQLQueryBuilderUtil.getSQLOutputTableCell(builder) != null) return false ;
                 }
               }

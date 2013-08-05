@@ -17,8 +17,7 @@ import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.saarus.knime.uicomp.JInfoDialog;
-import org.saarus.service.util.JSONSerializer;
-
+import org.saarus.util.json.JSONSerializer;
 /**
  * @author Tuan Nguyen
  */
@@ -46,7 +45,7 @@ public class TextLearnerNodeDialog extends NodeDialogPane {
       public void actionPerformed(final ActionEvent e) {
         TextLearnerConfigs learnerConfig = new TextLearnerConfigs() ;
         learnerConfig.description = "Train Twitter positive/negative sentiment" ;
-        learnerConfig.config.setTable("twitter") ;
+        learnerConfig.config.setTable("twitter_train") ;
         learnerConfig.config.setTextField("sentimenttext") ;
         learnerConfig.config.setLabelField("sentiment") ;
         learnerConfig.config.setModelOutputLoc("dfs:/tmp/twitter/model") ;

@@ -20,7 +20,7 @@ import org.knime.core.node.NotConfigurableException;
 import org.saarus.knime.data.io.file.FileImportConfigs.FileImportConfig;
 import org.saarus.knime.uicomp.JInfoDialog;
 import org.saarus.knime.uicomp.JTabbedPaneUI;
-import org.saarus.service.util.JSONSerializer;
+import org.saarus.util.json.JSONSerializer;
 
 /** 
  * @author Tuan Nguyen
@@ -65,7 +65,7 @@ public class FileImportNodeDialog extends NodeDialogPane {
       }
     });
     
-    JButton demoYelp = new JButton("Saarus Work Flow");
+    JButton demoYelp = new JButton("Saarus WorkFlow");
     demoYelp.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         int tabCount = tabbedPane.getTabCount() ;
@@ -124,7 +124,26 @@ public class FileImportNodeDialog extends NodeDialogPane {
         tabbedPane.setSelectedTab(1) ;
       }
     });
+    
+    JButton demoTwitter = new JButton("Saarus Twitter");
+    demoTwitter.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        int tabCount = tabbedPane.getTabCount() ;
+        for(int i = tabCount - 1; i > 0; i--) {
+          tabbedPane.removeTabAt(i) ;
+        }
+        
+        FileImportConfig twitterConfig =
+          new FileImportConfig("twitter_train", "create table twitter", "dfs:/user/hive/twitter-data/50kSentimentCorpus.csv", "Csv") ;
+        twitterConfig.addFieldConfig("sentimenttext", "STRING", "SentimentText") ;
+        twitterConfig.addFieldConfig("sentiment", "STRING", "Sentiment") ;
+        
+        tabbedPane.addTabView(twitterConfig.getTable(), new FileImportFileJPanel(twitterConfig));
+        tabbedPane.setSelectedTab(1) ;
+      }
+    });
     panel.add(demoYelp) ;
+    panel.add(demoTwitter) ;
     panel.add(viewScript) ;
     return panel ;
   }
