@@ -12,9 +12,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>jgraph</groupId>
-      <artifactId>jgraph</artifactId>
-      <version>5.13.0.0</version>
+      <groupId>jgraphx</groupId>
+      <artifactId>jgraphx</artifactId>
+      <version>2.1.0.5</version>
     </dependency>
   </dependencies>
 </project>
