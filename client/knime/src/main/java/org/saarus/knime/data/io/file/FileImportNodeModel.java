@@ -123,7 +123,7 @@ public class FileImportNodeModel extends NodeModel {
   /** {@inheritDoc} */
   @Override
   protected void loadValidatedSettingsFrom(final NodeSettingsRO settings) throws InvalidSettingsException {
-    this.currentSettings.merge(new FileImportConfigs(settings)) ;
+    currentSettings = new FileImportConfigs(settings) ;
     System.out.println("Load loadValidatedSettings(merge)") ;
     System.out.println(this.currentSettings) ;
   }

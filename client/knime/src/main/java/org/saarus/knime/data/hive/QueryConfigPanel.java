@@ -12,12 +12,16 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 
 import org.saarus.knime.data.hive.QueryConfigs.QueryConfig;
-import org.saarus.knime.uicomp.SpringUtilities;
+import org.saarus.knime.data.io.file.FileImportPanel;
+import org.saarus.swing.listener.JTextFieldChangeTextListener;
 import org.saarus.swing.sql.SQLOutputTable;
 import org.saarus.swing.sql.SQLQuery;
 import org.saarus.swing.sql.SQLQueryBuilderUtil;
+import org.saarus.swing.JTabbedPaneUI;
+import org.saarus.swing.util.SpringUtilities;
 
 public class QueryConfigPanel extends JPanel {
   final static int MAX_WIDTH = QueryNodeDialog.WIDTH ;
@@ -37,6 +41,13 @@ public class QueryConfigPanel extends JPanel {
     panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Description"));
     
     nameInput = new JTextField(config.name) ;
+    nameInput.getDocument().addDocumentListener(new JTextFieldChangeTextListener() {
+      public void onChange(String text) {
+        JTabbedPaneUI tabPanel = 
+            (JTabbedPaneUI)SwingUtilities.getAncestorOfClass(JTabbedPaneUI.class, QueryConfigPanel.this) ;
+        tabPanel.renameTab(text, QueryConfigPanel.this) ;
+      }
+    });
     descInput = new JTextField(config.description) ;
     
     panel.add(new JLabel("Name")) ;
@@ -94,6 +105,9 @@ public class QueryConfigPanel extends JPanel {
           b.append(sqlQuery.buildInsertSQLQuery() + ";\n\n");
            
           nameInput.setText(sqlQuery.getOutputSQLTable().getTableName()) ;
+          JTabbedPaneUI tabPanel = 
+              (JTabbedPaneUI)SwingUtilities.getAncestorOfClass(JTabbedPaneUI.class, QueryConfigPanel.this) ;
+          tabPanel.renameTab(nameInput.getText(), QueryConfigPanel.this) ;
           queryArea.setText(b.toString());
           queryBuilderDialog.setVisible(false) ;
         }

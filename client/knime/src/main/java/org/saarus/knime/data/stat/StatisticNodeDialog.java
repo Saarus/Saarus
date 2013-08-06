@@ -18,8 +18,8 @@ import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.saarus.knime.data.stat.StatisticConfigs.StatisticConfig;
-import org.saarus.knime.uicomp.JInfoDialog;
-import org.saarus.knime.uicomp.JTabbedPaneUI;
+import org.saarus.swing.JInfoDialog;
+import org.saarus.swing.JTabbedPaneUI;
 import org.saarus.util.json.JSONSerializer;
 /**
  * @author Tuan Nguyen

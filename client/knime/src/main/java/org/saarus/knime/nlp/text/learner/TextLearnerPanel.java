@@ -9,8 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import org.saarus.knime.uicomp.SpringUtilities;
 import org.saarus.service.nlp.NLPLiblinearTrainTextConfig;
+import org.saarus.swing.util.SpringUtilities;
 
 public class TextLearnerPanel extends JPanel {
   final static int MAX_WIDTH = TextLearnerNodeDialog.WIDTH ;

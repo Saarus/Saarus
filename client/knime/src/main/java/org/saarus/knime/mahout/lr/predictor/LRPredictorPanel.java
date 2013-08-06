@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import org.saarus.knime.mahout.lr.predictor.LRPredictorConfigs.MahoutConfig;
-import org.saarus.knime.uicomp.SpringUtilities;
+import org.saarus.swing.util.SpringUtilities;
 
 public class LRPredictorPanel extends JPanel {
   private JTextField nameInput = new JTextField();

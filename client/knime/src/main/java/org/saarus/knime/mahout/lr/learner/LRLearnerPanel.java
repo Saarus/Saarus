@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import org.saarus.knime.mahout.lr.learner.LRLearnerConfigs.MahoutConfig;
-import org.saarus.knime.uicomp.SpringUtilities;
+import org.saarus.swing.util.SpringUtilities;
 
 public class LRLearnerPanel extends JPanel {
   final static int MAX_WIDTH = LRLearnerNodeDialog.WIDTH ;

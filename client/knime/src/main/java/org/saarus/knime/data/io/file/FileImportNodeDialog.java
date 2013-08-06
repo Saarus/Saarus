@@ -18,8 +18,8 @@ import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.saarus.knime.data.io.file.FileImportConfigs.FileImportConfig;
-import org.saarus.knime.uicomp.JInfoDialog;
-import org.saarus.knime.uicomp.JTabbedPaneUI;
+import org.saarus.swing.JInfoDialog;
+import org.saarus.swing.JTabbedPaneUI;
 import org.saarus.util.json.JSONSerializer;
 
 /** 
@@ -39,7 +39,7 @@ public class FileImportNodeDialog extends NodeDialogPane {
       public void actionPerformed(ActionEvent e) {
         FileImportConfig config = new FileImportConfig() ;
         config.setTable("Table"  + tabbedPane.getTabCount()) ;
-        tabbedPane.addTabView(config.getTable(), new FileImportFileJPanel(config));
+        tabbedPane.addTabView(config.getTable(), new FileImportPanel(config));
       }
     }) ;
     JPanel panel = new JPanel(new BorderLayout()) ;
@@ -56,7 +56,7 @@ public class FileImportNodeDialog extends NodeDialogPane {
       public void actionPerformed(final ActionEvent e) {
         JInfoDialog dialog = JInfoDialog.getInstance() ;
         try {
-          String json = JSONSerializer.JSON_SERIALIZER.toString(getJSONImportConfigs().getGeneratedTask()) ;
+          String json = JSONSerializer.JSON_SERIALIZER.toString(getFileImportConfigs().getGeneratedTask()) ;
           dialog.setInfo(json) ;
         } catch(Exception ex) {
           ex.printStackTrace() ;
@@ -119,7 +119,7 @@ public class FileImportNodeDialog extends NodeDialogPane {
           userTableConfig, businessTableConfig, checkinTableConfig, reviewTableConfig 
         };
         for(FileImportConfig sel : config) {
-          tabbedPane.addTabView(sel.getTable(), new FileImportFileJPanel(sel));
+          tabbedPane.addTabView(sel.getTable(), new FileImportPanel(sel));
         }
         tabbedPane.setSelectedTab(1) ;
       }
@@ -138,7 +138,7 @@ public class FileImportNodeDialog extends NodeDialogPane {
         twitterConfig.addFieldConfig("sentimenttext", "STRING", "SentimentText") ;
         twitterConfig.addFieldConfig("sentiment", "STRING", "Sentiment") ;
         
-        tabbedPane.addTabView(twitterConfig.getTable(), new FileImportFileJPanel(twitterConfig));
+        tabbedPane.addTabView(twitterConfig.getTable(), new FileImportPanel(twitterConfig));
         tabbedPane.setSelectedTab(1) ;
       }
     });
@@ -155,11 +155,11 @@ public class FileImportNodeDialog extends NodeDialogPane {
       Iterator<FileImportConfig> i = configs.getFileImportConfig().iterator() ;
       while(i.hasNext()) {
         FileImportConfig config = i.next() ;
-        tabbedPane.addTabView(config.getTable(), new FileImportFileJPanel(config));
+        tabbedPane.addTabView(config.getTable(), new FileImportPanel(config));
       }
       if(tabbedPane.getTabCount() == 1) {
         FileImportConfig config = new FileImportConfig() ;
-        tabbedPane.addTabView(config.getTable(), new FileImportFileJPanel(config));
+        tabbedPane.addTabView(config.getTable(), new FileImportPanel(config));
       }
       tabbedPane.setSelectedTab(1) ;
       System.out.println(configs);
@@ -168,12 +168,12 @@ public class FileImportNodeDialog extends NodeDialogPane {
     }
   }
   
-  public FileImportConfigs getJSONImportConfigs() {
+  public FileImportConfigs getFileImportConfigs() {
     FileImportConfigs configs = new FileImportConfigs() ;
     int tabCount = tabbedPane.getTabCount() ;
     for(int i = 1; i < tabCount; i++) {
-      FileImportFileJPanel panel = (FileImportFileJPanel) tabbedPane.getTabAt(i) ;
-      configs.addConfig(panel.getJSONImportConfig()) ;
+      FileImportPanel panel = (FileImportPanel) tabbedPane.getTabAt(i) ;
+      configs.addConfig(panel.getFileImportConfig()) ;
     }
     return configs ;
   }
@@ -181,7 +181,7 @@ public class FileImportNodeDialog extends NodeDialogPane {
   @Override
   protected void saveSettingsTo(NodeSettingsWO settings) throws InvalidSettingsException {
     System.out.println("dialog saveSettingsTo..................");
-    FileImportConfigs configs = getJSONImportConfigs() ;
+    FileImportConfigs configs = getFileImportConfigs() ;
     configs.saveSettings(settings) ;
     System.out.println("dialog saveSettingsTo.................. done");
   }

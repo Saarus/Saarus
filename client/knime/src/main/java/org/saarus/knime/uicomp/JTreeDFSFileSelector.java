@@ -16,12 +16,13 @@ import javax.swing.tree.DefaultTreeModel;
 import org.saarus.client.ClientContext;
 import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
-import org.saarus.knime.uicomp.JTreeItemSelector.TreeNodeItem;
 import org.saarus.service.hadoop.dfs.DFSFile;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
 import org.saarus.service.task.TaskUnit;
 import org.saarus.service.task.TaskUnitResult;
+import org.saarus.swing.JTreeItemSelector;
+import org.saarus.swing.JTreeItemSelector.TreeNodeItem;
 
 public class JTreeDFSFileSelector extends JDialog {
   private static final long serialVersionUID = 1L;

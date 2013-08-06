@@ -24,8 +24,8 @@ import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.osgi.framework.Bundle;
 import org.saarus.knime.data.hive.QueryConfigs.QueryConfig;
-import org.saarus.knime.uicomp.JInfoDialog;
-import org.saarus.knime.uicomp.JTabbedPaneUI;
+import org.saarus.swing.JInfoDialog;
+import org.saarus.swing.JTabbedPaneUI;
 import org.saarus.util.IOUtil;
 import org.saarus.util.json.JSONSerializer;
 /**
