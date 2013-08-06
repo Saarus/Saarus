@@ -30,15 +30,11 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
-import javax.swing.text.Document;
 
+import org.saarus.swing.listener.JTextFieldChangeTextListener;
 import org.saarus.swing.sql.SQLQuery.JoinClause;
 import org.saarus.swing.sql.SQLQuery.JoinTemplate;
 import org.saarus.swing.sql.SQLTable.Field;
@@ -107,8 +103,8 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
     public TableInfo() {
       setLayout(new SpringLayout()) ;
       tableName = new JTextField(sqlQuery.getOutputSQLTable().getTableName()) ;
-      tableName.getDocument().addDocumentListener(new ChangeTextListener() {
-        void onChange(String text) {
+      tableName.getDocument().addDocumentListener(new JTextFieldChangeTextListener() {
+        public void onChange(String text) {
           sqlQuery.getOutputSQLTable().setTableName(text) ;
         }
       });
@@ -302,7 +298,7 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
         JTextField onTable = new JTextField(joinClause.getOnTable().getTable().getTableName()) ;
         onTable.setEditable(false) ;
         final JTextField condition = new JTextField(joinClause.getCondition()) ;
-        condition.getDocument().addDocumentListener(new ChangeTextListener() {
+        condition.getDocument().addDocumentListener(new JTextFieldChangeTextListener() {
           public void onChange(String text) { 
             joinClause.setCondition(text) ;
           }
@@ -330,28 +326,5 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
         }
       }
     }
-  }
-
-  static abstract public class ChangeTextListener implements DocumentListener {
-    public void changedUpdate(DocumentEvent e) { }
-    public void removeUpdate(DocumentEvent e) {
-      Document doc = e.getDocument() ;
-      try {
-        String text = doc.getText(0, doc.getLength()) ;
-        onChange(text) ;
-      } catch(Exception ex) {
-      }
-    }
-
-    public void insertUpdate(DocumentEvent e) {
-      Document doc = e.getDocument() ;
-      try {
-        String text = doc.getText(0, doc.getLength()) ;
-        onChange(text) ;
-      } catch(Exception ex) {
-      }
-    }
-
-    abstract void onChange(String text) ;
   }
 }

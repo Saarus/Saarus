@@ -187,7 +187,6 @@ public class GraphEditor extends JPanel {
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     libraryPane.add(title, scrollPane);
-
     // Updates the widths of the palettes if the container size changes
     libraryPane.addComponentListener(new ComponentAdapter() {
       public void componentResized(ComponentEvent e) {
