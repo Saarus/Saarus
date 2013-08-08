@@ -2,7 +2,8 @@ package org.saarus.swing.sql;
 
 import java.util.List;
 
-import org.saarus.swing.sql.SQLTable.Field;
+import org.saarus.swing.sql.model.SQLTable;
+import org.saarus.swing.sql.model.SQLTable.Field;
 
 public class SQLStringBuilder {
   private StringBuilder out = new StringBuilder() ;

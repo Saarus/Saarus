@@ -1,13 +1,13 @@
-package org.saarus.swing.sql;
+package org.saarus.swing.sql.model;
 
 import static org.saarus.swing.sql.SQLStringBuilder.padding;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.saarus.swing.jgraph.GraphCellModel;
+import org.saarus.swing.model.PropertyChangeSupportList;
+import org.saarus.swing.sql.SQLStringBuilder;
 
 public class SQLTable implements GraphCellModel, Serializable {
   final static public String INPUT_TABLE_TYPE = "input" ;
@@ -16,7 +16,7 @@ public class SQLTable implements GraphCellModel, Serializable {
   private String cellLabel ;
   private String type ;
   private String tableName ;
-  private List<Field> fields = new ArrayList<Field>() ;
+  private PropertyChangeSupportList<Field> fields = new PropertyChangeSupportList<Field>() ;
   
   public SQLTable() {}
   
@@ -37,8 +37,7 @@ public class SQLTable implements GraphCellModel, Serializable {
   public String getTableName() { return tableName; }
   public void setTableName(String tableName) { this.tableName = tableName; }
 
-  public List<Field> getFields() { return fields; }
-  public void setFields(List<Field> fields) { this.fields = fields; }
+  public PropertyChangeSupportList<Field> getFields() { return fields; }
   
   public Field getField(int idx) { return fields.get(idx) ; }
   
@@ -54,6 +53,8 @@ public class SQLTable implements GraphCellModel, Serializable {
     fields.add(field) ;
     return field ;
   }
+  
+  public Field newField() { return new Field() ; }
   
   public void removeFieldByMapFrom(Field mapFrom) {
     Iterator<Field> i = fields.iterator() ;

@@ -9,6 +9,7 @@ import javax.swing.SwingUtilities;
 
 import org.saarus.swing.jgraph.GraphEditor;
 import org.saarus.swing.jgraph.GraphVertex;
+import org.saarus.swing.sql.model.SQLTable;
 import org.saarus.swing.util.SwingUtil;
 
 import com.mxgraph.model.mxCell;

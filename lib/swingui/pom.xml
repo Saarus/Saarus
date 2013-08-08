@@ -12,6 +12,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.saarus</groupId>
+      <artifactId>saarus.lib.common</artifactId>
+      <version>${org.saarus.version}</version>
+    </dependency> 
+
+    <dependency>
       <groupId>jgraphx</groupId>
       <artifactId>jgraphx</artifactId>
       <version>2.1.0.5</version>

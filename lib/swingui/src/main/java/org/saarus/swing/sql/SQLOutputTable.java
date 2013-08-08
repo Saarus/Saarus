@@ -1,47 +1,36 @@
 package org.saarus.swing.sql;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpringLayout;
-import javax.swing.SwingUtilities;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
-import org.saarus.swing.listener.JTextFieldChangeTextListener;
+import org.saarus.swing.BeanBindingJCheckBox;
+import org.saarus.swing.BeanBindingJTable;
+import org.saarus.swing.BeanBindingJTextField;
+import org.saarus.swing.SpringLayoutGridJPanel;
 import org.saarus.swing.sql.SQLQuery.JoinClause;
 import org.saarus.swing.sql.SQLQuery.JoinTemplate;
-import org.saarus.swing.sql.SQLTable.Field;
+import org.saarus.swing.sql.model.SQLTable;
+import org.saarus.swing.sql.model.SQLTable.Field;
 import org.saarus.swing.util.SpringUtilities;
 
 public class SQLOutputTable extends JPanel implements SQLInputTableListener {
-  static String COLUMN_NAMES[] = {"Field", "Type", "Map From",  "Expression"};
+  static String COLUMN_NAMES[]   = {"Field", "Type", "Map From",  "Expression"};
+  static String FIELD_PROPERTY[] = {"name", "type", "mapFrom",  "expression"};
 
   private SQLQuery sqlQuery ;
   
@@ -54,7 +43,16 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
     this.sqlQuery = new SQLQuery(sqlTable) ;
 
     setLayout(new SpringLayout()) ;
-    add(new TableInfo()) ;
+    add(new SpringLayoutGridJPanel() {{
+      BeanBindingJTextField<SQLTable> tableName = 
+          new BeanBindingJTextField<SQLTable>(sqlQuery.getOutputSQLTable(), "tableName") ;
+      tableName.setMaximumSize(new Dimension(250, 25)) ;
+      addRow(
+        "Table", tableName,
+        "Create New", new BeanBindingJCheckBox<SQLQuery>(sqlQuery, "createNewOutputTable")
+      ) ;
+      makeGrid() ;
+    }}) ;
 
     listField = new ListTableField() ;
     JScrollPane scroll = new JScrollPane(listField) ;
@@ -67,7 +65,7 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
     otherPanel = new OtherPanel() ;
     tabbedPane.addTab("Other", otherPanel) ;
     add(tabbedPane) ;
-    SpringUtilities.makeCompactGrid(this, /*rows, cols*/3, 1,  /*initX, initY*/ 3, 3, /*xPad, yPad*/2, 2); 
+    SpringUtilities.makeCompactGrid(this, /*beans, cols*/3, 1,  /*initX, initY*/ 3, 3, /*xPad, yPad*/2, 2); 
   }
 
   public SQLQuery getSQLQuery() { return this.sqlQuery ; }
@@ -75,18 +73,18 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
   public void onSelectInputTableField(SQLTable table, SQLTable.Field field, boolean select) {
     if(select) sqlQuery.getOutputSQLTable().addField(field) ;
     else sqlQuery.getOutputSQLTable().removeFieldByMapFrom(field) ;
-    listField.onSQLQueryChange() ;
+    listField.fireTableDataChanged() ;
   }
 
   public void onAddInputTable(SQLTable table) {
     sqlQuery.addInputSQLTable(table) ;
-    listField.onSQLQueryChange() ;
+    listField.fireTableDataChanged() ;
     queryPanel.onSQLQueryChange() ;
   }
 
   public void onRemoveInputTable(SQLTable table) {
     sqlQuery.removeInputSQLTable(table) ;
-    listField.onSQLQueryChange() ;
+    listField.fireTableDataChanged() ;
     queryPanel.onSQLQueryChange() ;
   }
 
@@ -95,127 +93,31 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
       onAddInputTable(sel) ;
     }
   }
-
-  public class TableInfo extends JPanel {
-    JTextField tableName ;
-    JCheckBox  newTable ;
-    
-    public TableInfo() {
-      setLayout(new SpringLayout()) ;
-      tableName = new JTextField(sqlQuery.getOutputSQLTable().getTableName()) ;
-      tableName.getDocument().addDocumentListener(new JTextFieldChangeTextListener() {
-        public void onChange(String text) {
-          sqlQuery.getOutputSQLTable().setTableName(text) ;
-        }
-      });
-      tableName.setMaximumSize(new Dimension(250, 25)) ;
-      add(new JLabel("Table")) ;
-      add(tableName) ;
-      
-      newTable = new JCheckBox() ;
-      newTable.setSelected(sqlQuery.getCreateNewOutputTable()) ;
-      newTable.addItemListener(new ItemListener() {
-        public void itemStateChanged(ItemEvent e) {
-          sqlQuery.setCreateNewOutputTable(newTable.isSelected()) ;
-        }
-      });
-      add(new JLabel("Create New")) ;
-      add(newTable) ;
-      SpringUtilities.makeCompactGrid(this, /*rows, cols*/1, 4,  /*initX, initY*/ 6, 6, /*xPad, yPad*/6, 6); 
-    }
-  }
   
-  public class ListTableField extends JTable {
-    private List<Field> fields ;
-
+  public class ListTableField extends BeanBindingJTable<Field> {
     public ListTableField() {
-      fields = sqlQuery.getOutputSQLTable().getFields() ;
-      final TableModel model = new AbstractTableModel() {
-        public Class getColumnClass(int column) {
-          switch (column) {
-          default: return String.class;
-          }
-        }
-
-        public String getColumnName(int column) { return COLUMN_NAMES[column]; }
-
-        public int getRowCount() { return fields.size() ;}
-        public int getColumnCount() { return COLUMN_NAMES.length ; }
-
-        public Object getValueAt(int rowIndex, int columnIndex) {
-          if(columnIndex == 0) return fields.get(rowIndex).getName() ;
-          else if(columnIndex == 1) return fields.get(rowIndex).getType() ;
-          else if(columnIndex == 2) return fields.get(rowIndex).getMapFromExpression() ;
-          else if(columnIndex == 3) return fields.get(rowIndex).getExpression() ;
-          return null;
-        }
-
-        public boolean isCellEditable(int row, int col) { 
-          if(col == 2) return false ;
-          else return true ; 
-        }
-
-        public void setValueAt(Object aValue, int row, int col) {
-          Field field = fields.get(row) ;
-          if(col == 0) field.setName((String)aValue) ;
-          else if(col == 1) field.setType((String)aValue) ;
-          else if(col == 3) field.setExpression((String)aValue) ;
-        }
-      };
-      setModel(model) ;
+      super(COLUMN_NAMES, FIELD_PROPERTY, sqlQuery.getOutputSQLTable().getFields()) ;
+      createRowPopupMenu() ;
       getColumnModel().getColumn(0).setPreferredWidth(15) ;
       getColumnModel().getColumn(1).setPreferredWidth(10) ;
       getColumnModel().getColumn(2).setPreferredWidth(15) ;
-
-      createPopupMenu();
     }
 
-    public void onSQLQueryChange() {
-      AbstractTableModel model = (AbstractTableModel) getModel() ;
-      model.fireTableDataChanged() ;
-    }
-
-    private void createPopupMenu() {
-      final JPopupMenu popup = new JPopupMenu();
-      JMenuItem addField = new JMenuItem("Add Field");
-      addField.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          sqlQuery.getOutputSQLTable().addField("", "", null);
-          onSQLQueryChange();
-        }
-      });
-      popup.add(addField);
-
-      JMenuItem delField = new JMenuItem("Delete Field");
-      popup.add(delField);
-
-      JMenuItem moveUp = new JMenuItem("Move Up");
-      popup.add(moveUp);
-
-      JMenuItem moveDown = new JMenuItem("Move Down");
-      popup.add(moveDown);
-
-      MouseListener popupListener = new MouseAdapter() {
-        public void mouseReleased(MouseEvent e) {
-          if(SwingUtilities.isRightMouseButton(e)) {
-            popup.show(e.getComponent(), e.getX(), e.getY());
-          }
-        }
-      };
-      addMouseListener(popupListener);
+    protected Field newBean() {
+      return sqlQuery.getOutputSQLTable().newField() ;
     }
     
-    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-      Component c = super.prepareRenderer(renderer, row, column);
-      if (c instanceof JComponent) {
-        JComponent jc = (JComponent) c;
-        Object val = getValueAt(row, column) ;
-        if(val != null) {
-          jc.setToolTipText(val.toString());
-        }
-      }
-      return c;
+    public boolean isBeanEditableAt(int row, int col) { 
+      if(col == 2) return false ;
+      return true ; 
     }
+
+    public boolean onAddRow() { 
+      sqlQuery.getOutputSQLTable().addField("", "", null);
+      return true;  
+    }
+    
+    public boolean onRemoveRow(Field bean, int row) { return true ; }
   }
 
   public class QueryPanel extends JPanel {
@@ -246,19 +148,13 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
     }
   }
 
-  public class OtherPanel extends JPanel {
+  public class OtherPanel extends SpringLayoutGridJPanel {
     public OtherPanel() {
-      setLayout(new SpringLayout()) ;
-      setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder()));
-      addInput("Group By", new JTextField()) ;
-      addInput("Limit", new JTextField()) ;
-      addInput("Location", new JTextField()) ;
-      SpringUtilities.makeCompactGrid(this, /*rows, cols*/3, 2,/*initX, initY*/ 6, 6,  /*xPad, yPad*/ 6, 6);       
-    }
-
-    private void addInput(String label, JTextField comp) {
-      add(new JLabel(label)) ;
-      add(comp) ;
+      createBorder();
+      addRow("Group By", new JTextField()) ;
+      addRow("Limit", new JTextField()) ;
+      addRow("Location", new JTextField()) ;
+      makeGrid() ;
     }
   }
 
@@ -279,7 +175,6 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
       this.template = template ;
       setLayout(new GridBagLayout());
       fromTable = new JTextField() ;
-
       onSQLQueryChange(); 
     }
 
@@ -297,12 +192,7 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
         final JoinClause joinClause = joinClauses.get(i) ;
         JTextField onTable = new JTextField(joinClause.getOnTable().getTable().getTableName()) ;
         onTable.setEditable(false) ;
-        final JTextField condition = new JTextField(joinClause.getCondition()) ;
-        condition.getDocument().addDocumentListener(new JTextFieldChangeTextListener() {
-          public void onChange(String text) { 
-            joinClause.setCondition(text) ;
-          }
-        });
+        BeanBindingJTextField condition = new BeanBindingJTextField(joinClause, "condition") ;
         addRow(i + 1, c, "JOIN", onTable,  "ON", condition) ;
       }
     }

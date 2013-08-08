@@ -6,6 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 
 import org.saarus.swing.jgraph.GraphEditorActions;
+import org.saarus.swing.sql.model.SQLTable;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.view.mxGraph;

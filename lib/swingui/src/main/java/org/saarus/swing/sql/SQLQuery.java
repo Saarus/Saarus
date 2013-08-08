@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.saarus.swing.sql.SQLTable.Field;
+import org.saarus.swing.sql.model.SQLTable;
+import org.saarus.swing.sql.model.SQLTable.Field;
 
 public class SQLQuery {
   SQLTable outputTable ;
@@ -139,7 +140,9 @@ public class SQLQuery {
     public FromTableClause getOnTable() { return this.onTable ; }
   
     public String getCondition() { return this.condition ; }
-    public void setCondition(String condition) { this.condition = condition ; }
+    public void   setCondition(String condition) { 
+      this.condition = condition ; 
+    }
     
     public void buildSQLFragment(SQLStringBuilder out) {
       out.println("JOIN", onTable.getTable().getTableName(), "ON", "(") ;

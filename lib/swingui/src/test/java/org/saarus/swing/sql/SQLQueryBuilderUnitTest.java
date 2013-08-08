@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 import org.junit.Test;
+import org.saarus.swing.sql.model.SQLTable;
 
 public class SQLQueryBuilderUnitTest {
   @Test
@@ -29,8 +30,10 @@ public class SQLQueryBuilderUnitTest {
       public void actionPerformed(ActionEvent e) {
         SQLOutputTable outTable = SQLQueryBuilderUtil.getSQLOutputTable(editor) ;
         SQLQuery sqlQuery = outTable.getSQLQuery() ;
-        System.out.println(sqlQuery.getOutputSQLTable().buildDropTableSQL());
-        System.out.println(sqlQuery.getOutputSQLTable().buildCreateTable());
+        if(sqlQuery.getCreateNewOutputTable()) {
+          System.out.println(sqlQuery.getOutputSQLTable().buildDropTableSQL());
+          System.out.println(sqlQuery.getOutputSQLTable().buildCreateTable());
+        }
         System.out.println(sqlQuery.buildInsertSQLQuery());
       }
     });
