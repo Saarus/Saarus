@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -97,18 +99,27 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
   public class ListTableField extends BeanBindingJTable<Field> {
     public ListTableField() {
       super(COLUMN_NAMES, FIELD_PROPERTY, sqlQuery.getOutputSQLTable().getFields()) ;
+      addMouseListener(new MouseAdapter() {
+        public void mousePressed(MouseEvent e) {
+          int selectedColumn = getSelectedColumn();
+          if(selectedColumn == 3 && e.getClickCount() == 2) {
+            Field field = beans.get(getSelectedRow()) ;
+            SQLSelectExpression dialog = new SQLSelectExpression(field);  
+            dialog.setLocationRelativeTo(null) ;
+            dialog.setVisible(true);
+          }
+        }
+      }) ;
       createRowPopupMenu() ;
       getColumnModel().getColumn(0).setPreferredWidth(15) ;
       getColumnModel().getColumn(1).setPreferredWidth(10) ;
       getColumnModel().getColumn(2).setPreferredWidth(15) ;
     }
 
-    protected Field newBean() {
-      return sqlQuery.getOutputSQLTable().newField() ;
-    }
+    protected Field newBean() { return sqlQuery.getOutputSQLTable().newField() ; }
     
     public boolean isBeanEditableAt(int row, int col) { 
-      if(col == 2) return false ;
+      if(col == 2 || col == 3) return false ;
       return true ; 
     }
 
