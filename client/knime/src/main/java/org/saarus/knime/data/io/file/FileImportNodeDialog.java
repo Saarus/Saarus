@@ -56,7 +56,7 @@ public class FileImportNodeDialog extends NodeDialogPane {
       public void actionPerformed(final ActionEvent e) {
         JInfoDialog dialog = JInfoDialog.getInstance() ;
         try {
-          String json = JSONSerializer.JSON_SERIALIZER.toString(getFileImportConfigs().getGeneratedTask()) ;
+          String json = JSONSerializer.JSON_SERIALIZER.toString(getFileImportConfigs().generatedTask()) ;
           dialog.setInfo(json) ;
         } catch(Exception ex) {
           ex.printStackTrace() ;

@@ -48,7 +48,7 @@ public class FileImportNodeModel extends NodeModel {
       System.out.println("call execute(update)..................");
       ClientContext context = ServiceContext.getInstance().getClientContext() ;
       RESTClient restClient = context.getBean(RESTClient.class) ;
-      Task task = currentSettings.getGeneratedTask() ;
+      Task task = currentSettings.generatedTask() ;
       TaskResult taskResult = restClient.submitTask(task) ;
       while(!taskResult.isFinished()) {
         Thread.sleep(1000) ;
