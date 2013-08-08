@@ -128,7 +128,10 @@ public class SQLOutputTable extends JPanel implements SQLInputTableListener {
       return true;  
     }
     
-    public boolean onRemoveRow(Field bean, int row) { return true ; }
+    public boolean onRemoveRow(Field bean, int row) { 
+      beans.remove(row) ;
+      return true ; 
+    }
   }
 
   public class QueryPanel extends JPanel {

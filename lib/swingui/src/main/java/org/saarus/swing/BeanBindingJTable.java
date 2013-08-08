@@ -21,14 +21,13 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import org.saarus.swing.model.PropertyChangeSupportList;
 import org.saarus.util.BeanInspector;
 
 abstract public class BeanBindingJTable<T> extends JTable {
   private static final long serialVersionUID = 1L;
 
   private JPopupMenu rowPopupMenu ;
-  protected PropertyChangeSupportList<T>  beans ;
+  protected List<T>  beans ;
   protected List<Expression> expressions = new ArrayList<Expression>() ;
   private String[]   beanProperty ;
   protected String[] columNames ;
@@ -37,11 +36,11 @@ abstract public class BeanBindingJTable<T> extends JTable {
   
   public BeanBindingJTable() {} 
   
-  public BeanBindingJTable(String[] columns, String[]   beanProperty, PropertyChangeSupportList<T> beanList) {
+  public BeanBindingJTable(String[] columns, String[]   beanProperty, List<T> beanList) {
     init(columns, beanProperty, beanList) ;
   }
   
-  protected void init(String[] columns, String[]   beanProperty, PropertyChangeSupportList<T> beanList) {
+  protected void init(String[] columns, String[]   beanProperty, List<T> beanList) {
     this.columNames = columns ;
     this.beanProperty = beanProperty ;
     this.beans = beanList;
