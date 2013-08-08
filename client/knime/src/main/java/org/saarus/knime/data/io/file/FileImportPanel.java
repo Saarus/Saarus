@@ -203,7 +203,6 @@ public class FileImportPanel extends JPanel {
       setPreferredSize(new Dimension(160, 15));
       setToolTipText("Enter an URL of an ASCII data file, select from recent files, or browse");
       addFocusListener(new FocusAdapter() {
-        @Override
         public void focusLost(final FocusEvent e) {
         }
       }); 

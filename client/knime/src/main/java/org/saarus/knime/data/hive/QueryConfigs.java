@@ -105,9 +105,9 @@ public class QueryConfigs {
   }
   
   static public class QueryConfig {
-    final public String name ;
-    final public String description ;
-    final public String query ;
+    public String name ;
+    public String description ;
+    public String query ;
     
     QueryConfig() {
       this.name = "table" ;
@@ -121,6 +121,15 @@ public class QueryConfigs {
       this.query = query ;
     }
     
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getQuery() { return query; }
+    public void setQuery(String query) { this.query = query; }
+
     public TaskUnit[] getGeneratedTaskUnits() {
       String[] query = this.query.split(";") ;
       List<TaskUnit> holder = new ArrayList<TaskUnit>() ;

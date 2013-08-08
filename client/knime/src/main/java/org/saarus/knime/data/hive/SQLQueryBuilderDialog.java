@@ -15,7 +15,7 @@ import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
 import org.saarus.service.sql.TableMetadata;
 import org.saarus.swing.sql.SQLQueryBuilder;
-import org.saarus.swing.sql.SQLTable;
+import org.saarus.swing.sql.model.SQLTable;
 
 public class SQLQueryBuilderDialog extends JDialog {
   private static final long serialVersionUID = 1L;
