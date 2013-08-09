@@ -43,7 +43,7 @@ public class FileImportPanel extends JPanel {
   private FileImportConfig config ;
   
   private BeanBindingJComboBox<FileImportConfig, String> importType ;
-  private BeanBindingJComboBox<FileImportConfig, String> urlInput;
+  private BeanBindingJTextField<FileImportConfig> urlInput;
   private SQLTableConfig tableConfig ;
   private FileDataSample dataSample = new FileDataSample();
   
@@ -94,9 +94,7 @@ public class FileImportPanel extends JPanel {
     });
     urlButtonPanel.add(preview) ;
     
-    urlInput = new BeanBindingJComboBox<FileImportConfig, String>(config, "file", new String[] {}) ;
-    urlInput.setEditable(true) ;
-    urlInput.setPreferredSize(new Dimension(160, 15));
+    urlInput = new BeanBindingJTextField<FileImportConfig>(config, "file") ;
     urlInput.setToolTipText("Enter an URL or browse");
     
     JPanel urlPanel = new JPanel(new BorderLayout());
@@ -162,7 +160,7 @@ public class FileImportPanel extends JPanel {
     public void onClickOK(DFSFile selectFile) {
       if(selectFile != null) {
         String path = selectFile.getPath() ;
-        urlInput.updateBeanValue(path);
+        urlInput.setBeanValue(path) ;
         if(path.endsWith(".json")) {
           importType.updateBeanValue("Json") ;
         } else if(path.endsWith(".csv")) {

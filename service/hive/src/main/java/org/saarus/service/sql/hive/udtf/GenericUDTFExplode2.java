@@ -33,6 +33,7 @@ public class GenericUDTFExplode2 extends GenericUDTF {
     if (args[0].getCategory() != ObjectInspector.Category.LIST) {
       throw new UDFArgumentException("explode() takes an array as a parameter");
     }
+    
     listOI = (ListObjectInspector) args[0];
     
     ArrayList<String> fieldNames = new ArrayList<String>();

@@ -61,17 +61,27 @@ public class LogisticRegressionTaskHandlerUnitTest {
     
     TaskUnit tunit = new TaskUnit() ;
     tunit.setName("train") ;
-    Parameters params = tunit.getParameters() ;
-    params.setString("input", TRAIN_FILE) ;
-    params.setString("output", MODEL_FILE) ;
-    params.setString("target", "cat_useful") ;
-    params.setString("categories", "2") ;
-    
-    params.setString("predictors", "n:user_review_count | n:user_average_stars | n:user_vote_useful | n:stars | n:business_stars | n:business_review_count | n:vote_useful | n:vote_funny | n:vote_cool | n:percentage_useful") ;
-    //params.setString("predictors", "n:user_review_count|n:user_average_stars|n:user_vote_useful|n:stars|n:business_stars|n:business_review_count") ;
-    params.setString("features", "1000") ;
-    params.setString("passes", "100") ;
-    params.setString("rate", "50") ;
+    LogisticRegressionTrainerConfig config = new LogisticRegressionTrainerConfig() ;
+    config.setInput(TRAIN_FILE) ;
+    config.setOutput(MODEL_FILE) ;
+    config.setTarget("cat_useful") ;
+    config.setCategories("2") ;
+    config.addPredictor("user_review_count", "n").
+           addPredictor("user_average_stars", "n").
+           addPredictor("user_vote_useful", "n").
+           addPredictor("stars", "n").
+           addPredictor("business_stars", "n").
+           addPredictor("business_review_count", "n").
+           addPredictor("vote_useful", "n").
+           addPredictor("vote_funny", "n").
+           addPredictor("vote_cool", "n").
+           addPredictor("percentage_useful", "n");
+    config.setFeatures("1000");
+    config.setPasses("100") ;
+    config.setRate("50") ;
+    config.setMaxRead(20000) ;
+    tunit.setTaskUnitConfig(config) ;
+
     TaskUnitResult<String> tresult = (TaskUnitResult<String>) handler.getCallableTaskUnit(tunit).call() ;
     System.out.println(tresult.getResult());
     
@@ -79,17 +89,32 @@ public class LogisticRegressionTaskHandlerUnitTest {
     
     tunit = new TaskUnit() ;
     tunit.setName("predict") ;
-    params = tunit.getParameters() ;
-    params.setString("input", "src/test/resources/yelp/test-no-header.csv") ;
-    params.setString("output", "target/review-out") ;
-    params.setString("model", MODEL_FILE) ;
-//    params.setString("col-header", "stars, text, vote_funny, vote_useful, vote_cool,"+
-//                                   "business_id, business_city, business_state, business_open, business_review_count, " +
-//                                   "business_stars, user_review_count, user_average_stars,user_vote_funny,user_vote_useful,user_vote_cool") ;
+    LogisticRegressionPredictorConfig predictConfig = new LogisticRegressionPredictorConfig() ;
+    predictConfig.setInput("src/test/resources/yelp/test-no-header.csv") ;
+    predictConfig.setOutput("target/review-out") ;
+    predictConfig.setModelLocation(MODEL_FILE) ;
+    predictConfig.
+      addFieldName("stars").
+      addFieldName("text").
+      addFieldName("vote_funny").
+      addFieldName("vote_useful").
+      addFieldName("vote_cool").
+      addFieldName("percentage_useful").
+      addFieldName("cat_useful").
+      addFieldName("business_id").
+      addFieldName("business_city").
+      addFieldName("business_state").
+      addFieldName("business_open").
+      addFieldName("business_review_count").
+      addFieldName("business_stars").
+      addFieldName("user_review_count").
+      addFieldName("user_average_stars").
+      addFieldName("user_vote_funny").
+      addFieldName("user_vote_useful").
+      addFieldName("user_vote_cool") ;
+    predictConfig.setClusterMode(false) ;
+    tunit.setTaskUnitConfig(predictConfig) ;
 
-    params.setString("col-header", "stars,text,vote_funny,vote_useful,vote_cool,percentage_useful,cat_useful,business_id,business_city,business_state,business_open,business_review_count,business_stars,user_review_count,user_average_stars,user_vote_funny,user_vote_useful,user_vote_cool");
-
-    params.setString("cluster-mode", "false") ;
     TaskUnitResult<Boolean>  predictResult = (TaskUnitResult<Boolean>) handler.getCallableTaskUnit(tunit).call() ;
     System.out.println(predictResult.getResult());
   }

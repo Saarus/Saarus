@@ -14,6 +14,7 @@ public class BeanBindingJComboBox<B, T> extends JComboBox<T> {
   
   public BeanBindingJComboBox(B aBean, String property, T[] option) {
     super(option) ;
+    
     bean = aBean ;
     beanProperty = property ;
     beanInspector = BeanInspector.get(bean.getClass()) ;
@@ -26,6 +27,8 @@ public class BeanBindingJComboBox<B, T> extends JComboBox<T> {
       }
     });
   }
+  
+  
   
   public void setSelectedItem(Object value) {
     super.setSelectedItem((T)value) ;

@@ -11,10 +11,9 @@ public class BeanBindingJTextField<T> extends JTextField {
   private BeanInspector<T> beanInspector ;
   
   public BeanBindingJTextField(T aBean, String property) {
-    bean = aBean ;
     beanProperty = property ;
-    beanInspector = BeanInspector.get(bean.getClass()) ;
-    setText(beanInspector.getValue(bean, property)) ;
+    beanInspector = BeanInspector.get(aBean.getClass()) ;
+    setBean(aBean) ;
     getDocument().addDocumentListener(new JTextFieldChangeTextListener() {
       public void onChange(String text) { 
         beanInspector.setValue(bean, beanProperty,  text) ;
@@ -28,8 +27,12 @@ public class BeanBindingJTextField<T> extends JTextField {
     else setText(value.toString()) ;
   }
   
-  public void setValue(Object val) {
-    beanInspector.setValue(bean, beanProperty,  val) ;
+  public void setBean(T bean) {
+    this.bean = bean ;
+    setText(beanInspector.getValue(bean, beanProperty)) ;
+  }
+  
+  public void setBeanValue(Object val) {
     setText(val) ;
   }
   

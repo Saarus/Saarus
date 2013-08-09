@@ -3,155 +3,200 @@ package org.saarus.knime.mahout.lr.learner;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
+import javax.swing.JToolBar;
 
-import org.saarus.knime.mahout.lr.learner.LRLearnerConfigs.MahoutConfig;
-import org.saarus.swing.util.SpringUtilities;
+import org.saarus.mahout.classifier.sgd.LogisticRegressionTrainerConfig;
+import org.saarus.mahout.classifier.sgd.LogisticRegressionTrainerConfig.Predictor;
+import org.saarus.swing.BeanBindingJTable;
+import org.saarus.swing.BeanBindingJTextField;
+import org.saarus.swing.SpringLayoutGridJPanel;
+import org.saarus.swing.sql.model.SQLTable.Field;
 
 public class LRLearnerPanel extends JPanel {
   final static int MAX_WIDTH = LRLearnerNodeDialog.WIDTH ;
 
-  private JTextField nameInput = new JTextField();
-  private JTextField descInput = new JTextField();
+  private BeanBindingJTextField<LRLearnerConfig> nameInput ;
+  private BeanBindingJTextField<LRLearnerConfig> descInput ;
   
-  private JTextField passes = new JTextField("100"); //  --passes 100,
-  private JTextField rate   = new JTextField("50");  // --rate 50
-  private JTextField lambda = new JTextField() ;  //--lambda 0.001
-  private JTextField features = new JTextField("21"); // --features 21
-  private JTextField categories = new JTextField("2"); //  --categories 2
-  //--predictors  x, y, xx, xy, yy, a, b, c
-  private JTextField predictors = new JTextField("x, y, xx, xy, yy, a, b, c") ; 
-  private JTextField input = new JTextField("/file/to/donut.csv"); //--input donut.csv 
-  private JComboBox<String> target = new JComboBox<String>() ; //--target color
-  private JTextField output = new JTextField() ;// --output donut.model
- 
+  private BeanBindingJTextField<LogisticRegressionTrainerConfig> passes ; 
+  private BeanBindingJTextField<LogisticRegressionTrainerConfig> rate   ;
+  private BeanBindingJTextField<LogisticRegressionTrainerConfig> lambda ; 
+  private BeanBindingJTextField<LogisticRegressionTrainerConfig> features ; // --features 21
+  private BeanBindingJTextField<LogisticRegressionTrainerConfig> categories ;
+  private PredictorPanel predictorPanel ;
+  private BeanBindingJTextField<LogisticRegressionTrainerConfig> input ;
+  private BeanBindingJTextField<LogisticRegressionTrainerConfig> target ;
+  private BeanBindingJTextField<LogisticRegressionTrainerConfig> output  ;// --output donut.model
+  LRLearnerConfig config ;
+  
   public LRLearnerPanel() {
-    setLayout(new BorderLayout()) ;
-    target.setEditable(true) ;
-    add(createInputBox(), BorderLayout.CENTER);
-  }
-
-  public void init(LRLearnerConfigs configs) {
-    MahoutConfig config = configs.mahoutConfig ;
-    nameInput.setText(config.name);
-    descInput.setText(config.description);
+    setLayout(new BorderLayout())  ;
+    config = new LRLearnerConfig();
     
-    passes.setText(config.passes) ; 
-    rate.setText(config.rate) ;  
-    lambda.setText(config.lambda) ; 
-    features.setText(config.features) ;
-    categories.setText(config.categories); 
-    predictors.setText(config.predictors); 
-    input.setText(config.input) ; 
-    target.setModel(new DefaultComboBoxModel<String>(new String[] {config.target})) ;
-    target.setSelectedItem(config.target) ; 
-    output.setText(config.output)  ;// --output donut.model
-  }
-  
-  private JPanel createInputBox() {
-    predictors.addMouseListener(new MouseAdapter() {
-      public void mousePressed(MouseEvent e) {
-        if(e.getClickCount() > 1) {
-          FieldSelector selector = new FieldSelector() ;
-          selector.setLocationRelativeTo(predictors) ;
-          selector.setVisible(true) ;
-        }
-      }
-    });
+    SpringLayoutGridJPanel panel = new SpringLayoutGridJPanel() ;
+    panel.createBorder("Parameters") ;
     
-    JPanel panel = new JPanel(new SpringLayout()) ;
-    panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Parameters"));
-    addInput(panel, "Name", nameInput) ;
-    addInput(panel, "Description", descInput) ;
-    addInput(panel, "Passes", passes) ;
-    addInput(panel, "Rate", rate) ;
-    addInput(panel, "Lambda", lambda) ;
-    addInput(panel, "Features", features) ;
-    addInput(panel, "Categories", categories) ;
-    addInput(panel, "Predictors", predictors) ;
-    addInput(panel, "Input Location", input) ;
-    addInput(panel, "Target", target) ;
-    addInput(panel, "Output", output) ;
-    SpringUtilities.makeCompactGrid(panel, /*rows, cols*/11, 2,/*initX, initY*/ 6, 6, 
-                                    /*xPad, yPad*/ 6, 6);       
-    return panel ;
+    nameInput = new BeanBindingJTextField<LRLearnerConfig>(config, "name") ;
+    panel.addRow("Name", nameInput) ;
+    
+    descInput = new BeanBindingJTextField<LRLearnerConfig>(config, "description") ;
+    panel.addRow("Description", descInput) ;
+    
+    passes = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "passes") ;
+    panel.addRow("Passes", passes) ;
+    
+    rate = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "rate") ;
+    panel.addRow("Rate", rate) ;
+    
+    lambda = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "lambda") ;
+    panel.addRow("Lambda", lambda) ;
+    
+    features = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "features") ;
+    panel.addRow("Features", features) ;
+    
+    categories = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "categories") ;
+    panel.addRow("Categories", categories) ;
+    
+    input = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "input") ;
+    panel.addRow("Input ", input) ;
+    
+    predictorPanel = new PredictorPanel(config.trainConfig) ;
+    panel.addRow("Predictors", predictorPanel) ;
+    
+    target = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "target") ;
+    panel.addRow("Target", target) ;
+    
+    output = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "output") ;
+    panel.addRow("Output", output) ;
+    panel.makeGrid() ;
+    add(panel, BorderLayout.CENTER);
   }
 
-  private void addInput(JPanel panel, String label, JComponent comp) {
-    panel.add(new JLabel(label)) ;
-    panel.add(comp) ;
+  public void reset(LRLearnerConfig config) {
+    this.config =  config ;
+    LogisticRegressionTrainerConfig trainerConfig = config.trainConfig ;
+    nameInput.setBean(config);
+    descInput.setBean(config);
+    
+    passes.setBean(trainerConfig) ; 
+    rate.setBean(trainerConfig) ;  
+    lambda.setBean(trainerConfig) ; 
+    features.setBean(trainerConfig) ;
+    categories.setBean(trainerConfig); 
+    predictorPanel.update(trainerConfig) ;
+    input.setBean(trainerConfig) ; 
+    target.setBean(trainerConfig) ; 
+    output.setBean(trainerConfig)  ;// --output donut.model
   }
   
-  public MahoutConfig getMahoutConfig() {
-    MahoutConfig config = new MahoutConfig() ;
-    config.name = nameInput.getText() ;
-    config.description = descInput.getText() ;
 
-    config.passes = passes.getText() ; 
-    config.rate = rate.getText() ;  
-    config.lambda = lambda.getText() ; 
-    config.features = features.getText() ;
-    config.categories = categories.getText(); 
-    config.predictors = predictors.getText(); 
-    config.input = input.getText() ; 
-    config.target = (String) target.getSelectedItem() ; 
-    config.output = output.getText()  ;// 
-    return config ;
-  }
+  public LRLearnerConfig getLRLearnerConfig() { return this.config ; }
   
-  static public class SelectTableListener implements ItemListener {
-    public void itemStateChanged(ItemEvent event) {
-    }
-  }
-  
-  static public class FieldSelector extends JDialog {
-    public FieldSelector() {
-      setTitle("Select The Fields") ;
-      setMinimumSize(new Dimension(150, 350)) ;
+  static public class PredictorPanel extends JPanel {
+    private PredictorPanelTable table ;
+    
+    public PredictorPanel(LogisticRegressionTrainerConfig trainerConfig) {
       setLayout(new BorderLayout()) ;
-      setAlwaysOnTop(true) ;
-      JButton close = new JButton("OK") ;
-      close.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent event) {
-          onClose() ;
+      setPreferredSize(new Dimension(500, 300)); 
+      JToolBar toolbar = new JToolBar() ;
+      Action detectAction = new AbstractAction("Detect") {
+        public void actionPerformed(ActionEvent arg0) {
+          
         }
-      }) ;
-      JPanel algPanel = new JPanel() ;
-      algPanel.setLayout(new SpringLayout()) ;
-      String[] fields = {
-        "review_id", "user_id", "user_name", "business_id", "business_name",
-        "vote_funny", "vote_useful", "vote_cool"
-      } ;
-      for(int i = 0; i < fields.length; i++) {
-        JCheckBox checkBox = new JCheckBox() ;
-        checkBox.setName(fields[i]) ;
-        algPanel.add(checkBox) ;
-        algPanel.add(new JLabel(fields[i])) ;
-      }
-      SpringUtilities.makeCompactGrid(algPanel, /*rows, cols*/fields.length, 2,  
-                                     /*initX, initY*/ 6, 6, /*xPad, yPad*/6, 6);
-      add(algPanel, BorderLayout.CENTER) ;
-      add(close, BorderLayout.SOUTH) ;
+      };
+      toolbar.add(detectAction) ;
+      add(toolbar, BorderLayout.NORTH) ;
+      
+      table = new PredictorPanelTable(trainerConfig) ;
+      add(new JScrollPane(table), BorderLayout.CENTER) ;
     }
     
-    public void onClose() {
-      dispose() ;
+    void update(LogisticRegressionTrainerConfig trainerConfig) {
+      table.update(trainerConfig) ;
     }
+  }
+  
+  static public class PredictorPanelTable extends BeanBindingJTable<PredictorMapping> {
+    static String[] COLUMN_NAMES  = {"Select", "name", "type"} ;
+    static String[] BEAN_PROPERTY = {"select", "name", "type"} ;
+    
+    private LogisticRegressionTrainerConfig trainerConfig ;
+    
+    public PredictorPanelTable(LogisticRegressionTrainerConfig trainerConfig) {
+      this.trainerConfig = trainerConfig ;
+      init(COLUMN_NAMES, BEAN_PROPERTY, new ArrayList<PredictorMapping>()) ;
+      getColumnModel().getColumn(1).setWidth(25) ;
+      update(trainerConfig) ;
+      createRowPopupMenu() ;
+    }
+    
+    protected boolean isBeanEditableAt(int row, int col) {
+      return true ;
+    }
+
+    protected PredictorMapping newBean() { return new PredictorMapping(false, null, null) ; }
+  
+    public boolean onAddRow() { 
+      beans.add(new PredictorMapping(false, null, null));
+      updatePredictor() ;
+      return true;  
+    }
+    
+    public boolean onRemoveRow(Field bean, int row) { 
+      beans.remove(row) ;
+      updatePredictor() ;
+      return true ; 
+    }
+    
+    void updatePredictor() {
+      List<Predictor> predictors = trainerConfig.getPredictors() ;
+      predictors.clear() ;
+      for(int i = 0 ; i < beans.size(); i++) {
+        PredictorMapping pm = beans.get(i) ;
+        if(pm.isSelect())  predictors.add(new Predictor(pm.getName(), pm.getType())) ;
+      }
+    }
+    
+    void update(LogisticRegressionTrainerConfig trainerConfig) {
+      beans.clear() ;
+      List<Predictor> predictors = trainerConfig.getPredictors() ;
+      for(int i = 0; i < predictors.size(); i++) {
+        Predictor predictor = predictors.get(i) ;
+        beans.add(new PredictorMapping(true, predictor.getName(), predictor.getType())) ;
+      }
+      if(beans.size() == 0) {
+        beans.add(new PredictorMapping(false, null, null)) ;
+      }
+      fireTableDataChanged() ;
+    }
+  }
+  
+  static public class PredictorMapping {
+    private boolean select ;
+    private String  name   ;
+    private String  type   ;
+    
+    public PredictorMapping(boolean select, String name, String type) {
+      this.select = select ;
+      this.name = name ;
+      this.type = type ;
+    }
+    
+    public boolean isSelect() { return select; }
+    public void setSelect(boolean select) { this.select = select; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
   }
 }

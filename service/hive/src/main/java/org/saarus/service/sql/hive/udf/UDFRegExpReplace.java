@@ -36,6 +36,7 @@ public class UDFRegExpReplace extends UDF {
       lastRegex.set(regex);
       p = Pattern.compile(regex.toString());
     }
+   
     Matcher m = p.matcher(s.toString());
     // If the replacement is changed, make sure we redo toString again.
     if (!replacement.equals(lastReplacement)) {

@@ -22,7 +22,7 @@ import org.knime.core.node.NodeSettingsWO;
 import org.saarus.client.ClientContext;
 import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
-import org.saarus.knime.mahout.lr.learner.LRLearnerConfigs.MahoutConfig;
+import org.saarus.mahout.classifier.sgd.LogisticRegressionTrainerConfig;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
 import org.saarus.service.task.TaskUnitResult;
@@ -32,7 +32,7 @@ import org.saarus.service.task.TaskUnitResult;
 public class LRLearnerNodeModel extends NodeModel {
   private static final NodeLogger logger = NodeLogger.getLogger(LRLearnerNodeModel.class);
 
-  private LRLearnerConfigs currentConfigs = new LRLearnerConfigs();
+  private LRLearnerConfig currentConfigs = new LRLearnerConfig();
   
   protected LRLearnerNodeModel() {
     super(1, 1);
@@ -68,11 +68,11 @@ public class LRLearnerNodeModel extends NodeModel {
       DataTableSpec outputSpec = new DataTableSpec(allColSpecs);
       BufferedDataContainer container = exec.createDataContainer(outputSpec);
       
-      MahoutConfig config = this.currentConfigs.mahoutConfig ;
+      LogisticRegressionTrainerConfig config = this.currentConfigs.trainConfig ;
       TaskUnitResult<String> unitResult = 
-          (TaskUnitResult<String>)taskResult.getTaskUnitResult(config.getTaskUnitId()) ;
+          (TaskUnitResult<String>)taskResult.getTaskUnitResult(LRLearnerConfig.getTaskUnitId(config)) ;
       System.out.println(unitResult) ;
-      container.addRowToTable(new DefaultRow(new RowKey("Model"), new StringCell(config.output)));
+      container.addRowToTable(new DefaultRow(new RowKey("Model"), new StringCell(config.getOutput())));
       container.addRowToTable(new DefaultRow(new RowKey("Log"), new StringCell(unitResult.getResult())));
 
       // once we are done, we close the container and return its table
@@ -110,7 +110,7 @@ public class LRLearnerNodeModel extends NodeModel {
   /** {@inheritDoc} */
   @Override
   protected void loadValidatedSettingsFrom(final NodeSettingsRO settings) throws InvalidSettingsException {
-    this.currentConfigs.merge(new LRLearnerConfigs(settings)) ;
+    this.currentConfigs.merge(new LRLearnerConfig(settings)) ;
     System.out.println("Load loadValidatedSettings(merge)") ;
     System.out.println(currentConfigs) ;
   }

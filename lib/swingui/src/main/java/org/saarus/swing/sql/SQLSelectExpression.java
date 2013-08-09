@@ -31,6 +31,8 @@ public class SQLSelectExpression extends JDialog {
   public SQLSelectExpression(Field aField) {
     this.field = aField ;
     setLayout(new BorderLayout()) ;
+    setModalityType(ModalityType.APPLICATION_MODAL) ;
+    setAlwaysOnTop(true) ;
     setDefaultCloseOperation(DISPOSE_ON_CLOSE) ;
     setMinimumSize(new Dimension(400, 250)) ;
     String[] templateName = templates.keySet().toArray(new String[templates.size()]) ;

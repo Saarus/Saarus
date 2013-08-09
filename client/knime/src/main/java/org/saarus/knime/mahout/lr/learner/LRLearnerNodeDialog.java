@@ -16,7 +16,7 @@ import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
-import org.saarus.knime.mahout.lr.learner.LRLearnerConfigs.MahoutConfig;
+import org.saarus.mahout.classifier.sgd.LogisticRegressionTrainerConfig;
 import org.saarus.swing.JInfoDialog;
 import org.saarus.util.json.JSONSerializer;
 
@@ -45,46 +45,33 @@ public class LRLearnerNodeDialog extends NodeDialogPane {
     JButton saarusWorkFlow = new JButton("Saarus Work Flow");
     saarusWorkFlow.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        MahoutConfig config = new MahoutConfig() ;
-        config.name = "Yelp Features";
-        config.description = "Yelp Features Data";
-        config.passes = "100" ; 
-        config.rate = "50" ;  
-        config.lambda = "0.001" ; 
-        config.features = "1000" ;
-        config.categories = "2"; 
-        config.predictors = "n:user_review_count | n:user_average_stars | n:user_vote_useful | n:stars | n:business_stars | n:business_review_count | n:vote_useful | n:vote_funny | n:vote_cool | n:percentage_useful" ; 
-        config.input = "hive://features" ; 
-        config.target = "cat_useful"; 
-        config.output = "dfs:/tmp/yelp-features.model" ;
-        LRLearnerConfigs configs = new LRLearnerConfigs() ;
-        configs.mahoutConfig = config ;
-        learnerPanel.init(configs) ;
+        LRLearnerConfig configs = new LRLearnerConfig() ;
+        configs.name = "Yelp Features";
+        configs.description = "Yelp Features Data";
+        LogisticRegressionTrainerConfig config = new LogisticRegressionTrainerConfig() ;
+        config.setInput("hive://features") ;
+        config.setOutput("dfs:/tmp/yelp-features.model") ;
+        config.setTarget("cat_useful") ;
+        config.setCategories("2") ;
+        config.addPredictor("user_review_count", "n").
+               addPredictor("user_average_stars", "n").
+               addPredictor("user_vote_useful", "n").
+               addPredictor("stars", "n").
+               addPredictor("business_stars", "n").
+               addPredictor("business_review_count", "n").
+               addPredictor("vote_useful", "n").
+               addPredictor("vote_funny", "n").
+               addPredictor("vote_cool", "n").
+               addPredictor("percentage_useful", "n");
+        config.setFeatures("1000");
+        config.setPasses("100") ;
+        config.setRate("50") ;
+        config.setLambda("0.001") ;
+        configs.trainConfig = config ;
+        learnerPanel.reset(configs) ;
       }
     });
     panel.add(saarusWorkFlow) ;
-    
-    JButton donut = new JButton("Donut");
-    donut.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        MahoutConfig config = new MahoutConfig() ;
-        config.name = "Donut Data";
-        config.description = "Donut Sample Data";
-        config.passes = "100" ; 
-        config.rate = "50" ;  
-        config.lambda = "0.001" ; 
-        config.features = "20" ;
-        config.categories = "2"; 
-        config.predictors = "n:x | n:y | n:xx | n:xy | n:yy | n:a | n:b | n:c" ; 
-        config.input = "hive://donut_train" ; 
-        config.target = "color"; 
-        config.output = "dfs:/tmp/donut.model" ;
-        LRLearnerConfigs configs = new LRLearnerConfigs() ;
-        configs.mahoutConfig = config ;
-        learnerPanel.init(configs) ;
-      }
-    });
-    panel.add(donut) ;
     
     JButton viewScript = new JButton("View Script");
     viewScript.addActionListener(new ActionListener() {
@@ -104,17 +91,16 @@ public class LRLearnerNodeDialog extends NodeDialogPane {
     return panel ;
   }
 
-  public LRLearnerConfigs getLRLearnerConfigs() {
-    LRLearnerConfigs configs = new LRLearnerConfigs() ;
-    configs.mahoutConfig = learnerPanel.getMahoutConfig() ;
+  public LRLearnerConfig getLRLearnerConfigs() {
+    LRLearnerConfig configs = learnerPanel.getLRLearnerConfig() ;
     return configs ;
   }
   
   protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {
     System.out.println("dialog load settings from " );
     try {
-      LRLearnerConfigs configs = new LRLearnerConfigs(settings) ;
-      learnerPanel.init(configs) ;
+      LRLearnerConfig configs = new LRLearnerConfig(settings) ;
+      learnerPanel.reset(configs) ;
     } catch (InvalidSettingsException e) {
       e.printStackTrace();
     }
@@ -123,7 +109,7 @@ public class LRLearnerNodeDialog extends NodeDialogPane {
   @Override
   protected void saveSettingsTo(NodeSettingsWO settings) throws InvalidSettingsException {
     System.out.println("dialog saveSettingsTo..................");
-    LRLearnerConfigs configs = getLRLearnerConfigs() ;
+    LRLearnerConfig configs = getLRLearnerConfigs() ;
     configs.saveSettings(settings) ;
     System.out.println("dialog saveSettingsTo.................. done");
   }

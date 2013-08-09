@@ -27,7 +27,9 @@ public class SQLQueryBuilderDialog extends JDialog {
     setLayout(new BorderLayout()) ;
     setMinimumSize(new Dimension(900, 600)) ;
     setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE) ;
-    setModalityType(ModalityType.APPLICATION_MODAL) ;
+    setModal(true) ;
+    //setModalityType(ModalityType.APPLICATION_MODAL) ;
+    setAlwaysOnTop(true) ;
     
     queryBuilder = new SQLQueryBuilder();
     loadTables(getTableMetadata(false)) ;

@@ -6,7 +6,6 @@ import java.io.StringWriter;
 import org.apache.hadoop.mapred.RunningJob;
 import org.saarus.service.sql.SQLService;
 import org.saarus.service.task.CallableTaskUnit;
-import org.saarus.service.task.Parameters;
 import org.saarus.service.task.TaskUnit;
 import org.saarus.service.task.TaskUnitHandler;
 import org.saarus.service.task.TaskUnitResult;
@@ -39,21 +38,24 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
   private CallableTaskUnit<String> train(TaskUnit tunit) {
     CallableTaskUnit<String> callableUnit = new CallableTaskUnit<String>(tunit, new TaskUnitResult<String>()) {
       public String doCall() throws Exception {
-        Parameters params = taskUnit.getParameters() ;
-        String[] args = new String[]{
-            "--input", params.getString("input"),
-            "--output", params.getString("output"),
-            "--target", params.getString("target"), 
-            "--categories", params.getString("categories"),
-            "--predictors", params.getString("predictors"),
-            "--features", params.getString("features", "20"),
-            "--passes", params.getString("passes", "100"),
-            "--rate", params.getString("rate", "50")
+        LogisticRegressionTrainerConfig config = (LogisticRegressionTrainerConfig) taskUnit.getTaskUnitConfig() ;
+        String[] args = new String[] {
+            "--input", config.getInput(),
+            "--output", config.getOutput(),
+            "--target", config.getTarget(), 
+            "--categories", config.getCategories() ,
+            "--predictors", config.getPredictorParameters(),
+            "--features", config.getFeatures(),
+            "--passes", config.getPasses(),
+            "--rate", config.getRate(),
+            "--lambda", config.getLambda()
         };
         TrainLogistic tl = new TrainLogistic().setHiveService(sqlService) ;
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw, true);
-        tl.setMaxRead(210000) ;
+        if(config.getMaxRead() > 0) {
+          tl.setMaxRead(config.getMaxRead()) ;
+        }
         tl.train(args, pw) ;
         return  sw.toString() ;
       }
@@ -64,16 +66,16 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
   private CallableTaskUnit<Boolean> predict(TaskUnit tunit) {
     CallableTaskUnit<Boolean> callableUnit = new CallableTaskUnit<Boolean>(tunit, new TaskUnitResult<Boolean>()) {
       public Boolean doCall() throws Exception {
-        Parameters params = taskUnit.getParameters() ;
+        LogisticRegressionPredictorConfig predictConfig = 
+          (LogisticRegressionPredictorConfig) taskUnit.getTaskUnitConfig() ;
+        
         MRLogisticRegressionDecoder decoder = new MRLogisticRegressionDecoder() ;
-        String[] headers = params.getString("col-header").split(",") ;
-        for(int i = 0; i < headers.length; i++) headers[i] = headers[i].trim() ;
         decoder.
-          setInputUri(params.getString("input")).
-          setOutputUri(params.getString("output")).
-          setModelUri(params.getString("model")).
-          setColumnHeaders(headers).
-          setClusterMode("true".equals(params.get("clusterMode"))) ;
+          setInputUri(predictConfig.getInput()).
+          setOutputUri(predictConfig.getOutput()).
+          setModelUri(predictConfig.getModelLocation()).
+          setColumnHeaders(predictConfig.getFieldNameArray()).
+          setClusterMode(predictConfig.isClusterMode()) ;
         RunningJob runningJob = decoder.run() ;
         return runningJob.isSuccessful() ;
       }
