@@ -29,4 +29,9 @@ public class BeanBindingJCheckBox<T> extends JCheckBox {
     else if(value instanceof Boolean) super.setSelected((Boolean)value) ;
     else throw new RuntimeException("Expect Boolean type instead of " + value.getClass()) ;
   }
+  
+  public void setBean(T bean) {
+    this.bean = bean ;
+    setSelected(beanInspector.getValue(bean, beanProperty)) ;
+  }
 }

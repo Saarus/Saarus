@@ -16,8 +16,8 @@ public class BeanBindingJTextField<T> extends JTextField {
     setBean(aBean) ;
     getDocument().addDocumentListener(new JTextFieldChangeTextListener() {
       public void onChange(String text) { 
+        text = onTextChange(text) ;
         beanInspector.setValue(bean, beanProperty,  text) ;
-        onTextChange(text) ;
       }
     });
   }
@@ -36,7 +36,7 @@ public class BeanBindingJTextField<T> extends JTextField {
     setText(val) ;
   }
   
-  public void onTextChange(String text) {
-    
+  public String onTextChange(String text) {
+    return text; 
   }
 }
