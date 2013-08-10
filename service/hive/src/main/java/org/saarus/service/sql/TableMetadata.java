@@ -113,13 +113,7 @@ public class TableMetadata {
         KeyValue entry = i.next() ;
         String type = "" ;
         if(entry.value.matches("[a-zA-Z]")) type = "STRING" ;
-        int idx = entry.key.lastIndexOf('.') ;
-        if(idx < 0) {
-          mappingData[entryIndex] = new String[] {entry.key, type, entry.key};
-        } else {
-          String fieldName = entry.key.replace('.', '_') ;
-          mappingData[entryIndex] = new String[] {fieldName, type, entry.key};
-        }
+        mappingData[entryIndex] = new String[] {entry.key, type, entry.key};
         entryIndex++ ;
       }
       return mappingData ;
@@ -138,12 +132,17 @@ public class TableMetadata {
   }
   
   static KeyValue findMatch(List<KeyValue> keyValues, String key) {
+    double bestSimilarity = 0d ;
+    KeyValue bestKV = null ;
     for(int i = 0; i < keyValues.size(); i++) {
       KeyValue kv = keyValues.get(i) ;
       double similarity = CosineSimilarity.INSTANCE.similarity(key.toCharArray(), kv.key.toCharArray()) ;
-      if(similarity > 0.8) return kv ;
+      if(similarity > bestSimilarity) {
+        bestSimilarity = similarity ;
+        bestKV = kv ;
+      }
     }
-    return null ;
+    return bestKV ;
   }
   
   static private void findProperties(List<KeyValue> holder, String field, JsonNode node) {
@@ -154,7 +153,7 @@ public class TableMetadata {
       while(i.hasNext()) {
         Map.Entry<String, JsonNode> entry = i.next() ;
         String fname = entry.getKey() ;
-        if(field != null) fname = field + "_" + fname ;
+        if(field != null) fname = field + "." + fname ;
         findProperties(holder, fname, entry.getValue()) ;
       }
     }

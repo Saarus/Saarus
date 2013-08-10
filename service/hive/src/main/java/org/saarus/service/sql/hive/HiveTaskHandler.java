@@ -1,8 +1,7 @@
 package org.saarus.service.sql.hive;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.hadoop.fs.FileSystem;
@@ -66,7 +65,16 @@ public class HiveTaskHandler implements TaskUnitHandler {
     tunit.setTaskLine("describe " + tableName) ;
     CallableTaskUnit<TableMetadata> callableUnit = new CallableTaskUnit<TableMetadata>(tunit, new TaskUnitResult<TableMetadata>()) {
       public TableMetadata doCall() throws Exception {
-        ResultSet res = sqlService.executeQuerySQL(taskUnit.getTaskLine());
+        ResultSet res = null;
+        try {
+          res = sqlService.executeQuerySQL(taskUnit.getTaskLine());
+        } catch(SQLException ex) {
+          if(ex.getErrorCode() ==  10001) {
+            //Table not found
+            return null ;
+          }
+          throw ex ;
+        }
         TableMetadata tinfo = null ;
         while (res.next()) {
           if(tinfo == null) tinfo = new TableMetadata(tableName) ;

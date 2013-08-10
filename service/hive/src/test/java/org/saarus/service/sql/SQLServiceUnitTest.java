@@ -49,6 +49,7 @@ public class SQLServiceUnitTest {
     rset.close() ;
 
     String jsonData = "{\"key\": 1, \"value\": \"string value\"}" ;
+    
     JsonNode jsonDataNode = JSONSerializer.JSON_SERIALIZER.fromString(jsonData) ;
     TableMetadata tmetadata = hservice.descTable(tableName) ;
     String[][] mappingData = TableMetadata.autoDetectMapping(tmetadata, jsonDataNode) ;
