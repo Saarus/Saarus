@@ -108,7 +108,7 @@ public class FileImportConfigs {
     String table = "TableName";
     String description = "Import file into a hive table";
     String file = "";
-    String importType = "";
+    String importType = "Json";
     boolean createNew = true;
     List<FieldConfig> fieldConfigs = new ArrayList<FieldConfig>() ;
 

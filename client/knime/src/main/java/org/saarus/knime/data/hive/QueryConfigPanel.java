@@ -38,10 +38,11 @@ public class QueryConfigPanel extends JPanel {
     SpringLayoutGridJPanel panel = new SpringLayoutGridJPanel() ;
     panel.createBorder("Description");
     nameInput = new BeanBindingJTextField<QueryConfig>(config, "name") {
-      public void onTextChange(String text) {
+      public String onTextChange(String text) {
         JTabbedPaneUI tabPanel = 
             (JTabbedPaneUI)SwingUtilities.getAncestorOfClass(JTabbedPaneUI.class, QueryConfigPanel.this) ;
         tabPanel.renameTab(text, QueryConfigPanel.this) ;
+        return text ;
       }
     } ;
     panel.addRow("Name", nameInput) ;

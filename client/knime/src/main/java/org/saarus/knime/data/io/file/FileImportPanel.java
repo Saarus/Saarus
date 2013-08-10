@@ -6,7 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 
 import javax.swing.BorderFactory;
@@ -94,7 +94,11 @@ public class FileImportPanel extends JPanel {
     });
     urlButtonPanel.add(preview) ;
     
-    urlInput = new BeanBindingJTextField<FileImportConfig>(config, "file") ;
+    urlInput = new BeanBindingJTextField<FileImportConfig>(config, "file") {
+      public String onTextChange(String text) {
+        return text.trim() ;
+      }
+    };
     urlInput.setToolTipText("Enter an URL or browse");
     
     JPanel urlPanel = new JPanel(new BorderLayout());
@@ -104,7 +108,6 @@ public class FileImportPanel extends JPanel {
     panel.addRow("File", urlPanel) ;
     
     importType = new BeanBindingJComboBox<FileImportConfig, String>(config, "importType", new String[] {"Json", "Csv"}) ;
-    importType.setEditable(false);
     panel.addRow("Import Type", importType) ;
     
     BeanBindingJTextField<FileImportConfig> tableField = new BeanBindingJTextField<FileImportConfig>(config, "table") ;
@@ -204,6 +207,7 @@ public class FileImportPanel extends JPanel {
       for(int i = 0; i < mappingData.length; i++) {
         beans.add(new FieldConfig(mappingData[i][0], mappingData[i][1], mappingData[i][2])) ;
       }
+      fireTableDataChanged() ;
     }
     
     public String[][] getFielMappingConfig() {
@@ -254,10 +258,11 @@ public class FileImportPanel extends JPanel {
     
     public String[][] autoDetectJSONMapping(TableMetadata mdata) {
       try {
-        JsonNode node = JSONSerializer.JSON_SERIALIZER.fromString(sampleData) ;
-        node.isValueNode() ;
+        JSONReader reader = new JSONReader(new ByteArrayInputStream(sampleData.getBytes())) ;
+        JsonNode node = reader.read() ;
+        reader.close() ;
         return TableMetadata.autoDetectMapping(mdata, node) ;
-      } catch (IOException e) {
+      } catch (Exception e) {
         e.printStackTrace();
       }
       return null ;

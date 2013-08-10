@@ -73,7 +73,7 @@ public class LRLearnerPanel extends JPanel {
     target = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "target") ;
     panel.addRow("Target", target) ;
     
-    output = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "output") ;
+    output = new BeanBindingJTextField<LogisticRegressionTrainerConfig>(config.trainConfig, "modelOutputLocation") ;
     panel.addRow("Output", output) ;
     panel.makeGrid() ;
     add(panel, BorderLayout.CENTER);
@@ -94,6 +94,7 @@ public class LRLearnerPanel extends JPanel {
     input.setBean(trainerConfig) ; 
     target.setBean(trainerConfig) ; 
     output.setBean(trainerConfig)  ;// --output donut.model
+    trainerConfig.setMaxRead(50000) ;
   }
   
 

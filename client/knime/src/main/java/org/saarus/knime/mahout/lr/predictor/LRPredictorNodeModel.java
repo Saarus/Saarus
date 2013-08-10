@@ -22,7 +22,7 @@ import org.knime.core.node.NodeSettingsWO;
 import org.saarus.client.ClientContext;
 import org.saarus.client.RESTClient;
 import org.saarus.knime.ServiceContext;
-import org.saarus.knime.mahout.lr.predictor.LRPredictorConfigs.MahoutConfig;
+import org.saarus.mahout.classifier.sgd.LogisticRegressionPredictorConfig;
 import org.saarus.service.task.Task;
 import org.saarus.service.task.TaskResult;
 import org.saarus.service.task.TaskUnitResult;
@@ -32,7 +32,7 @@ import org.saarus.service.task.TaskUnitResult;
 public class LRPredictorNodeModel extends NodeModel {
   private static final NodeLogger logger = NodeLogger.getLogger(LRPredictorNodeModel.class);
 
-  private LRPredictorConfigs currentConfigs = new LRPredictorConfigs();
+  private LRPredictorConfig config = new LRPredictorConfig();
   
   protected LRPredictorNodeModel() {
     super(1, 1);
@@ -44,7 +44,7 @@ public class LRPredictorNodeModel extends NodeModel {
       System.out.println("call execute(update)..................");
       ClientContext context = ServiceContext.getInstance().getClientContext() ;
       RESTClient restClient = context.getBean(RESTClient.class) ;
-      Task task = currentConfigs.getGeneratedTask() ;
+      Task task = config.getGeneratedTask() ;
       TaskResult taskResult = restClient.submitTask(task) ;
       int count = 0 ;
       while(!taskResult.isFinished()) {
@@ -68,11 +68,11 @@ public class LRPredictorNodeModel extends NodeModel {
       DataTableSpec outputSpec = new DataTableSpec(allColSpecs);
       BufferedDataContainer container = exec.createDataContainer(outputSpec);
       
-      MahoutConfig config = this.currentConfigs.mahoutConfig ;
+      LogisticRegressionPredictorConfig predictorConfig = this.config.predictConfig ;
       TaskUnitResult<Boolean> unitResult = 
-          (TaskUnitResult<Boolean>)taskResult.getTaskUnitResult(config.getTaskUnitId()) ;
+          (TaskUnitResult<Boolean>)taskResult.getTaskUnitResult(config.getTaskUnitId(predictorConfig)) ;
       System.out.println(unitResult) ;
-      container.addRowToTable(new DefaultRow(new RowKey("Output"), new StringCell(config.output)));
+      container.addRowToTable(new DefaultRow(new RowKey("Output"), new StringCell(predictorConfig.getOutput())));
       container.addRowToTable(new DefaultRow(new RowKey("Success"), new StringCell(unitResult.getResult().toString())));
 
       // once we are done, we close the container and return its table
@@ -103,16 +103,16 @@ public class LRPredictorNodeModel extends NodeModel {
   /** {@inheritDoc} */
   @Override
   protected void saveSettingsTo(final NodeSettingsWO settings) {
-    currentConfigs.saveSettings(settings) ;
+    config.saveSettings(settings) ;
     System.out.println("Call saveSettingsTo...........................");
   }
 
   /** {@inheritDoc} */
   @Override
   protected void loadValidatedSettingsFrom(final NodeSettingsRO settings) throws InvalidSettingsException {
-    this.currentConfigs.merge(new LRPredictorConfigs(settings)) ;
+    config = new LRPredictorConfig(settings) ;
     System.out.println("Load loadValidatedSettings(merge)") ;
-    System.out.println(this.currentConfigs) ;
+    System.out.println(this.config) ;
   }
   /** {@inheritDoc} */
   @Override

@@ -51,7 +51,7 @@ public class LRLearnerNodeDialog extends NodeDialogPane {
         configs.description = "Yelp Features Data";
         LogisticRegressionTrainerConfig config = new LogisticRegressionTrainerConfig() ;
         config.setInput("hive://features") ;
-        config.setOutput("dfs:/tmp/yelp-features.model") ;
+        config.setModelOutputLocation("dfs:/tmp/yelp-lr-model") ;
         config.setTarget("cat_useful") ;
         config.setCategories("2") ;
         config.addPredictor("user_review_count", "n").

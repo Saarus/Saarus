@@ -16,7 +16,7 @@ import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
-import org.saarus.knime.mahout.lr.predictor.LRPredictorConfigs.MahoutConfig;
+import org.saarus.mahout.classifier.sgd.LogisticRegressionPredictorConfig;
 import org.saarus.swing.JInfoDialog;
 import org.saarus.util.json.JSONSerializer;
 
@@ -47,19 +47,9 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
     JButton saarusWorkFlowCluster = new JButton("Saarus Work Flow");
     saarusWorkFlowCluster.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        MahoutConfig config = new MahoutConfig() ;
-        config.name = "Yelp Features Predict";
-        config.description = "Yelp Features Predict";
-        config.input = "/user/hive/yelpdb/test" ; 
-        config.output = "/tmp/yelp/working/output" ;
-        config.model = "dfs:/tmp/yelp-features.model" ;
-        config.colHeaders =  "stars,text,vote_funny,vote_useful,vote_cool,percentage_useful,cat_useful,business_id,business_city,business_state,business_open,business_review_count,business_stars,user_review_count,user_average_stars,user_vote_funny,user_vote_useful,user_vote_cool" ;
-        config.auc = true ;
-        config.confusion = true ;
-        config.clusterMode =  true ;
-        LRPredictorConfigs configs = new LRPredictorConfigs() ;
-        configs.mahoutConfig = config ;
-        predictorPanel.init(configs) ;
+        LRPredictorConfig config = getYelpPredictConfig() ;
+        predictorPanel.reset(config) ;
+        predictorPanel.reset(config) ;
       }
     });
     panel.add(saarusWorkFlowCluster) ;
@@ -68,41 +58,12 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
     JButton saarusWorkFlowLocal = new JButton("Saarus Work Flow Local");
     saarusWorkFlowLocal.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        MahoutConfig config = new MahoutConfig() ;
-        config.name = "Yelp Features Predict";
-        config.description = "Yelp Features Predict";
-        config.input = "data/yelptest" ; 
-        config.output = "working/yelp/output" ;
-        config.model = "dfs:/tmp/yelp-features.model" ;
-        config.colHeaders =  "stars,text,vote_funny,vote_useful,vote_cool,percentage_useful,cat_useful,business_id,business_city,business_state,business_open,business_review_count,business_stars,user_review_count,user_average_stars,user_vote_funny,user_vote_useful,user_vote_cool";
-        config.confusion = true ;
-        config.auc = true ;
-        config.clusterMode = false ;
-        LRPredictorConfigs configs = new LRPredictorConfigs() ;
-        configs.mahoutConfig = config ;
-        predictorPanel.init(configs) ;
+        LRPredictorConfig config = getYelpPredictConfig() ;
+        config.predictConfig.setClusterMode(false) ;
+        predictorPanel.reset(config) ;
       }
     });
     panel.add(saarusWorkFlowLocal) ;
-    
-    JButton donut = new JButton("Donut");
-    donut.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        MahoutConfig config = new MahoutConfig() ;
-        config.name = "Donut Predict";
-        config.description = "Donut Test Data";
-        config.input = "data/donutmr" ; 
-        config.output = "working/donut/output" ;
-        config.model = "dfs:/tmp/donut.model" ;
-        config.colHeaders = "x,y,shape,color,xx,xy,yy,c,a,b" ;
-        config.auc = true ;
-        config.confusion = true ;
-        LRPredictorConfigs configs = new LRPredictorConfigs() ;
-        configs.mahoutConfig = config ;
-        predictorPanel.init(configs) ;
-      }
-    });
-    panel.add(donut) ;
     
     JButton viewScript = new JButton("View Script");
     viewScript.addActionListener(new ActionListener() {
@@ -123,17 +84,15 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
   }
 
   
-  public LRPredictorConfigs getLRPredictorConfigs() {
-    LRPredictorConfigs configs = new LRPredictorConfigs() ;
-    configs.mahoutConfig = predictorPanel.getMahoutConfig() ;
-    return configs ;
+  public LRPredictorConfig getLRPredictorConfigs() {
+    return predictorPanel.getLRPredictorConfig() ;
   }
   
   protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {
     System.out.println("dialog load settings from " );
     try {
-      LRPredictorConfigs configs = new LRPredictorConfigs(settings) ;
-      predictorPanel.init(configs) ;
+      LRPredictorConfig configs = new LRPredictorConfig(settings) ;
+      predictorPanel.reset(configs) ;
     } catch (InvalidSettingsException e) {
       e.printStackTrace();
     }
@@ -142,7 +101,7 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
   @Override
   protected void saveSettingsTo(NodeSettingsWO settings) throws InvalidSettingsException {
     System.out.println("dialog saveSettingsTo..................");
-    LRPredictorConfigs configs = getLRPredictorConfigs() ;
+    LRPredictorConfig configs = getLRPredictorConfigs() ;
     configs.saveSettings(settings) ;
     System.out.println("dialog saveSettingsTo.................. done");
   }
@@ -153,5 +112,21 @@ public class LRPredictorNodeDialog extends NodeDialogPane {
 
   public void onOpen() {
     System.out.println("-----------------------open dialog--------------------------") ;
+  }
+  
+  private LRPredictorConfig getYelpPredictConfig() {
+    LRPredictorConfig config = new LRPredictorConfig() ;
+    config.setName("Yelp Features Predict");
+    config.setDescription("Yelp Features Predict");
+    LogisticRegressionPredictorConfig predictConfig = new LogisticRegressionPredictorConfig() ;
+    predictConfig.setInput("/user/hive/yelpdb/test") ; 
+    predictConfig.setOutput("/tmp/yelp/working/output") ;
+    predictConfig.setModelLocation("dfs:/tmp/yelp-lr-model") ;
+    predictConfig.setAuc(true) ;
+    predictConfig.setConfusion(true) ;
+    predictConfig.setClusterMode(true) ;
+    
+    config.predictConfig = predictConfig ;
+    return config ;
   }
 }

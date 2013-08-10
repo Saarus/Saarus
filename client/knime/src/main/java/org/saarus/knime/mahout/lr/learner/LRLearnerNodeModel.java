@@ -72,7 +72,7 @@ public class LRLearnerNodeModel extends NodeModel {
       TaskUnitResult<String> unitResult = 
           (TaskUnitResult<String>)taskResult.getTaskUnitResult(LRLearnerConfig.getTaskUnitId(config)) ;
       System.out.println(unitResult) ;
-      container.addRowToTable(new DefaultRow(new RowKey("Model"), new StringCell(config.getOutput())));
+      container.addRowToTable(new DefaultRow(new RowKey("Model"), new StringCell(config.getModelOutputLocation())));
       container.addRowToTable(new DefaultRow(new RowKey("Log"), new StringCell(unitResult.getResult())));
 
       // once we are done, we close the container and return its table
