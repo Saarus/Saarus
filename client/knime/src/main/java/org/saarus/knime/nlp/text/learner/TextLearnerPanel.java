@@ -42,8 +42,8 @@ public class TextLearnerPanel extends JPanel {
     panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Parameters"));
     addInput(panel, "Description", descInput) ;
     addInput(panel, "Table", tableInput) ;
-    addInput(panel, "Text Fiel", textFieldInput) ;
-    addInput(panel, "Label Fiel", labelFieldInput) ;
+    addInput(panel, "Text Field", textFieldInput) ;
+    addInput(panel, "Label Field", labelFieldInput) ;
     addInput(panel, "Model Output Location", modelLocInput) ;
     addInput(panel, "Tmp Dir", tmpDirInput) ;
     SpringUtilities.makeCompactGrid(panel, /*rows, cols*/6, 2,/*initX, initY*/ 6, 6, /*xPad, yPad*/ 6, 6);       
