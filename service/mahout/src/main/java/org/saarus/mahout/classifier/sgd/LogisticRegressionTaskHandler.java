@@ -4,11 +4,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.apache.hadoop.mapred.RunningJob;
+import org.saarus.service.hadoop.util.FSResource;
 import org.saarus.service.sql.SQLService;
 import org.saarus.service.task.CallableTaskUnit;
 import org.saarus.service.task.TaskUnit;
 import org.saarus.service.task.TaskUnitHandler;
 import org.saarus.service.task.TaskUnitResult;
+import org.saarus.util.json.JSONSerializer;
+import org.saarus.util.json.JSONWriter;
 
 public class LogisticRegressionTaskHandler implements TaskUnitHandler {
   static public String NAME = "LogisticRegression" ;
@@ -39,9 +42,15 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
     CallableTaskUnit<String> callableUnit = new CallableTaskUnit<String>(tunit, new TaskUnitResult<String>()) {
       public String doCall() throws Exception {
         LogisticRegressionTrainerConfig config = (LogisticRegressionTrainerConfig) taskUnit.getTaskUnitConfig() ;
+        FSResource res = FSResource.get(config.getModelOutputLocation()) ;
+        if(!res.exists()) res.mkdirs() ;
+        String jsonConfig = JSONSerializer.JSON_SERIALIZER.toString(config) ;
+        res = FSResource.get(config.getModelOutputLocation() + "/train-config.json") ;
+        res.write(jsonConfig.getBytes("UTF-8")) ;
+        
         String[] args = new String[] {
             "--input", config.getInput(),
-            "--output", config.getOutput(),
+            "--output", config.getModelOutputLocation() + "/train.model",
             "--target", config.getTarget(), 
             "--categories", config.getCategories() ,
             "--predictors", config.getPredictorParameters(),
@@ -73,8 +82,8 @@ public class LogisticRegressionTaskHandler implements TaskUnitHandler {
         decoder.
           setInputUri(predictConfig.getInput()).
           setOutputUri(predictConfig.getOutput()).
-          setModelUri(predictConfig.getModelLocation()).
-          setColumnHeaders(predictConfig.getFieldNameArray()).
+          setModelUri(predictConfig.getModelLocation() + "/train.model").
+          //setColumnHeaders(predictConfig.getFieldNameArray()).
           setClusterMode(predictConfig.isClusterMode()) ;
         RunningJob runningJob = decoder.run() ;
         return runningJob.isSuccessful() ;

@@ -1,10 +1,12 @@
 package org.saarus.mahout.classifier.sgd;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -12,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileInputFormat;
@@ -25,7 +28,6 @@ import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hadoop.mapred.TextInputFormat;
-import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.mahout.classifier.evaluation.Auc;
 import org.apache.mahout.classifier.sgd.OnlineLogisticRegression;
 import org.apache.mahout.math.Matrix;
@@ -53,7 +55,7 @@ public class MRLogisticRegressionDecoder {
   }
   
   public MRLogisticRegressionDecoder setColumnHeaders(String[] column) {
-    this.columnHeaders = column ;
+    //this.columnHeaders = column ;
     return this ;
   }
     
@@ -147,6 +149,14 @@ public class MRLogisticRegressionDecoder {
     }
   }
 
+  static class CSVPathFilter implements PathFilter {
+    public boolean accept(Path path) {
+      if(path.getName().equalsIgnoreCase("headers")) return false ;
+      System.out.println("Accept " + path) ;
+      return true ;
+    }
+  }
+  
   public RunningJob run() throws Exception {
     Configuration conf = null ;
     if(clusterMode) conf = HDFSUtil.getConfiguration() ;
@@ -155,14 +165,20 @@ public class MRLogisticRegressionDecoder {
     yarnClasspath = yarnClasspath + ",/opt/saarus/lib/*" ;
     conf.set("yarn.application.classpath", yarnClasspath);
     
-    
     FileSystem fs = FileSystem.get(conf) ;
+    
+    InputStream headerIs = fs.open(new Path(inputUri + "/HEADERS")) ;
+    BufferedReader reader = new BufferedReader(new InputStreamReader(headerIs)) ;
+    String headerLine = reader.readLine() ;
+    String[] header = headerLine.split(",") ;
+    for(int i = 0; i < header.length; i++) header[i] = header[i].trim() ;
+    
     fs.delete(new Path(outputUri), true) ;
    
     JobConf jconf = new JobConf(conf, MRLogisticRegressionDecoder.class);
     jconf.setJobName(MRLogisticRegressionDecoder.class.getSimpleName());
    // jconf.setUser("hadoop") ;
-    jconf.setStrings("column.headers", this.columnHeaders) ;
+    jconf.setStrings("column.headers", header) ;
     jconf.set("model.file", this.modelUri) ;
     jconf.setMapperClass(Map.class);
     jconf.setMapOutputKeyClass(LongWritable.class) ;
@@ -174,6 +190,8 @@ public class MRLogisticRegressionDecoder {
     jconf.setOutputValueClass(Text.class);
 
     jconf.setInputFormat(TextInputFormat.class);
+    FileInputFormat.setInputPathFilter(jconf, CSVPathFilter.class) ;
+    
     jconf.setOutputFormat(JsonOutputFormat.class);
     
 

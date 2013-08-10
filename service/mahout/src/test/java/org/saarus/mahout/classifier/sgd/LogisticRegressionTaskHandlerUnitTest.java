@@ -54,7 +54,7 @@ public class LogisticRegressionTaskHandlerUnitTest {
   void testYelp() throws Exception {
     //"src/test/resources/review-training.csv" , hive://features
     String TRAIN_FILE = "src/test/resources/yelp/train.csv" ; 
-    String MODEL_FILE = "target/yelp-features.model" ;
+    String MODEL_OUTPUT_DIR = "target/lr-model" ;
     
     SQLService hservice  = null ; //new SQLService(HIVE2_SERVER_URL, "hive", "");
     LogisticRegressionTaskHandler handler  = new LogisticRegressionTaskHandler(hservice);
@@ -63,7 +63,7 @@ public class LogisticRegressionTaskHandlerUnitTest {
     tunit.setName("train") ;
     LogisticRegressionTrainerConfig config = new LogisticRegressionTrainerConfig() ;
     config.setInput(TRAIN_FILE) ;
-    config.setOutput(MODEL_FILE) ;
+    config.setModelOutputLocation(MODEL_OUTPUT_DIR) ;
     config.setTarget("cat_useful") ;
     config.setCategories("2") ;
     config.addPredictor("user_review_count", "n").
@@ -91,28 +91,9 @@ public class LogisticRegressionTaskHandlerUnitTest {
     tunit = new TaskUnit() ;
     tunit.setName("predict") ;
     LogisticRegressionPredictorConfig predictConfig = new LogisticRegressionPredictorConfig() ;
-    predictConfig.setInput("src/test/resources/yelp/test-no-header.csv") ;
+    predictConfig.setInput("src/test/resources/yelp/mr") ;
     predictConfig.setOutput("target/review-out") ;
-    predictConfig.setModelLocation(MODEL_FILE) ;
-    predictConfig.
-      addFieldName("stars").
-      addFieldName("text").
-      addFieldName("vote_funny").
-      addFieldName("vote_useful").
-      addFieldName("vote_cool").
-      addFieldName("percentage_useful").
-      addFieldName("cat_useful").
-      addFieldName("business_id").
-      addFieldName("business_city").
-      addFieldName("business_state").
-      addFieldName("business_open").
-      addFieldName("business_review_count").
-      addFieldName("business_stars").
-      addFieldName("user_review_count").
-      addFieldName("user_average_stars").
-      addFieldName("user_vote_funny").
-      addFieldName("user_vote_useful").
-      addFieldName("user_vote_cool") ;
+    predictConfig.setModelLocation(MODEL_OUTPUT_DIR) ;
     predictConfig.setClusterMode(false) ;
     tunit.setTaskUnitConfig(predictConfig) ;
 

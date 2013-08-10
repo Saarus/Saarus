@@ -7,7 +7,7 @@ import org.saarus.service.task.TaskUnitConfig;
 
 public class LogisticRegressionTrainerConfig extends TaskUnitConfig {
   private String input  ;
-  private String output ;
+  private String modelOutputLocation ;
   private String target ;
   private String  categories =  "2" ;
 
@@ -21,8 +21,8 @@ public class LogisticRegressionTrainerConfig extends TaskUnitConfig {
   public String getInput() {  return input; }
   public void setInput(String input) { this.input = input; }
 
-  public String getOutput() { return output; }
-  public void setOutput(String output) { this.output = output; }
+  public String getModelOutputLocation() { return modelOutputLocation; }
+  public void   setModelOutputLocation(String output) { this.modelOutputLocation = output; }
 
   public String getTarget() { return target; }
   public void setTarget(String target) { this.target = target; }
