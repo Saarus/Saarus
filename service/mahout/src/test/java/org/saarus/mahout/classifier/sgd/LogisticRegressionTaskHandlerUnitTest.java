@@ -79,6 +79,7 @@ public class LogisticRegressionTaskHandlerUnitTest {
     config.setFeatures("1000");
     config.setPasses("100") ;
     config.setRate("50") ;
+    config.setLambda("0.001") ;
     config.setMaxRead(20000) ;
     tunit.setTaskUnitConfig(config) ;
 

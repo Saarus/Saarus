@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -92,8 +93,7 @@ public class LRLearnerNodeDialog extends NodeDialogPane {
   }
 
   public LRLearnerConfig getLRLearnerConfigs() {
-    LRLearnerConfig configs = learnerPanel.getLRLearnerConfig() ;
-    return configs ;
+    return learnerPanel.getLRLearnerConfig() ;
   }
   
   protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {
@@ -101,7 +101,7 @@ public class LRLearnerNodeDialog extends NodeDialogPane {
     try {
       LRLearnerConfig configs = new LRLearnerConfig(settings) ;
       learnerPanel.reset(configs) ;
-    } catch (InvalidSettingsException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }

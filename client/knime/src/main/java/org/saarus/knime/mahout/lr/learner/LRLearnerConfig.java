@@ -7,7 +7,6 @@ import java.util.List;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
-import org.knime.core.node.config.ConfigRO;
 import org.saarus.mahout.classifier.sgd.LogisticRegressionTaskHandler;
 import org.saarus.mahout.classifier.sgd.LogisticRegressionTrainerConfig;
 import org.saarus.service.task.Task;
@@ -15,7 +14,6 @@ import org.saarus.service.task.TaskUnit;
 import org.saarus.util.json.JSONSerializer;
 
 public class LRLearnerConfig {
-  final static public String MAHOUT_CONFIG = "mahout.config" ;
   
   String name = "" ;
   String description = "";
@@ -24,14 +22,14 @@ public class LRLearnerConfig {
   public LRLearnerConfig() {}
   
   public LRLearnerConfig(NodeSettingsRO settings) throws InvalidSettingsException {
-    if(!settings.containsKey(MAHOUT_CONFIG)) return ;
-    ConfigRO config = settings.getConfig(MAHOUT_CONFIG) ;
-    name = config.getString("name");
-    description = config.getString("description");
-    String trainConfigJson = config.getString("trainConfigJson");
+    if(!settings.containsKey("trainConfigJson")) return ;
+    name = settings.getString("name");
+    description = settings.getString("description");
+    String trainConfigJson = settings.getString("trainConfigJson");
     try {
       trainConfig = JSONSerializer.JSON_SERIALIZER.fromString(trainConfigJson, LogisticRegressionTrainerConfig.class) ;
     } catch (IOException e) {
+      e.printStackTrace() ;
       throw new RuntimeException(e) ;
     }
   }
@@ -50,12 +48,9 @@ public class LRLearnerConfig {
       String trainConfigJson = JSONSerializer.JSON_SERIALIZER.toString(trainConfig) ;
       settings.addString("trainConfigJson", trainConfigJson) ;
     } catch (IOException e) {
+      e.printStackTrace() ;
       throw new RuntimeException(e) ;
     }
-  }
-  
-  public void merge(LRLearnerConfig other) {
-    trainConfig = other.trainConfig ;
   }
   
   public Task getGeneratedTask() throws IOException {

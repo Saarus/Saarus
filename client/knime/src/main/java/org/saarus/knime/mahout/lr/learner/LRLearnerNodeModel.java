@@ -110,7 +110,7 @@ public class LRLearnerNodeModel extends NodeModel {
   /** {@inheritDoc} */
   @Override
   protected void loadValidatedSettingsFrom(final NodeSettingsRO settings) throws InvalidSettingsException {
-    this.currentConfigs.merge(new LRLearnerConfig(settings)) ;
+    currentConfigs = new LRLearnerConfig(settings) ;
     System.out.println("Load loadValidatedSettings(merge)") ;
     System.out.println(currentConfigs) ;
   }
