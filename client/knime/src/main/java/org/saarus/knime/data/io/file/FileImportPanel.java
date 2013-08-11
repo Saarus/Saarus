@@ -197,7 +197,7 @@ public class FileImportPanel extends JPanel {
       return true;  
     }
     
-    public boolean onRemoveRow(Field bean, int row) { 
+    public boolean onRemoveRow(FieldConfig bean, int row) { 
       beans.remove(row) ;
       return true ; 
     }

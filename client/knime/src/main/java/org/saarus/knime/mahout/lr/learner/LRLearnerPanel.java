@@ -8,12 +8,18 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
+import org.saarus.client.HiveClient;
+import org.saarus.client.RESTClient;
+import org.saarus.knime.ServiceContext;
 import org.saarus.mahout.classifier.sgd.LogisticRegressionTrainerConfig;
 import org.saarus.mahout.classifier.sgd.LogisticRegressionTrainerConfig.Predictor;
+import org.saarus.service.sql.TableMetadata;
+import org.saarus.service.sql.TableMetadata.FieldInfo;
 import org.saarus.swing.BeanBindingJTable;
 import org.saarus.swing.BeanBindingJTextField;
 import org.saarus.swing.SpringLayoutGridJPanel;
@@ -109,7 +115,7 @@ public class LRLearnerPanel extends JPanel {
       JToolBar toolbar = new JToolBar() ;
       Action detectAction = new AbstractAction("Detect") {
         public void actionPerformed(ActionEvent arg0) {
-          
+          table.detectPredictors() ;
         }
       };
       toolbar.add(detectAction) ;
@@ -166,11 +172,44 @@ public class LRLearnerPanel extends JPanel {
     }
     
     void update(LogisticRegressionTrainerConfig trainerConfig) {
+      this.trainerConfig = trainerConfig ;
       beans.clear() ;
       List<Predictor> predictors = trainerConfig.getPredictors() ;
       for(int i = 0; i < predictors.size(); i++) {
         Predictor predictor = predictors.get(i) ;
         beans.add(new PredictorMapping(true, predictor.getName(), predictor.getType())) ;
+      }
+      if(beans.size() == 0) {
+        beans.add(new PredictorMapping(false, null, null)) ;
+      }
+      fireTableDataChanged() ;
+    }
+    
+    void detectPredictors() {
+      String table = trainerConfig.getInput() ;
+      if(!table.startsWith("hive://")) {
+        JOptionPane.showMessageDialog(this, "The input has to be a hive table. input should start with hive://");
+        return ;
+      }
+      table = table.substring("hive://".length()) ;
+      ServiceContext context = ServiceContext.getInstance() ;
+      RESTClient restClient = context.getClientContext().getBean(RESTClient.class) ;
+      HiveClient hclient = restClient.getHiveClient() ;
+      TableMetadata tableMetadata = hclient.descTable(table, false) ;
+      if(tableMetadata == null) {
+        JOptionPane.showMessageDialog(this, "Table is not existed or there is a problem with hive server connection.");
+        return ;
+      }
+      beans.clear() ;
+      trainerConfig.getPredictors().clear() ;
+      List<FieldInfo> fields = tableMetadata.getFields() ;
+      for(int i = 0; i < fields.size(); i++) {
+        FieldInfo field = fields.get(i) ;
+        String type = "" ;
+        if("string".equalsIgnoreCase(field.getType())) type = "t" ;
+        else if("int".equalsIgnoreCase(field.getType())) type = "n" ;
+        else if("double".equalsIgnoreCase(field.getType())) type = "n" ;
+        beans.add(new PredictorMapping(false, field.getName(), type)) ;
       }
       if(beans.size() == 0) {
         beans.add(new PredictorMapping(false, null, null)) ;
