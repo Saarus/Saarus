@@ -1,4 +1,41 @@
-Saarus
-======
+ Installation instructions on Cloudera
 
-Open source big data analytics workbench
+INSTALLATION
+1. Cloudera manager
+1.1 Install
+* Remount the /run dir with the command:
+mount -o rw,nosuid,exec,relatime,remount,size=209716k,mode=755 -t tmpfs none /run
+We can also add this command to /etc/rc.local so the /run dir will remount automatically when the server is rebooted
+1.2 Test
+2. HDFS service
+2.1 Install service
+* Go to the configuration tab, search for /var/log, /hadoop-hdfs ... change the path to /hadoop/hdfs
+2.2 Test service
+* Export hdfs client configuration
+* Upload the configuration to any client node.
+* Set the environment:
+HADOOP_CLIENT_HOME=/home/hadoop/hadoop
+HADOOP_CONF_DIR=$HADOOP_CLIENT_HOME/conf
+HADOOP_CLASSPATH=/usr/lib/hadoop/client/*
+* Test ls , copy , delete dfs file:
+hadoop fs -ls -R /tmp
+hadoop fs -mkdir /tmp/testdir
+hadoop fs -copyFromLocal somedir /tmp/testdir
+3. Yarn service
+3.1 Installation
+* Go to the configuration tab, search for /var/log, /hadoop-mapred, /hadoop-yarn ... change the path to /hadoop/mapred and /hadoop/yarn
+* set yarn.nodemanager.resource.memory-mb property to 8GB by default. If not the mapreduce just hang
+3.1 Test
+* Export yarn client configuration
+* Set the environment:
+HADOOP_CLIENT_HOME=/home/hadoop/hadoop
+HADOOP_CONF_DIR=$HADOOP_CLIENT_HOME/conf
+HADOOP_CLASSPATH=/usr/lib/hadoop/client/*
+* Run wordcount mapreduce example:
+Upload hadoop example jar or copy one from /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples-2.0.0-cdh4.3.0.jar
+Upload some text file to dfs
+hadoop fs -mkdir /tmp/wordcount
+hadoop fs -copyFromLocal dir_with_text_file/* /tmp/wordcount/input
+Run wordcount
+hadoop jar hadoop-*examples-*.jar wordcount /tmp/wordcount/input /tmp/wordcount/output
+4. Add hive service
