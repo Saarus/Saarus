@@ -17,10 +17,19 @@
       <version>${org.saarus.version}</version>
     </dependency> 
 
+    <!--
     <dependency>
       <groupId>jgraphx</groupId>
       <artifactId>jgraphx</artifactId>
       <version>2.1.0.5</version>
     </dependency>
+    -->
+
+    <dependency>
+      <groupId>org.tinyjee.jgraphx</groupId>
+      <artifactId>jgraphx</artifactId>
+      <version>2.3.0.5</version>
+    </dependency>
+          
   </dependencies>
 </project>
